@@ -1,0 +1,38 @@
+{
+  "name": "treino-estrategia-nerd",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "demo:preview": "node scripts/seed-demo-workouts.js",
+    "demo:seed": "node scripts/seed-demo-workouts.js --write",
+    "demo:clear:preview": "node scripts/clear-demo-workouts.js",
+    "demo:clear": "node scripts/clear-demo-workouts.js --yes",
+    "journey:clear:preview": "node scripts/clear-prejourney-workouts.js",
+    "journey:clear:prestart": "node scripts/clear-prejourney-workouts.js --yes",
+    "xp:recalculate:preview": "node scripts/recalculate-xp.js",
+    "xp:recalculate": "node scripts/recalculate-xp.js --write",
+    "media:preview": "node scripts/sync-wger-media.js",
+    "media:sync": "node scripts/sync-wger-media.js --write",
+    "media:preview:a": "node scripts/sync-wger-media.js --template=A",
+    "media:sync:a": "node scripts/sync-wger-media.js --template=A --write",
+    "media:preview:b": "node scripts/sync-wger-media.js --template=B",
+    "media:sync:b": "node scripts/sync-wger-media.js --template=B --write",
+    "media:preview:c": "node scripts/sync-wger-media.js --template=C",
+    "media:sync:c": "node scripts/sync-wger-media.js --template=C --write",
+    "media:ficha-a:preview": "node scripts/link-ficha-a-ai-media.js",
+    "media:ficha-a:sync": "node scripts/link-ficha-a-ai-media.js --write",
+    "media:ficha-b:preview": "node scripts/link-ficha-b-ai-media.js",
+    "media:ficha-b:sync": "node scripts/link-ficha-b-ai-media.js --write",
+    "media:ficha-c:preview": "node scripts/link-ficha-c-ai-media.js",
+    "media:ficha-c:sync": "node scripts/link-ficha-c-ai-media.js --write"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  }
+}

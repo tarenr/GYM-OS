@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estrategia Nerd Academy | Gym OS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/gym-os.css" />
+  </head>
+  <body>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="app-layout">
+      <aside class="side-nav" aria-label="Menu principal">
+        <div class="side-brand">
+          <span>&lt;/&gt;</span>
+          <div>
+            <strong>Estrategia Nerd Academy</strong>
+            <small>GYM_OS // TREINO</small>
+          </div>
+        </div>
+
+        <nav class="side-menu">
+          <button class="nav-link active" type="button" data-tab="dashboard">Dashboard</button>
+          <button class="nav-link" type="button" data-tab="daily-missions">Missoes</button>
+          <button class="nav-link" type="button" data-tab="progress">Evolucao</button>
+          <div class="nav-group">
+            <span>Treinos</span>
+            <button class="nav-link nav-subitem" type="button" data-tab="workout-create">Cadastro</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="workout-list">Realizados</button>
+          </div>
+          <div class="nav-group">
+            <span>Fichas</span>
+            <button class="nav-link nav-subitem" type="button" data-tab="template-create">Cadastro</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="template-list">Listar</button>
+          </div>
+          <div class="nav-group">
+            <span>Tipos de treino</span>
+            <button class="nav-link nav-subitem" type="button" data-tab="type-create">Cadastro</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="type-list">Listar</button>
+          </div>
+          <button class="nav-link" type="button" data-tab="exercises">Exercicios</button>
+          <div class="nav-group">
+            <span>Documentacao</span>
+            <button class="nav-link nav-subitem" type="button" data-tab="documentation" data-documentation-shortcut="app">Manual</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="documentation" data-documentation-shortcut="academy">Roadmap</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="documentation" data-documentation-shortcut="progressSystem">Progressao</button>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="app-shell">
+      <header class="hud-header">
+        <div class="hud-logo">
+          <div class="hud-mark">&lt;/&gt;</div>
+          <div>
+            <h1>GYM<span>.OS</span></h1>
+            <p>Estrategia Nerd Academy | BUILD: GAINZ-PROTOCOL</p>
+          </div>
+        </div>
+        <div class="hud-user">
+          <div class="streak-info">
+            <span>STREAK</span>
+            <strong id="hud-streak">0 DAYS</strong>
+          </div>
+          <div class="avatar" aria-label="Avatar do usuario">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=taren-gym-os" alt="" />
+          </div>
+        </div>
+      </header>
+
+      <section class="tab-view active" id="view-dashboard">
+        <section class="dashboard-grid">
+          <article class="stat-card stat-green">
+            <div class="stat-top">
+              <span class="stat-icon">OK</span>
+              <span class="stat-trend trend-up" id="dashboard-workouts-trend">+0 semana</span>
+            </div>
+            <span class="stat-label">TOTAL WORKOUTS</span>
+            <strong class="stat-value" id="dashboard-total-workouts">0</strong>
+            <span class="stat-note">protocolos concluidos</span>
+          </article>
+          <article class="stat-card stat-blue">
+            <div class="stat-top">
+              <span class="stat-icon">KG</span>
+              <span class="stat-trend trend-up" id="dashboard-volume-trend">+0 kg semana</span>
+            </div>
+            <span class="stat-label">VOLUME (KG)</span>
+            <strong class="stat-value" id="dashboard-volume">0</strong>
+            <span class="stat-note">carga registrada</span>
+          </article>
+          <article class="stat-card stat-red">
+            <div class="stat-top">
+              <span class="stat-icon">PR</span>
+              <span class="stat-trend trend-up">mes atual</span>
+            </div>
+            <span class="stat-label">PRS THIS MONTH</span>
+            <strong class="stat-value" id="dashboard-prs">0</strong>
+            <span class="stat-note">novos recordes</span>
+          </article>
+          <article class="stat-card stat-orange">
+            <div class="stat-top">
+              <span class="stat-icon">XP</span>
+              <span class="stat-trend trend-up" id="dashboard-level-trend">online</span>
+            </div>
+            <span class="stat-label">XP LEVEL</span>
+            <strong class="stat-value" id="dashboard-level">LV. 1</strong>
+            <span class="rank-name" id="dashboard-rank">Noob Protocol</span>
+            <div class="xp-bar" aria-label="Progresso de XP">
+              <span id="dashboard-xp-fill"></span>
+            </div>
+            <span class="stat-note" id="dashboard-xp-text">0 / 100 XP</span>
+          </article>
+        </section>
+
+        <section class="content-grid dashboard-control-grid">
+          <article class="panel schedule-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">#</span>
+                <h2>WEEKLY_SCHEDULE.sys</h2>
+              </div>
+              <span class="panel-badge">CURRENT WEEK</span>
+            </div>
+            <div class="schedule-grid" id="dashboard-weekly-schedule"></div>
+          </article>
+
+          <article class="panel player-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">*</span>
+                <h2>PLAYER_STATS.json</h2>
+              </div>
+              <span class="panel-badge" id="dashboard-player-badge">LV. 1</span>
+            </div>
+            <div class="player-card">
+              <div class="level-ring" aria-label="Progresso de XP">
+                <svg width="92" height="92" viewBox="0 0 92 92" aria-hidden="true">
+                  <circle class="level-ring-bg" cx="46" cy="46" r="39"></circle>
+                  <circle class="level-ring-progress" id="dashboard-level-ring" cx="46" cy="46" r="39"></circle>
+                </svg>
+                <strong id="dashboard-player-level">1</strong>
+              </div>
+              <div class="player-info">
+                <span>Current Rank</span>
+                <h3 id="dashboard-player-rank">Noob Protocol</h3>
+                <div class="xp-bar player-xp-bar">
+                  <span id="dashboard-player-xp-fill"></span>
+                </div>
+                <p id="dashboard-player-xp-text">0 / 100 XP</p>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="content-grid analytics-grid">
+          <article class="panel volume-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">~</span>
+                <h2>VOLUME_TREND.chart</h2>
+              </div>
+              <span class="panel-badge">12 SEMANAS</span>
+            </div>
+            <div class="volume-chart-wrap">
+              <div class="volume-chart" id="dashboard-volume-chart"></div>
+              <div class="chart-summary" id="dashboard-volume-summary"></div>
+            </div>
+          </article>
+
+          <article class="panel muscle-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">%</span>
+                <h2>MUSCLE_DISTRIBUTION.data</h2>
+              </div>
+              <span class="panel-badge">POR VOLUME</span>
+            </div>
+            <div class="muscle-distribution" id="dashboard-muscle-distribution"></div>
+          </article>
+        </section>
+
+        <section class="content-grid insights-grid">
+          <article class="panel pr-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">^</span>
+                <h2>TOP_PRS.json</h2>
+              </div>
+              <span class="panel-badge">TOP 5</span>
+            </div>
+            <div class="pr-list" id="dashboard-pr-list"></div>
+          </article>
+
+          <article class="panel feed-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">&gt;</span>
+                <h2>ACTIVITY_FEED.stream</h2>
+              </div>
+              <span class="panel-badge">RECENTE</span>
+            </div>
+            <div class="activity-feed" id="dashboard-activity-feed"></div>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel mission-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">!</span>
+              <h2>CAMPAIGN_TODAY.exe</h2>
+              </div>
+              <span class="panel-badge" id="mission-badge">DRAFT</span>
+            </div>
+
+            <div class="mission-body">
+              <h3 id="mission-title">Carregando ficha</h3>
+              <p id="mission-description">A campanha do dia aparece aqui com seus blocos de treino.</p>
+              <ul class="mission-list">
+                <li id="mission-step-template">Bloco de forca</li>
+                <li id="mission-step-sets">Bloco de combate</li>
+                <li id="mission-step-save">Bonus da campanha</li>
+              </ul>
+              <div class="mission-reward">
+                <span>REWARD</span>
+                <strong id="mission-reward">+0 XP</strong>
+              </div>
+              <div class="weekly-strip-header">
+                <span>WEEK_CAMPAIGN</span>
+                <strong id="weekly-progress">0/6</strong>
+              </div>
+              <div class="weekly-map" id="weekly-map"></div>
+              <button class="button button-primary" type="button" id="start-mission">Iniciar bloco de hoje</button>
+            </div>
+          </article>
+
+          <article class="panel log-preview-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">#</span>
+                <h2>LOG_HISTORY.db</h2>
+              </div>
+              <button class="page-btn" type="button" data-tab-shortcut="workout-list">ABRIR</button>
+            </div>
+
+            <div class="dashboard-history" id="dashboard-history"></div>
+          </article>
+        </section>
+
+        <section class="content-grid progress-grid">
+          <article class="panel achievements-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">*</span>
+                <h2>ACHIEVEMENTS.sys</h2>
+              </div>
+              <span class="panel-badge" id="achievement-progress">0/0</span>
+            </div>
+            <div class="achievement-list" id="achievement-list"></div>
+          </article>
+
+          <article class="panel weekly-missions-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">></span>
+                <h2>WEEKLY_MISSIONS.sys</h2>
+              </div>
+              <span class="panel-badge" id="weekly-mission-progress">0/0</span>
+            </div>
+            <div class="weekly-mission-list" id="weekly-mission-list"></div>
+          </article>
+        </section>
+
+        <section class="panel heatmap-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="panel-icon">^</span>
+              <h2>ACTIVITY_HEATMAP.sys</h2>
+            </div>
+            <span class="panel-badge">SINCE 01/07</span>
+          </div>
+          <div class="heatmap-scroll">
+            <div class="heatmap-grid" id="heatmap-grid"></div>
+          </div>
+          <div class="heatmap-legend">
+            <span>AGENDADO</span>
+            <i class="heat-future"></i>
+            <span>PERDEU</span>
+            <i class="heat-missed"></i>
+            <span>PARCIAL</span>
+            <i class="heat-partial"></i>
+            <span>OK</span>
+            <i class="heat-complete"></i>
+            <span>DESC</span>
+            <i class="heat-rest"></i>
+            <span>EXTRA</span>
+            <i class="heat-extra-sample"></i>
+          </div>
+        </section>
+
+        <footer class="terminal-footer">
+          <p><span>user@gym-os:~$</span> ./commit_gains --force --all</p>
+          <p>[OK] Session logged successfully. Keep grinding.</p>
+        </footer>
+      </section>
+
+      <section class="tab-view" id="view-daily-missions">
+        <div class="page-header">
+          <div class="breadcrumb">GYM.OS <span>&gt;</span> WEEKLY_CAMPAIGN.sys</div>
+          <h2 class="page-title">Campanha <span>Semanal</span></h2>
+          <p class="page-subtitle" id="daily-mission-subtitle">// blocos de forca + combate no mesmo ciclo</p>
+        </div>
+
+        <section class="summary-grid page-summary" id="daily-mission-summary-cards" aria-label="Resumo da jornada semanal"></section>
+
+        <section class="content-grid">
+          <article class="panel mission-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">!</span>
+                <h2>TODAY_CAMPAIGN.exe</h2>
+              </div>
+              <span class="panel-badge" id="daily-mission-today-badge">HOJE</span>
+            </div>
+            <div class="mission-body" id="daily-mission-today"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">#</span>
+                <h2>CAMPAIGN_ROUTE.map</h2>
+              </div>
+              <span class="panel-badge">7 DIAS</span>
+            </div>
+            <div class="daily-mission-list" id="daily-mission-list"></div>
+          </article>
+        </section>
+      </section>
+
+      <section class="tab-view" id="view-progress">
+        <div class="page-header">
+          <div class="breadcrumb">ACADEMY <span>&gt;</span> GYM.OS <span>&gt;</span> XP_PROGRESS.json</div>
+          <h2 class="page-title">Evolucao <span>Academy</span></h2>
+          <p class="page-subtitle" id="progress-subtitle">// xp oficial por treino, semana e campanha</p>
+        </div>
+
+        <section class="summary-grid page-summary" id="progress-summary-cards" aria-label="Resumo da evolucao de XP"></section>
+
+        <section class="content-grid analytics-grid">
+          <article class="panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">~</span>
+                <h2>XP_TREND.chart</h2>
+              </div>
+              <span class="panel-badge">POR DATA</span>
+            </div>
+            <div class="xp-trend-list" id="progress-xp-trend"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">#</span>
+                <h2>XP_SPLIT.data</h2>
+              </div>
+              <span class="panel-badge">EXEC + CAMP</span>
+            </div>
+            <div class="xp-split" id="progress-xp-split"></div>
+          </article>
+        </section>
+
+        <section class="panel progress-achievement-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="panel-icon">OK</span>
+              <h2>ACHIEVEMENTS.codex</h2>
+            </div>
+            <span class="panel-badge" id="progress-achievement-count">0/0</span>
+          </div>
+          <div class="toolbar-panel progress-achievement-toolbar">
+            <label>
+              Categoria
+              <select id="progress-achievement-category-filter">
+                <option value="all">Todas</option>
+                <option value="Entrada">Entrada</option>
+                <option value="Consistencia">Consistencia</option>
+                <option value="Performance">Performance</option>
+                <option value="Modalidade">Modalidade</option>
+                <option value="Campanha">Campanha</option>
+                <option value="Nivel">Nivel</option>
+              </select>
+            </label>
+            <label>
+              Estado
+              <select id="progress-achievement-status-filter">
+                <option value="all">Todas</option>
+                <option value="unlocked">Desbloqueadas</option>
+                <option value="locked">Bloqueadas</option>
+                <option value="near">Mais proximas</option>
+              </select>
+            </label>
+          </div>
+          <section class="summary-grid page-summary compact-summary" id="progress-achievement-summary-cards" aria-label="Resumo das conquistas anuais"></section>
+          <div class="progress-achievement-category-list" id="progress-achievement-category-list"></div>
+          <div class="progress-achievement-grid" id="progress-achievement-list"></div>
+        </section>
+
+        <section class="panel progress-exercise-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="panel-icon">PR</span>
+              <h2>EXERCISE_PROGRESS.db</h2>
+            </div>
+            <span class="panel-badge" id="progress-exercise-count">0 MOV</span>
+          </div>
+          <div class="toolbar-panel progress-exercise-toolbar">
+            <label>
+              Exercicio
+              <select id="progress-exercise-select">
+                <option value="">Selecione um exercicio</option>
+              </select>
+            </label>
+            <label>
+              Periodo
+              <select id="progress-exercise-period-filter">
+                <option value="all">Tudo</option>
+                <option value="week">Esta semana</option>
+                <option value="month">Este mes</option>
+                <option value="quarter">Ultimos 3 meses</option>
+                <option value="year">Este ano</option>
+              </select>
+            </label>
+          </div>
+          <section class="summary-grid page-summary compact-summary" id="progress-exercise-summary-cards" aria-label="Resumo da evolucao por exercicio"></section>
+          <section class="progress-compare-panel">
+            <div class="panel-header compact-header">
+              <div class="panel-title">
+                <span class="panel-icon">~</span>
+                <h2>EXERCISE_COMPARE.chart</h2>
+              </div>
+              <span class="panel-badge" id="progress-compare-count">0 PTS</span>
+            </div>
+            <div class="progress-compare-grid" id="progress-exercise-compare"></div>
+          </section>
+          <section class="progress-pr-panel">
+            <div class="panel-header compact-header">
+              <div class="panel-title">
+                <span class="panel-icon">!</span>
+                <h2>PR_RECENT.log</h2>
+              </div>
+              <span class="panel-badge" id="progress-pr-count">0 PR</span>
+            </div>
+            <div class="progress-pr-list" id="progress-pr-list"></div>
+          </section>
+          <div class="progress-exercise-history" id="progress-exercise-history"></div>
+        </section>
+
+        <section class="panel progress-log-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="panel-icon">&gt;</span>
+              <h2>XP_LOG.db</h2>
+            </div>
+            <span class="panel-badge" id="progress-log-count">0 REG</span>
+          </div>
+          <div class="progress-xp-log" id="progress-xp-log"></div>
+        </section>
+      </section>
+
+      <section class="tab-view" id="view-workout-create">
+      <section class="workspace single-column">
+        <form class="panel workout-form" id="workout-form">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="panel-icon">!</span>
+              <h2 id="form-title">NEW_SESSION.exe</h2>
+            </div>
+            <div class="panel-actions">
+              <span class="panel-badge">DRAFT</span>
+              <button class="button button-ghost" type="button" id="reset-form">Limpar</button>
+            </div>
+          </div>
+
+          <div class="workout-origin-panel" id="workout-origin-panel" hidden>
+            <span id="workout-origin-label">Origem</span>
+            <strong id="workout-origin-detail">Selecione uma ficha</strong>
+          </div>
+
+          <div class="form-grid">
+            <label>
+              DATE_STAMP
+              <input id="date" name="date" type="date" required />
+            </label>
+
+            <label>
+              WORKOUT_PROTOCOL
+              <select id="workout-template" name="templateId" required>
+                <option value="">Selecione uma ficha</option>
+              </select>
+            </label>
+
+            <label>
+              DURATION_MIN
+              <input id="duration" name="durationMinutes" type="number" min="0" step="1" placeholder="60" />
+            </label>
+
+            <label>
+              TARGET_MUSCLES
+              <input id="target-muscles" type="text" placeholder="Escolha uma ficha" readonly />
+            </label>
+          </div>
+
+          <label>
+            DEBUG_NOTES
+            <textarea id="notes" name="notes" rows="3" placeholder="// Como foi o treino hoje?"></textarea>
+          </label>
+
+          <div class="exercise-builder">
+            <div class="panel-header compact">
+              <div class="panel-title">
+                <span class="panel-icon">+</span>
+                <h3>EXERCISE_LOG</h3>
+              </div>
+              <button class="button button-secondary" type="button" id="add-exercise" hidden>Adicionar exercicio</button>
+            </div>
+            <div class="exercise-list" id="exercise-list"></div>
+            <section class="workout-exercise-picker" id="workout-exercise-picker" hidden>
+              <div class="panel-header compact">
+                <div class="panel-title">
+                  <span class="panel-icon">#</span>
+                  <h3>EXERCISE_LIBRARY</h3>
+                </div>
+                <span class="panel-badge" id="workout-exercise-picker-mode">MODALIDADE</span>
+              </div>
+              <div class="form-grid">
+                <label>
+                  Categoria
+                  <select id="workout-exercise-category-filter">
+                    <option value="all">Todas</option>
+                  </select>
+                </label>
+
+                <label>
+                  Subcategoria
+                  <select id="workout-exercise-subcategory-filter">
+                    <option value="all">Todas</option>
+                  </select>
+                </label>
+
+                <label>
+                  Buscar
+                  <input id="workout-exercise-search" type="search" placeholder="Nome do exercicio" />
+                </label>
+              </div>
+              <div class="catalog-list workout-exercise-picker-list" id="workout-exercise-picker-list"></div>
+            </section>
+          </div>
+
+          <div class="form-actions">
+            <span class="status-message" id="status-message" role="status"></span>
+            <button class="button button-primary commit-button" type="submit">COMMIT_SESSION</button>
+          </div>
+        </form>
+      </section>
+
+      </section>
+
+      <section class="tab-view" id="view-workout-list">
+        <div class="page-header">
+          <div class="breadcrumb">GYM.OS <span>&gt;</span> LOG_HISTORY.db</div>
+          <h2 class="page-title">Treinos <span>Realizados</span></h2>
+          <p class="page-subtitle" id="history-subtitle">// carregando sessoes registradas</p>
+        </div>
+
+        <section class="summary-grid page-summary" id="history-summary-cards" aria-label="Resumo dos treinos realizados"></section>
+
+        <section class="toolbar-panel">
+          <div class="toolbar-left">
+            <label class="search-box">
+              <span>Buscar</span>
+              <input id="history-search" type="search" placeholder="Treino, exercicio ou observacao" />
+            </label>
+            <label>
+              Ficha
+              <select id="history-code-filter">
+                <option value="all">Todas</option>
+                <option value="A">Treino A</option>
+                <option value="B">Treino B</option>
+                <option value="C">Treino C</option>
+              </select>
+            </label>
+            <label>
+              Grupo
+              <select id="history-muscle-filter">
+                <option value="all">Todos</option>
+              </select>
+            </label>
+            <label>
+              Periodo
+              <select id="history-period-filter">
+                <option value="all">Tudo</option>
+                <option value="week">Esta semana</option>
+                <option value="month">Este mes</option>
+                <option value="quarter">Ultimos 3 meses</option>
+                <option value="year">Este ano</option>
+              </select>
+            </label>
+          </div>
+          <div class="toolbar-right">
+            <div class="view-toggle" aria-label="Modo de visualizacao">
+              <button class="view-button active" type="button" data-history-view="list">Lista</button>
+              <button class="view-button" type="button" data-history-view="cards">Cards</button>
+            </div>
+            <label>
+              Ordenar
+              <select id="history-sort">
+                <option value="desc">Mais recentes</option>
+                <option value="asc">Mais antigos</option>
+              </select>
+            </label>
+            <button class="button button-secondary" type="button" id="export-history">Exportar CSV</button>
+          </div>
+        </section>
+
+        <section class="history-surface">
+          <div class="list-header" id="history-list-header">
+            <span>ID</span>
+            <span>Sessao</span>
+            <span>Musculos</span>
+            <span>Data</span>
+            <span>Volume</span>
+            <span>Duracao</span>
+            <span>Series</span>
+            <span></span>
+          </div>
+          <div class="history-list" id="history-list"></div>
+          <div class="pagination-bar" id="history-pagination"></div>
+        </section>
+      </section>
+
+      <section class="tab-view" id="view-template-create">
+        <div class="page-header">
+          <div class="breadcrumb">GYM.OS <span>&gt;</span> TEMPLATE_BUILDER.exe</div>
+          <h2 class="page-title">Cadastro de <span>Ficha</span></h2>
+          <p class="page-subtitle">// escolha exercicios do catalogo e monte o protocolo ABC</p>
+        </div>
+
+        <section class="workspace single-column">
+          <form class="panel workout-form" id="template-form">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">+</span>
+                <h2 id="template-form-title">Nova ficha</h2>
+              </div>
+              <button class="button button-ghost" type="button" id="reset-template-form">Limpar</button>
+            </div>
+
+            <div class="form-grid">
+              <label>
+                Tipo de treino
+                <select id="template-workout-type" required>
+                  <option value="">Selecione um tipo</option>
+                </select>
+              </label>
+
+              <label>
+                Codigo da ficha
+                <input id="template-code" type="text" placeholder="A" maxlength="12" required />
+              </label>
+
+              <label>
+                Nome da ficha
+                <input id="template-name" type="text" placeholder="Peito e triceps" required />
+              </label>
+            </div>
+
+            <div class="exercise-builder">
+              <div class="panel-header compact">
+                <div class="panel-title">
+                  <span class="panel-icon">#</span>
+                  <h3>CATALOG.db</h3>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <label>
+                  Categoria
+                  <select id="catalog-category-filter">
+                    <option value="all">Todas</option>
+                  </select>
+                </label>
+
+                <label>
+                  Subcategoria
+                  <select id="catalog-subcategory-filter">
+                    <option value="all">Todas</option>
+                  </select>
+                </label>
+
+                <label>
+                  Buscar
+                  <input id="catalog-search" type="search" placeholder="Nome do exercicio" />
+                </label>
+              </div>
+
+              <div class="catalog-list" id="catalog-list"></div>
+            </div>
+
+            <div class="exercise-builder">
+              <div class="panel-header compact">
+                <div class="panel-title">
+                  <span class="panel-icon">></span>
+                  <h3>SELECTED_PROTOCOL</h3>
+                </div>
+              </div>
+
+              <div class="selected-template-list" id="selected-template-list"></div>
+            </div>
+
+            <div class="form-actions">
+              <span class="status-message" id="template-status-message" role="status"></span>
+              <button class="button button-primary" type="submit">Salvar ficha</button>
+            </div>
+          </form>
+        </section>
+      </section>
+
+      <section class="tab-view" id="view-template-list">
+        <div class="page-header">
+          <div class="breadcrumb">GYM.OS <span>&gt;</span> TEMPLATE_LIBRARY.db</div>
+          <h2 class="page-title">Fichas <span>Salvas</span></h2>
+          <p class="page-subtitle" id="template-subtitle">// protocolos disponiveis para registrar treinos</p>
+        </div>
+
+        <section class="summary-grid page-summary" id="template-summary-cards" aria-label="Resumo das fichas cadastradas"></section>
+
+        <section class="toolbar-panel">
+          <div class="toolbar-left">
+            <label class="search-box">
+              <span>Buscar</span>
+              <input id="template-search" type="search" placeholder="Ficha, codigo ou exercicio" />
+            </label>
+            <label>
+              Tipo
+              <select id="template-type-filter">
+                <option value="all">Todos</option>
+              </select>
+            </label>
+            <label>
+              Medicao
+              <select id="template-measurement-filter">
+                <option value="all">Todas</option>
+              </select>
+            </label>
+          </div>
+          <div class="toolbar-right">
+            <label>
+              Ordenar
+              <select id="template-sort">
+                <option value="code">Codigo</option>
+                <option value="name">Nome</option>
+                <option value="exercises">Mais exercicios</option>
+                <option value="xp">Maior XP</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="template-grid" id="template-list"></section>
+      </section>
+
+      <section class="tab-view" id="view-type-create">
+        <div class="page-header">
+          <div class="breadcrumb">GYM.OS <span>&gt;</span> WORKOUT_TYPE.exe</div>
+          <h2 class="page-title">Cadastro de <span>Tipo</span></h2>
+          <p class="page-subtitle">// define quais campos um treino usa</p>
+        </div>
+
+        <section class="workspace single-column">
+          <form class="panel workout-form" id="workout-type-form">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">+</span>
+                <h2 id="workout-type-form-title">Novo tipo</h2>
+              </div>
+              <button class="button button-ghost" type="button" id="reset-workout-type-form">Limpar</button>
+            </div>
+
+            <div class="form-grid">
+              <label>
+                Codigo
+                <input id="workout-type-code" type="text" placeholder="boxing" required />
+              </label>
+
+              <label>
+                Nome
+                <input id="workout-type-name" type="text" placeholder="Boxe" required />
+              </label>
+
+              <label>
+                Tipo de medicao
+                <select id="workout-type-measurement" required>
+                  <option value="sets_reps_weight">Series + reps + carga</option>
+                  <option value="sets_reps">Series + reps</option>
+                  <option value="rounds_time">Rounds + tempo</option>
+                  <option value="rounds_time_reps">Rounds + tempo + reps</option>
+                  <option value="duration">Duracao</option>
+                  <option value="distance">Distancia</option>
+                  <option value="free">Livre</option>
+                </select>
+              </label>
+
+              <label>
+                Campos
+                <input id="workout-type-fields" type="text" placeholder="rounds, durationSeconds, restSeconds" />
+              </label>
+            </div>
+
+            <label>
+              Descricao
+              <textarea id="workout-type-description" rows="3" placeholder="// Quando usar este tipo de treino?"></textarea>
+            </label>
+
+            <div class="form-actions">
+              <span class="status-message" id="workout-type-status-message" role="status"></span>
+              <button class="button button-primary" type="submit">Salvar tipo</button>
+            </div>
+          </form>
+        </section>
+      </section>
+
+      <section class="tab-view" id="view-type-list">
+        <div class="page-header">
+          <div class="breadcrumb">GYM.OS <span>&gt;</span> WORKOUT_TYPES.db</div>
+          <h2 class="page-title">Tipos de <span>Treino</span></h2>
+          <p class="page-subtitle" id="workout-type-subtitle">// modalidades e campos disponiveis</p>
+        </div>
+
+        <section class="summary-grid page-summary" id="workout-type-summary-cards" aria-label="Resumo dos tipos de treino"></section>
+
+        <section class="toolbar-panel">
+          <div class="toolbar-left">
+            <label class="search-box">
+              <span>Buscar</span>
+              <input id="workout-type-search" type="search" placeholder="Tipo, codigo ou descricao" />
+            </label>
+            <label>
+              Medicao
+              <select id="workout-type-measurement-filter">
+                <option value="all">Todas</option>
+              </select>
+            </label>
+            <label>
+              Campo
+              <select id="workout-type-field-filter">
+                <option value="all">Todos</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="type-grid" id="workout-type-list"></section>
+      </section>
+
+      <section class="tab-view" id="view-exercises">
+        <div class="page-header">
+          <div class="breadcrumb">GYM.OS <span>&gt;</span> EXERCISE_CATALOG.db</div>
+          <h2 class="page-title">Catalogo de <span>Exercicios</span></h2>
+          <p class="page-subtitle" id="exercise-subtitle">// biblioteca base para montar suas fichas</p>
+        </div>
+
+        <section class="summary-grid page-summary" id="exercise-summary-cards" aria-label="Resumo do catalogo de exercicios"></section>
+
+        <section class="toolbar-panel">
+          <div class="toolbar-left">
+            <label>
+              Modalidade
+              <select id="exercise-page-modality-filter">
+                <option value="all">Todas</option>
+              </select>
+            </label>
+            <label>
+              Categoria
+              <select id="exercise-page-category-filter">
+                <option value="all">Todas</option>
+              </select>
+            </label>
+            <label>
+              Subcategoria
+              <select id="exercise-page-subcategory-filter">
+                <option value="all">Todas</option>
+              </select>
+            </label>
+            <label>
+              Medicao
+              <select id="exercise-page-measurement-filter">
+                <option value="all">Todas</option>
+              </select>
+            </label>
+            <label class="search-box">
+              <span>Buscar</span>
+              <input id="exercise-page-search" type="search" placeholder="Nome do exercicio" />
+            </label>
+          </div>
+        </section>
+
+        <section class="exercise-catalog-grid" id="exercise-page-list"></section>
+      </section>
+
+      <section class="tab-view" id="view-documentation">
+        <div class="page-header">
+          <div class="breadcrumb">ACADEMY <span>&gt;</span> GYM.OS <span>&gt;</span> DOCS</div>
+          <h2 class="page-title">Central de <span>Documentacao</span></h2>
+          <p class="page-subtitle">// manual tecnico e roadmap do produto separados</p>
+        </div>
+
+        <section class="panel documentation-panel">
+          <div class="documentation-menu" aria-label="Menu de documentacao">
+            <button class="documentation-menu-button active" type="button" data-documentation-doc="app">
+              <span>Manual</span>
+              <strong>DOCUMENTACAO_APP.md</strong>
+            </button>
+            <button class="documentation-menu-button" type="button" data-documentation-doc="academy">
+              <span>Roadmap</span>
+              <strong>ROADMAP_ACADEMY.md</strong>
+            </button>
+          </div>
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="panel-icon">#</span>
+              <h2 id="documentation-file-title">DOCUMENTACAO_APP.md</h2>
+            </div>
+            <div class="panel-actions">
+              <span class="status-message" id="documentation-status">Carregando...</span>
+              <a class="button button-secondary" id="documentation-download" href="/DOCUMENTACAO_APP.md" download>Baixar MD</a>
+            </div>
+          </div>
+          <div class="documentation-layout">
+            <nav class="documentation-index" id="documentation-index" aria-label="Indice da documentacao">
+              <div class="documentation-index-title">INDEX.sys</div>
+              <p class="empty-state">Carregando indice...</p>
+            </nav>
+            <article class="documentation-content" id="documentation-content">
+              <p class="empty-state">Carregando documentacao...</p>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel detail-panel" id="detail-panel" hidden>
+        <div class="panel-header">
+          <div>
+            <p class="section-kicker">Detalhe</p>
+            <h2 id="detail-title">Treino</h2>
+          </div>
+          <button class="button button-ghost" type="button" id="close-detail">Fechar</button>
+        </div>
+        <div id="detail-content"></div>
+      </section>
+    </main>
+    </div>
+
+    <template id="exercise-template">
+      <article class="exercise-card">
+        <div class="exercise-card-header">
+          <strong class="exercise-index">Exercicio</strong>
+          <button class="icon-button remove-exercise" type="button" aria-label="Remover exercicio">x</button>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            Nome do exercicio
+            <input class="exercise-name" type="text" placeholder="Supino reto com halteres" required />
+          </label>
+
+          <label>
+            Grupo muscular
+            <input class="exercise-muscle" type="text" placeholder="Peito" required />
+          </label>
+        </div>
+
+        <div class="sets-list"></div>
+
+        <div class="exercise-actions">
+          <button class="button button-secondary add-set" type="button">Adicionar serie</button>
+        </div>
+
+        <label>
+          Observacoes do exercicio
+          <textarea class="exercise-notes" rows="2" placeholder="Opcional"></textarea>
+        </label>
+      </article>
+    </template>
+
+    <script src="/assets/app.js" type="module"></script>
+  </body>
+</html>
