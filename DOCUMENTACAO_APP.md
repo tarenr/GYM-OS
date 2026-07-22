@@ -787,6 +787,53 @@ Este ano
 
 O filtro afeta resumo, comparativo, PRs recentes e historico do exercicio.
 
+### Temporadas e Ciclos da Jornada Anual
+
+A jornada anual ativa comeca em:
+
+```text
+2026-07-22
+```
+
+Ela foi organizada para aproximadamente um ano de treino:
+
+```text
+48 semanas planejadas
+4 temporadas
+12 semanas por temporada
+3 ciclos por temporada
+4 semanas por ciclo
+```
+
+Temporadas:
+
+```text
+T1 - Fundacao: consistencia > intensidade
+T2 - Intensificacao: volume + tecnica
+T3 - Especializacao: progresso especifico
+T4 - Consolidacao: consistencia anual + revisao
+```
+
+O app calcula automaticamente:
+
+- dia da jornada;
+- semana da jornada anual;
+- temporada atual;
+- ciclo atual;
+- semana dentro da temporada;
+- semana dentro do ciclo;
+- percentual do ano, da temporada e do ciclo.
+
+Blocos visuais:
+
+```text
+Dashboard: JOURNEY DAY
+Evolucao: SEASON_PROGRESS.sys
+```
+
+O Dashboard mostra o selo `Tn Cn` e a semana da temporada atual.
+A Evolucao mostra cards de dia, temporada, ciclo e ano, alem de barras de progresso para jornada anual, temporada e ciclo.
+
 ### Conquistas Anuais
 
 A primeira versao do motor anual de conquistas roda no frontend e considera somente treinos a partir de:

@@ -1220,8 +1220,57 @@ h4 {
   background: var(--bg);
 }
 
+.season-progress-panel {
+  margin: 28px 0;
+}
+
 .compact-summary {
   padding: 20px;
+}
+
+.season-progress-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 0 20px 20px;
+}
+
+.season-progress-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  padding: 14px;
+}
+
+.season-progress-card > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.season-progress-card span,
+.season-progress-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.season-progress-card strong {
+  color: var(--green);
+  font-size: 1.1rem;
+}
+
+.season-progress-card.season strong {
+  color: var(--blue);
+}
+
+.season-progress-card.cycle strong {
+  color: var(--orange);
 }
 
 .progress-achievement-category-list {
@@ -3874,6 +3923,10 @@ textarea:focus {
   }
 
   .progress-compare-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .season-progress-grid {
     grid-template-columns: 1fr;
   }
 

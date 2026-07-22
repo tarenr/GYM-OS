@@ -176,6 +176,9 @@ const dailyMissionTodayBadge = document.querySelector('#daily-mission-today-badg
 const dailyMissionList = document.querySelector('#daily-mission-list');
 const progressSubtitle = document.querySelector('#progress-subtitle');
 const progressSummaryCards = document.querySelector('#progress-summary-cards');
+const seasonProgressBadge = document.querySelector('#season-progress-badge');
+const seasonProgressSummaryCards = document.querySelector('#season-progress-summary-cards');
+const seasonProgressGrid = document.querySelector('#season-progress-grid');
 const progressXpTrend = document.querySelector('#progress-xp-trend');
 const progressXpSplit = document.querySelector('#progress-xp-split');
 const progressXpLog = document.querySelector('#progress-xp-log');
@@ -232,6 +235,15 @@ const weeklySchedule = [
 const heatmapStartDate = '2026-07-22';
 const academyJourneyStartDate = '2026-07-22';
 const heatmapWeekCount = 16;
+const academyJourneySeasons = [
+  { id: 1, name: 'Fundacao', focus: 'Consistencia > intensidade' },
+  { id: 2, name: 'Intensificacao', focus: 'Volume + tecnica' },
+  { id: 3, name: 'Especializacao', focus: 'Progresso especifico' },
+  { id: 4, name: 'Consolidacao', focus: 'Consistencia anual + revisao' }
+];
+const academySeasonWeeks = 12;
+const academyCycleWeeks = 4;
+const academyJourneyWeeks = academyJourneySeasons.length * academySeasonWeeks;
 
 const rankTiers = [
   { minLevel: 1, name: 'Noob Protocol', shortName: 'Noob' },
@@ -273,12 +285,38 @@ function getJourneyDay(dateKey = todayInputValue()) {
   return Math.max(1, diff);
 }
 
-function getJourneySeasonLabel(dayNumber) {
-  const weekNumber = Math.max(1, Math.ceil(dayNumber / 7));
-  const seasonNumber = Math.min(4, Math.max(1, Math.ceil(weekNumber / 12)));
-  const cycleNumber = Math.min(3, Math.max(1, Math.ceil(((weekNumber - 1) % 12 + 1) / 4)));
+function clampPercent(value) {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
 
-  return `T${seasonNumber} C${cycleNumber}`;
+function getJourneyPosition(dateKey = todayInputValue()) {
+  const day = getJourneyDay(dateKey);
+  const week = Math.max(1, Math.ceil(day / 7));
+  const cappedWeek = Math.min(academyJourneyWeeks, week);
+  const seasonIndex = Math.min(academyJourneySeasons.length - 1, Math.floor((cappedWeek - 1) / academySeasonWeeks));
+  const season = academyJourneySeasons[seasonIndex];
+  const weekInSeason = ((cappedWeek - 1) % academySeasonWeeks) + 1;
+  const cycleInSeason = Math.ceil(weekInSeason / academyCycleWeeks);
+  const weekInCycle = ((weekInSeason - 1) % academyCycleWeeks) + 1;
+  const dayInSeason = Math.min(academySeasonWeeks * 7, ((weekInSeason - 1) * 7) + (((day - 1) % 7) + 1));
+  const dayInCycle = Math.min(academyCycleWeeks * 7, ((weekInCycle - 1) * 7) + (((day - 1) % 7) + 1));
+  const annualPercent = clampPercent((Math.min(day, academyJourneyWeeks * 7) / (academyJourneyWeeks * 7)) * 100);
+  const seasonPercent = clampPercent((dayInSeason / (academySeasonWeeks * 7)) * 100);
+  const cyclePercent = clampPercent((dayInCycle / (academyCycleWeeks * 7)) * 100);
+
+  return {
+    day,
+    week,
+    season,
+    seasonNumber: season.id,
+    weekInSeason,
+    cycleInSeason,
+    weekInCycle,
+    annualPercent,
+    seasonPercent,
+    cyclePercent,
+    label: `T${season.id} C${cycleInSeason}`
+  };
 }
 
 function toDateKey(dateValue) {
@@ -2782,6 +2820,7 @@ function renderDashboard() {
   const selectedMissionDateKey = getWeekDateKeyForDay(selectedMissionDayIndex, monday);
   const selectedMission = getDailyMissionByDayIndex(selectedMissionDayIndex);
   const journeyDay = getJourneyDay(todayKey);
+  const journeyPosition = getJourneyPosition(todayKey);
   const completedThisWeek = new Set(
     state.allWorkouts
       .filter((workout) => {
@@ -2815,8 +2854,8 @@ function renderDashboard() {
 
   hudStreak.textContent = `${currentStreak} DAYS`;
   dashboardJourneyDay.textContent = journeyDay;
-  dashboardJourneySeason.textContent = getJourneySeasonLabel(journeyDay);
-  dashboardJourneyText.textContent = `Desde ${formatDate(academyJourneyStartDate)}`;
+  dashboardJourneySeason.textContent = journeyPosition.label;
+  dashboardJourneyText.textContent = `${journeyPosition.season.name} | semana ${journeyPosition.weekInSeason}/${academySeasonWeeks}`;
   dashboardTotalWorkouts.textContent = state.allWorkouts.length;
   dashboardVolume.textContent = formatCompactNumber(totalVolume);
   dashboardPrs.textContent = countMonthlyPrs(state.allWorkouts);
@@ -4093,6 +4132,84 @@ function renderProgressSummary(items) {
   ]);
 }
 
+function renderSeasonProgress() {
+  if (!seasonProgressSummaryCards || !seasonProgressGrid) {
+    return;
+  }
+
+  const position = getJourneyPosition();
+
+  if (seasonProgressBadge) {
+    seasonProgressBadge.textContent = position.label;
+  }
+
+  renderSummaryCards(seasonProgressSummaryCards, [
+    {
+      icon: 'DAY',
+      label: 'Dia',
+      value: String(position.day),
+      detail: `semana ${position.week} da jornada anual`,
+      tone: 'green'
+    },
+    {
+      icon: `T${position.seasonNumber}`,
+      label: 'Temporada',
+      value: position.season.name,
+      detail: `semana ${position.weekInSeason}/${academySeasonWeeks}`,
+      tone: 'blue'
+    },
+    {
+      icon: `C${position.cycleInSeason}`,
+      label: 'Ciclo',
+      value: `${position.cycleInSeason}/3`,
+      detail: `semana ${position.weekInCycle}/${academyCycleWeeks}`,
+      tone: 'orange'
+    },
+    {
+      icon: 'YR',
+      label: 'Ano',
+      value: `${position.annualPercent}%`,
+      detail: `${academyJourneyWeeks} semanas planejadas`,
+      tone: 'purple'
+    }
+  ]);
+
+  const progressItems = [
+    {
+      label: 'Jornada anual',
+      value: `${position.annualPercent}%`,
+      detail: `Semana ${position.week}/${academyJourneyWeeks}`,
+      percent: position.annualPercent,
+      className: 'annual'
+    },
+    {
+      label: `Temporada ${position.seasonNumber} - ${position.season.name}`,
+      value: `${position.seasonPercent}%`,
+      detail: position.season.focus,
+      percent: position.seasonPercent,
+      className: 'season'
+    },
+    {
+      label: `Ciclo ${position.cycleInSeason}`,
+      value: `${position.cyclePercent}%`,
+      detail: `Semana ${position.weekInCycle}/${academyCycleWeeks} do ciclo atual`,
+      percent: position.cyclePercent,
+      className: 'cycle'
+    }
+  ];
+
+  seasonProgressGrid.innerHTML = progressItems.map((item) => `
+    <article class="season-progress-card ${escapeHtml(item.className)}">
+      <div>
+        <span>${escapeHtml(item.label)}</span>
+        <strong>${escapeHtml(item.value)}</strong>
+      </div>
+      <p>${escapeHtml(item.detail)}</p>
+      <div class="achievement-meter"><span style="width:${item.percent}%"></span></div>
+    </article>
+  `).join('');
+}
+
 function renderProgressTrend(items) {
   if (!progressXpTrend) {
     return;
@@ -4201,6 +4318,7 @@ function renderProgress() {
   }
 
   renderProgressSummary(items);
+  renderSeasonProgress();
   renderProgressTrend(items);
   renderProgressSplit(items);
   renderAnnualAchievements(items, exerciseEntries);
