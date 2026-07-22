@@ -861,6 +861,24 @@ O bloco conta como concluido quando pelo menos 60% dos exercicios planejados da 
 Se a execucao ficar abaixo disso, o treino ainda fica salvo no historico, mas a campanha tende a aparecer como parcial/pendente.
 ```
 
+Qualidade de execucao da ficha:
+
+```text
+Completo - 100% dos exercicios planejados executados.
+OK       - 60% ou mais dos exercicios planejados executados.
+Parcial  - abaixo de 60% dos exercicios planejados executados.
+So extra - treino sem exercicios planejados, apenas exercicios adicionados.
+```
+
+Exibicao:
+
+```text
+Detalhe do treino: mostra EXECUCAO_DA_FICHA com percentual.
+Historico: cards e linhas mostram tag de qualidade e resumo 6/7, 86%, pulados e extras.
+ACTIVITY_FEED.stream: mostra a qualidade no metadado do evento.
+ACTIVITY_HEATMAP.sys: tooltip inclui a qualidade do bloco feito ou tentado.
+```
+
 Ao adicionar exercicio durante o treino, o catalogo respeita a modalidade da ficha:
 
 ```text

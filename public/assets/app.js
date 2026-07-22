@@ -677,6 +677,83 @@ function isMissionEligibleWorkout(workout) {
   return isCompletedWorkout(workout) && getWorkoutPlannedExecutionRatio(workout) >= 0.6;
 }
 
+function getWorkoutExecutionQuality(workout) {
+  const exercises = workout.exercises || [];
+  const plannedExercises = exercises.filter((exercise) => (exercise.source || 'planned') === 'planned');
+  const extraExercises = exercises.filter((exercise) => exercise.source === 'extra');
+  const baseExercises = plannedExercises.length ? plannedExercises : [];
+  const plannedCount = baseExercises.length;
+  const executedCount = baseExercises.filter(hasValidExerciseExecution).length;
+  const skippedCount = baseExercises.filter((exercise) => exercise.skipped).length;
+  const extraCount = extraExercises.length;
+  const percent = plannedCount ? Math.round((executedCount / plannedCount) * 100) : 0;
+
+  if (!plannedCount && extraCount > 0) {
+    return {
+      plannedCount,
+      executedCount,
+      skippedCount,
+      extraCount,
+      percent: 0,
+      label: 'So extra',
+      className: 'extra',
+      detail: `${extraCount} exercicios extras`
+    };
+  }
+
+  if (plannedCount > 0 && executedCount === plannedCount) {
+    return {
+      plannedCount,
+      executedCount,
+      skippedCount,
+      extraCount,
+      percent,
+      label: 'Completo',
+      className: 'complete',
+      detail: `${executedCount}/${plannedCount} exercicios planejados`
+    };
+  }
+
+  if (plannedCount > 0 && percent >= 60) {
+    return {
+      plannedCount,
+      executedCount,
+      skippedCount,
+      extraCount,
+      percent,
+      label: 'OK',
+      className: 'ok',
+      detail: `${executedCount}/${plannedCount} exercicios planejados`
+    };
+  }
+
+  return {
+    plannedCount,
+    executedCount,
+    skippedCount,
+    extraCount,
+    percent,
+    label: 'Parcial',
+    className: 'partial',
+    detail: plannedCount ? `${executedCount}/${plannedCount} exercicios planejados` : 'sem ficha planejada'
+  };
+}
+
+function renderWorkoutQualityTag(quality) {
+  return `<span class="row-tag quality-${quality.className}">${escapeHtml(quality.label)} ${quality.plannedCount ? `${quality.percent}%` : ''}</span>`;
+}
+
+function formatWorkoutQualitySummary(quality) {
+  const skipped = quality.skippedCount ? ` | ${quality.skippedCount} pulados` : '';
+  const extras = quality.extraCount ? ` | ${quality.extraCount} extras` : '';
+
+  if (!quality.plannedCount) {
+    return `${quality.label}${extras}`;
+  }
+
+  return `${quality.detail} | ${quality.percent}%${skipped}${extras}`;
+}
+
 function countCompletedUnits(workout) {
   return countValidSets(workout) + countValidRounds(workout);
 }
@@ -1310,6 +1387,10 @@ function getTopPersonalRecords(workouts, limit = 5) {
 
   workouts.filter(isCompletedWorkout).forEach((workout) => {
     (workout.exercises || []).forEach((exercise) => {
+      if (exercise.skipped) {
+        return;
+      }
+
       const validSets = (exercise.sets || [])
         .map((set) => ({
           weight: Number(set.weight || 0),
@@ -1396,9 +1477,14 @@ function getDashboardActivityEvents(workouts, limit = 8) {
   workouts.filter(isCompletedWorkout).forEach((workout) => {
     const origin = getWorkoutOriginInfo(workout);
     const validSets = (workout.exercises || []).reduce((total, exercise) => {
+      if (exercise.skipped) {
+        return total;
+      }
+
       return total + (exercise.sets || []).filter((set) => Number(set.weight) > 0 && Number(set.reps) > 0).length;
     }, 0);
     const volume = calculateWorkoutVolume(workout);
+    const quality = getWorkoutExecutionQuality(workout);
     const dateKey = toDateKey(workout.date);
     const isExtra = origin.className === 'extra';
     const isSubstitution = origin.className === 'substitution';
@@ -1414,10 +1500,14 @@ function getDashboardActivityEvents(workouts, limit = 8) {
       detail: isSubstitution
         ? `${origin.originalWorkoutCode} -> ${workout.workoutCode} | ${workout.workoutName}`
         : `Treino ${workout.workoutCode} - ${workout.workoutName}`,
-      meta: `${validSets} series | ${formatCompactNumber(volume)} kg`
+      meta: `${quality.label} ${quality.plannedCount ? `${quality.percent}%` : ''} | ${validSets} series | ${formatCompactNumber(volume)} kg`
     });
 
     (workout.exercises || []).forEach((exercise) => {
+      if (exercise.skipped) {
+        return;
+      }
+
       (exercise.sets || []).forEach((set) => {
         const weight = Number(set.weight || 0);
         const reps = Number(set.reps || 0);
@@ -4052,6 +4142,7 @@ function renderWorkoutCard(workout) {
   const validRounds = countValidRounds(workout);
   const skippedCount = countSkippedExercises(workout);
   const completedUnits = countCompletedUnits(workout);
+  const quality = getWorkoutExecutionQuality(workout);
   const duration = Number(workout.durationMinutes || 0);
   const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// Sessao registrada no protocolo.';
 
@@ -4062,6 +4153,7 @@ function renderWorkoutCard(workout) {
           <h4>Treino ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}</h4>
           <div class="workout-tags">
             <span class="row-tag ${origin.className}">${origin.label}</span>
+            ${renderWorkoutQualityTag(quality)}
             ${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}
           </div>
         </div>
@@ -4071,7 +4163,7 @@ function renderWorkoutCard(workout) {
         </div>
       </div>
       <div class="workout-stats-row">
-        <span>${workout.exercises.length} exercicios${skippedCount ? ` | ${skippedCount} pulados` : ''}</span>
+        <span>${formatWorkoutQualitySummary(quality)}${skippedCount && !quality.skippedCount ? ` | ${skippedCount} pulados` : ''}</span>
         <strong>${volume ? `${formatCompactNumber(volume)} kg` : `${validRounds} rounds`}</strong>
       </div>
       <div class="workout-bar">
@@ -4158,6 +4250,7 @@ function renderHistoryListRow(workout, index) {
   const validRounds = countValidRounds(workout);
   const skippedCount = countSkippedExercises(workout);
   const completedUnits = countCompletedUnits(workout);
+  const quality = getWorkoutExecutionQuality(workout);
   const rowNumber = String(index + 1).padStart(3, '0');
 
   return `
@@ -4165,9 +4258,9 @@ function renderHistoryListRow(workout, index) {
       <div class="row-id">#${rowNumber}</div>
       <div class="row-name">
         Treino ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}
-        <span class="sub">${workout.exercises.length} exercicios | ${validSets} series | ${validRounds} rounds${skippedCount ? ` | ${skippedCount} pulados` : ''}</span>
+        <span class="sub">${formatWorkoutQualitySummary(quality)} | ${validSets} series | ${validRounds} rounds${skippedCount && !quality.skippedCount ? ` | ${skippedCount} pulados` : ''}</span>
       </div>
-      <div class="row-tags"><span class="row-tag ${origin.className}">${origin.label}</span>${renderWorkoutTags(tags)}</div>
+      <div class="row-tags"><span class="row-tag ${origin.className}">${origin.label}</span>${renderWorkoutQualityTag(quality)}${renderWorkoutTags(tags)}</div>
       <div class="row-date">
         ${toDateKey(workout.date)}
         <span>${formatWeekday(workout.date)}</span>
@@ -4192,6 +4285,7 @@ function renderHistoryCard(workout) {
   const validSets = countValidSets(workout);
   const validRounds = countValidRounds(workout);
   const skippedCount = countSkippedExercises(workout);
+  const quality = getWorkoutExecutionQuality(workout);
   const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// Sem observacoes registradas.';
 
   return `
@@ -4199,13 +4293,13 @@ function renderHistoryCard(workout) {
       <header>
         <div>
           <h3>Treino ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}</h3>
-          <div class="card-tags"><span class="row-tag ${origin.className}">${origin.label}</span>${renderWorkoutTags(tags)}</div>
+          <div class="card-tags"><span class="row-tag ${origin.className}">${origin.label}</span>${renderWorkoutQualityTag(quality)}${renderWorkoutTags(tags)}</div>
         </div>
       </header>
       <div class="card-stats-grid">
         <div class="card-stat">
-          <span>Exercicios</span>
-          <strong>${workout.exercises.length}${skippedCount ? `/${skippedCount}p` : ''}</strong>
+          <span>Execucao</span>
+          <strong>${quality.plannedCount ? `${quality.executedCount}/${quality.plannedCount}` : `${workout.exercises.length}${skippedCount ? `/${skippedCount}p` : ''}`}</strong>
         </div>
         <div class="card-stat">
           <span>Volume</span>
@@ -4362,10 +4456,18 @@ Status: Descanso planejado`
     const completedBlocks = completedBlockEntries.map((entry) => entry.block);
     const missingBlocks = requiredBlocks.filter((block) => !getWorkoutForMissionBlock(dateKey, block));
     const completedLabels = completedBlockEntries
-      .map((entry) => formatMissionBlockCompletion(entry.block, entry.workout))
+      .map((entry) => {
+        const quality = getWorkoutExecutionQuality(entry.workout);
+
+        return `${formatMissionBlockCompletion(entry.block, entry.workout)} ${quality.label} ${quality.plannedCount ? `${quality.percent}%` : ''}`.trim();
+      })
       .join(', ') || 'nenhum';
     const attemptedLabels = attemptedBlockEntries
-      .map((entry) => `${formatMissionBlockCompletion(entry.block, entry.workout)} parcial`)
+      .map((entry) => {
+        const quality = getWorkoutExecutionQuality(entry.workout);
+
+        return `${formatMissionBlockCompletion(entry.block, entry.workout)} ${quality.label} ${quality.plannedCount ? `${quality.percent}%` : ''}`.trim();
+      })
       .join(', ') || 'nenhum';
     const missingLabels = missingBlocks.map((block) => block.workoutCode).join(', ') || 'nenhum';
     const extraLabels = completedWorkouts
@@ -5461,10 +5563,19 @@ function renderDetails(workout) {
   const plannedCount = exercisesWithSource.filter((item) => item.source === 'planned').length;
   const extraCount = exercisesWithSource.filter((item) => item.source === 'extra').length;
   const skippedCount = countSkippedExercises(workout);
+  const quality = getWorkoutExecutionQuality(workout);
 
   detailTitle.textContent = `${workout.workoutCode} - ${workout.workoutName}`;
   detailContent.innerHTML = `
     <p class="detail-meta">${formatDate(workout.date)} | ${plannedCount} planejados | ${extraCount} adicionados | ${skippedCount} pulados | ${workout.exercises.length} exercicios</p>
+    <section class="execution-quality-card ${quality.className}">
+      <div>
+        <span>EXECUCAO_DA_FICHA</span>
+        <strong>${escapeHtml(quality.label)}</strong>
+      </div>
+      <p>${escapeHtml(formatWorkoutQualitySummary(quality))}</p>
+      <div class="achievement-meter"><span style="width:${quality.plannedCount ? quality.percent : 100}%"></span></div>
+    </section>
     ${workout.notes ? `<p>${escapeHtml(workout.notes)}</p>` : ''}
     ${renderWorkoutXpBreakdown(workout)}
     <div class="detail-grid">
