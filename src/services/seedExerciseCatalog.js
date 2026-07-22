@@ -49,6 +49,19 @@ export function getCombatSubcategory(exercise) {
   return exercise.subcategory || exercise.category;
 }
 
+function inferLoadMode(exercise = {}) {
+  const name = String(exercise.name || '').toLowerCase();
+  const equipment = (exercise.equipment || []).join(' ').toLowerCase();
+  const text = `${name} ${equipment}`;
+
+  if ((exercise.measurementType || '').startsWith('rounds')) return 'non_weight';
+  if (text.includes('barra')) return 'bar_total';
+  if (text.includes('maquina') || text.includes('polia')) return 'machine_stack';
+  if (text.includes('peso corporal') || text.includes('prancha') || text.includes('abdominal') || text.includes('elevacao de pernas')) return 'bodyweight';
+
+  return 'dumbbell_each';
+}
+
 export async function seedExerciseCatalog() {
   const strengthOperations = exerciseCatalog.flatMap((group) => {
     return group.exercises.map((exercise) => ({
@@ -65,6 +78,7 @@ export async function seedExerciseCatalog() {
             subcategory: getStrengthSubcategory(exercise.name, group.category),
             modality: 'strength',
             measurementType: 'sets_reps_weight',
+            loadMode: inferLoadMode(exercise),
             equipment: exercise.equipment,
             defaultSets: exercise.defaultSets,
             defaultReps: exercise.defaultReps,
@@ -103,6 +117,7 @@ export async function seedExerciseCatalog() {
           subcategory: getCombatSubcategory(exercise),
           modality: exercise.modality,
           measurementType: exercise.measurementType,
+          loadMode: inferLoadMode(exercise),
           equipment: exercise.equipment || [],
           defaultSets: exercise.defaultSets || 0,
           defaultReps: exercise.defaultReps || '',

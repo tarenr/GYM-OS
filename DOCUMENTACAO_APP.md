@@ -887,6 +887,42 @@ Fluxo:
 6. preencher carga e repeticoes por serie, ou rounds no caso de luta;
 7. salvar.
 
+### Modo de Carga dos Exercicios
+
+Exercicios de forca agora carregam um modo de carga (`loadMode`) para deixar claro como preencher o peso.
+
+Modos oficiais:
+
+```text
+dumbbell_each - halteres: registrar o peso de um halter
+bar_total - barra: registrar barra + anilhas como peso total montado
+machine_stack - maquina: registrar a carga exibida no equipamento
+bodyweight - peso corporal: registrar 0 quando nao houver carga extra
+non_weight - sem carga: usado por luta ou exercicios sem peso como metrica principal
+```
+
+Regra pratica:
+
+- halteres: o campo mostra `kg cada`;
+- barra: o campo mostra `kg total`;
+- maquina: o campo mostra `kg maquina`;
+- peso corporal: o campo mostra `kg extra`;
+- luta/rounds: nao usa carga como metrica principal.
+
+O app usa esse modo para:
+
+- orientar o campo de carga no treino;
+- salvar o contexto junto com o exercicio realizado;
+- mostrar carga com contexto no detalhe do treino;
+- melhorar leitura de PRs e evolucao por exercicio.
+
+Importante:
+
+```text
+O volume atual continua sendo calculado como carga informada x repeticoes.
+O modo de carga melhora a interpretacao do registro, mas nao converte automaticamente halteres para carga total bilateral nesta etapa.
+```
+
 Exercicios pulados:
 
 ```text

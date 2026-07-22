@@ -111,6 +111,7 @@ function buildWorkoutFromTemplate(template, plan, planIndex, codeIndex) {
       subcategory: exercise.subcategory || '',
       modality: exercise.modality || template.workoutTypeCode || 'strength',
       measurementType: exercise.measurementType || template.measurementType || 'sets_reps_weight',
+      loadMode: exercise.loadMode || (isCombat ? 'non_weight' : 'dumbbell_each'),
       plannedSets: exercise.plannedSets || 0,
       plannedReps: exercise.plannedReps || '',
       plannedRounds: exercise.plannedRounds || 0,

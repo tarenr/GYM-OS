@@ -28,6 +28,7 @@ function normalizeWorkoutPayload(payload) {
       subcategory: String(exercise.subcategory || '').trim(),
       modality: exercise.modality || 'strength',
       measurementType: exercise.measurementType || 'sets_reps_weight',
+      loadMode: String(exercise.loadMode || 'dumbbell_each').trim(),
       source: exercise.source === 'extra' ? 'extra' : 'planned',
       plannedSets: Number(exercise.plannedSets || 0),
       plannedReps: exercise.plannedReps || '',

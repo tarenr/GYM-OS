@@ -84,6 +84,12 @@ const exerciseSchema = new mongoose.Schema(
       default: 'sets_reps_weight',
       trim: true
     },
+    loadMode: {
+      type: String,
+      enum: ['dumbbell_each', 'bar_total', 'machine_stack', 'bodyweight', 'non_weight'],
+      default: 'dumbbell_each',
+      trim: true
+    },
     source: {
       type: String,
       enum: ['planned', 'extra'],

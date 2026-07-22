@@ -11,6 +11,7 @@ function buildTemplateExercise(exercise, plannedExercise, index) {
     subcategory: exercise.subcategory || '',
     modality: exercise.modality,
     measurementType: exercise.measurementType,
+    loadMode: exercise.loadMode || 'non_weight',
     equipment: exercise.equipment || [],
     plannedSets: plannedExercise.sets || exercise.defaultSets || 0,
     plannedReps: plannedExercise.reps || exercise.defaultReps || '',

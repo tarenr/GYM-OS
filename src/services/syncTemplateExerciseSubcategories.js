@@ -31,14 +31,23 @@ export async function syncTemplateExerciseSubcategories() {
         ? getStrengthSubcategory(templateExercise.name, templateExercise.category)
         : templateExercise.category;
       const subcategory = catalogExercise?.subcategory || templateExercise.subcategory || fallbackSubcategory || '';
+      const inferredLoadMode = templateExercise.modality === 'strength' && !(templateExercise.measurementType || '').startsWith('rounds')
+        ? 'dumbbell_each'
+        : 'non_weight';
+      const loadMode = catalogExercise?.loadMode && (catalogExercise.loadMode !== 'dumbbell_each' || inferredLoadMode === 'dumbbell_each')
+        ? catalogExercise.loadMode
+        : templateExercise.loadMode && (templateExercise.loadMode !== 'dumbbell_each' || inferredLoadMode === 'dumbbell_each')
+          ? templateExercise.loadMode
+          : inferredLoadMode;
 
-      if ((templateExercise.subcategory || '') !== subcategory) {
+      if ((templateExercise.subcategory || '') !== subcategory || (templateExercise.loadMode || '') !== loadMode) {
         changed = true;
       }
 
       return {
         ...templateExercise.toObject(),
-        subcategory
+        subcategory,
+        loadMode
       };
     });
 

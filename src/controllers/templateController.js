@@ -19,6 +19,7 @@ function normalizeTemplatePayload(payload) {
       subcategory: String(exercise.subcategory || '').trim(),
       modality: String(exercise.modality || payload.workoutTypeCode || 'strength').toLowerCase().trim(),
       measurementType: String(exercise.measurementType || payload.measurementType || 'sets_reps_weight').trim(),
+      loadMode: String(exercise.loadMode || 'dumbbell_each').trim(),
       equipment: exercise.equipment || [],
       plannedSets: Number(exercise.plannedSets || 0),
       plannedReps: String(exercise.plannedReps || '').trim(),

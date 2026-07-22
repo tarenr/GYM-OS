@@ -1605,6 +1605,7 @@ function getTopPersonalRecords(workouts, limit = 5) {
         workoutName: workout.workoutName,
         date: workout.date,
         muscleGroup: exercise.muscleGroup || exercise.category || 'Outros',
+        loadMode: getExerciseLoadMode(exercise),
         weight: bestSet.weight,
         reps: bestSet.reps,
         setVolume: bestSet.volume,
@@ -1651,7 +1652,7 @@ function renderDashboardPrList() {
         <p>${escapeHtml(record.muscleGroup)} | Treino ${escapeHtml(record.workoutCode)} | ${escapeHtml(formatDate(record.date))}</p>
       </div>
       <div class="pr-value">
-        <strong>${escapeHtml(formatNumber(record.weight))} kg</strong>
+        <strong>${escapeHtml(formatLoadModeWeight(record.weight, record.loadMode))}</strong>
         <span>${escapeHtml(formatNumber(record.reps))} reps</span>
       </div>
     </article>
@@ -1711,7 +1712,7 @@ function getDashboardActivityEvents(workouts, limit = 8) {
             date: workout.date,
             title: 'PR detectado',
             detail: exercise.name,
-            meta: `${formatNumber(weight)} kg x ${formatNumber(reps)} reps`
+            meta: `${formatLoadModeWeight(weight, getExerciseLoadMode(exercise))} x ${formatNumber(reps)} reps`
           });
         }
       });
@@ -1819,6 +1820,77 @@ function getMeasurementLabel(measurementType) {
   };
 
   return labels[measurementType] || measurementType || 'Series + carga + reps';
+}
+
+function inferExerciseLoadMode(exercise = {}) {
+  const measurementType = exercise.measurementType || 'sets_reps_weight';
+  const name = String(exercise.name || '').toLowerCase();
+  const equipment = (exercise.equipment || []).join(' ').toLowerCase();
+  const text = `${name} ${equipment}`;
+
+  if (measurementType === 'rounds_time' || measurementType === 'rounds_time_reps' || measurementType === 'sets_reps') {
+    return 'non_weight';
+  }
+
+  if (text.includes('barra')) return 'bar_total';
+  if (text.includes('maquina') || text.includes('polia')) return 'machine_stack';
+  if (text.includes('peso corporal') || text.includes('prancha') || text.includes('abdominal') || text.includes('elevacao de pernas')) return 'bodyweight';
+
+  return 'dumbbell_each';
+}
+
+function getExerciseLoadMode(exercise = {}) {
+  const inferred = inferExerciseLoadMode(exercise);
+
+  if (exercise.loadMode && (exercise.loadMode !== 'dumbbell_each' || inferred === 'dumbbell_each')) {
+    return exercise.loadMode;
+  }
+
+  return inferred;
+}
+
+function getLoadModeMeta(loadMode = 'dumbbell_each') {
+  const modes = {
+    dumbbell_each: {
+      label: 'Halteres',
+      fieldLabel: 'Peso por halter',
+      unit: 'kg cada',
+      hint: 'registre o peso de um halter; o app calcula o volume considerando reps x peso informado.'
+    },
+    bar_total: {
+      label: 'Barra',
+      fieldLabel: 'Peso total',
+      unit: 'kg total',
+      hint: 'registre barra + anilhas como carga total montada.'
+    },
+    machine_stack: {
+      label: 'Maquina',
+      fieldLabel: 'Carga da maquina',
+      unit: 'kg maquina',
+      hint: 'registre o numero exibido no equipamento.'
+    },
+    bodyweight: {
+      label: 'Peso corporal',
+      fieldLabel: 'Carga extra',
+      unit: 'kg extra',
+      hint: 'registre 0 quando for apenas peso corporal; use carga somente se houver peso adicional.'
+    },
+    non_weight: {
+      label: 'Sem carga',
+      fieldLabel: 'Carga',
+      unit: 'kg',
+      hint: 'este exercicio nao usa peso para progresso principal.'
+    }
+  };
+
+  return modes[loadMode] || modes.dumbbell_each;
+}
+
+function formatLoadModeWeight(weight, loadMode) {
+  const value = formatCompactNumber(Number(weight || 0));
+  const meta = getLoadModeMeta(loadMode);
+
+  return `${value} ${meta.unit}`;
 }
 
 function formatSeconds(seconds) {
@@ -2005,15 +2077,16 @@ function closeMediaLightbox() {
   document.body.classList.remove('media-lightbox-open');
 }
 
-function createSetRow(set = {}) {
+function createSetRow(set = {}, loadMode = 'dumbbell_each') {
   const row = document.createElement('div');
   row.className = 'set-row';
+  const loadMeta = getLoadModeMeta(loadMode);
 
   row.innerHTML = `
     <span class="set-number">S</span>
     <div class="set-field">
-      <input class="set-weight" type="number" min="0" step="0.5" value="${set.weight ?? ''}" placeholder="Carga" aria-label="Carga em kg" required />
-      <small>kg</small>
+      <input class="set-weight" type="number" min="0" step="0.5" value="${set.weight ?? ''}" placeholder="${escapeHtml(loadMeta.fieldLabel)}" aria-label="${escapeHtml(loadMeta.fieldLabel)} em kg" required />
+      <small>${escapeHtml(loadMeta.unit)}</small>
     </div>
     <div class="set-field">
       <input class="set-reps" type="number" min="0" step="1" value="${set.reps ?? ''}" placeholder="Reps" aria-label="Repeticoes" required />
@@ -2123,6 +2196,8 @@ function addExercise(exercise = {}) {
   const setsList = card.querySelector('.sets-list');
   const measurementType = exercise.measurementType || 'sets_reps_weight';
   const isRoundBased = measurementType === 'rounds_time' || measurementType === 'rounds_time_reps';
+  const loadMode = getExerciseLoadMode(exercise);
+  const loadMeta = getLoadModeMeta(loadMode);
 
   card.querySelector('.exercise-name').value = exercise.name || '';
   card.querySelector('.exercise-muscle').value = exercise.muscleGroup || exercise.category || '';
@@ -2130,6 +2205,7 @@ function addExercise(exercise = {}) {
   card.dataset.subcategory = exercise.subcategory || '';
   card.dataset.modality = exercise.modality || 'strength';
   card.dataset.measurementType = measurementType;
+  card.dataset.loadMode = loadMode;
   card.dataset.source = exercise.source || 'planned';
   card.dataset.plannedSets = exercise.plannedSets || '';
   card.dataset.plannedReps = exercise.plannedReps || '';
@@ -2168,6 +2244,13 @@ function addExercise(exercise = {}) {
     meta.className = 'planned-meta';
     meta.textContent = `${card.dataset.source === 'extra' ? 'Adicionado no treino' : 'Planejado'}: ${formatExercisePrescription(exercise)}`;
     card.querySelector('.form-grid').after(meta);
+
+    if (!isRoundBased) {
+      const loadInfo = document.createElement('p');
+      loadInfo.className = 'load-mode-meta';
+      loadInfo.innerHTML = `<strong>${escapeHtml(loadMeta.label)}:</strong> ${escapeHtml(loadMeta.hint)}`;
+      meta.after(loadInfo);
+    }
   }
 
   if ((card.dataset.source || 'planned') === 'planned') {
@@ -2199,7 +2282,7 @@ function addExercise(exercise = {}) {
     rounds.forEach((round) => setsList.append(createRoundRow(round)));
   } else {
     const sets = exercise.sets?.length ? exercise.sets : [{ weight: '', reps: '' }];
-    sets.forEach((set) => setsList.append(createSetRow(set)));
+    sets.forEach((set) => setsList.append(createSetRow(set, loadMode)));
   }
 
   refreshSetNumbers(setsList);
@@ -2209,7 +2292,7 @@ function addExercise(exercise = {}) {
       durationSeconds: exercise.plannedDurationSeconds || '',
       restSeconds: exercise.plannedRestSeconds || '',
       intensity: 7
-    }) : createSetRow());
+    }) : createSetRow({}, loadMode));
     refreshSetNumbers(setsList);
   });
   card.querySelector('.add-set').textContent = isRoundBased ? 'Adicionar round' : 'Adicionar serie';
@@ -2237,6 +2320,7 @@ function addExerciseFromTemplate(exercise = {}) {
       subcategory: exercise.subcategory || '',
       modality: exercise.modality || 'boxing',
       measurementType,
+      loadMode: getExerciseLoadMode(exercise),
       source: exercise.source || 'planned',
       plannedRounds: Number(exercise.plannedRounds || exercise.defaultRounds || 1),
       plannedDurationSeconds: Number(exercise.plannedDurationSeconds || exercise.defaultDurationSeconds || 0),
@@ -2269,6 +2353,7 @@ function addExerciseFromTemplate(exercise = {}) {
     subcategory: exercise.subcategory || '',
     modality: exercise.modality || 'strength',
     measurementType,
+    loadMode: getExerciseLoadMode(exercise),
     source: exercise.source || 'planned',
     plannedSets,
     plannedReps: exercise.plannedReps || exercise.defaultReps || '',
@@ -2375,13 +2460,15 @@ function renderWorkoutExercisePicker() {
 
   workoutExercisePickerList.innerHTML = filteredExercises.map((exercise) => {
     const isSelected = currentExerciseNames.has(String(exercise.name || '').toLowerCase());
+    const isRoundBased = (exercise.measurementType || 'sets_reps_weight').startsWith('rounds');
+    const loadMeta = getLoadModeMeta(getExerciseLoadMode(exercise));
 
     return `
       <article class="catalog-item">
         ${getExerciseImageMarkup(exercise, 'thumb')}
         <div>
           <p class="catalog-title">${escapeHtml(exercise.name)}</p>
-          <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(formatExercisePrescription(exercise))}</div>
+          <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(formatExercisePrescription(exercise))}${isRoundBased ? '' : ` | ${escapeHtml(loadMeta.label)}`}</div>
         </div>
         <button class="button ${isSelected ? 'button-ghost' : 'button-secondary'}" type="button" data-workout-exercise-id="${exercise._id}" ${isSelected ? 'disabled' : ''}>
           ${isSelected ? 'No treino' : 'Adicionar'}
@@ -2452,6 +2539,7 @@ function getFormPayload() {
       subcategory: card.dataset.subcategory || '',
       modality: card.dataset.modality || selectedTemplate?.workoutTypeCode || 'strength',
       measurementType,
+      loadMode: card.dataset.loadMode || 'dumbbell_each',
       source: card.dataset.source || 'planned',
       plannedSets: Number(card.dataset.plannedSets || sets.length),
       plannedReps: card.dataset.plannedReps || '',
@@ -3228,6 +3316,7 @@ function getExerciseProgressEntries() {
         exercise,
         dateKey: toDateKey(workout.date),
         measurementType,
+        loadMode: getExerciseLoadMode(exercise),
         muscleGroup: exercise.muscleGroup || exercise.category || '',
         modality: exercise.modality || getTemplateForWorkout(workout)?.workoutTypeCode || 'strength',
         validSets: validSets.length,
@@ -3289,7 +3378,7 @@ function getExercisePrMetrics(entry) {
       type: 'max_weight',
       label: 'Carga',
       value: entry.maxWeight,
-      formatted: `${formatCompactNumber(entry.maxWeight)} kg`
+      formatted: formatLoadModeWeight(entry.maxWeight, entry.loadMode)
     },
     {
       type: 'max_reps',
@@ -3475,7 +3564,7 @@ function getExerciseCompareMetrics(entries) {
     {
       label: 'Carga',
       value: (entry) => entry.maxWeight,
-      format: (value) => `${formatCompactNumber(value)} kg`
+      format: (value, entry) => formatLoadModeWeight(value, entry.loadMode)
     },
     {
       label: 'Reps',
@@ -3542,7 +3631,7 @@ function renderProgressExerciseCompare(entries) {
         <header>
           <div>
             <span>${escapeHtml(metric.label)}</span>
-            <strong>${escapeHtml(metric.format(lastPoint.value))}</strong>
+            <strong>${escapeHtml(metric.format(lastPoint.value, lastPoint.entry))}</strong>
           </div>
           <em>${escapeHtml(getTrendLabel(firstPoint.value, lastPoint.value))}</em>
         </header>
@@ -3554,7 +3643,7 @@ function renderProgressExerciseCompare(entries) {
               <div class="progress-compare-point">
                 <span style="height:${height}%"></span>
                 <small>${escapeHtml(formatDate(point.entry.dateKey))}</small>
-                <strong>${escapeHtml(metric.format(point.value))}</strong>
+                <strong>${escapeHtml(metric.format(point.value, point.entry))}</strong>
               </div>
             `;
           }).join('')}
@@ -3585,7 +3674,7 @@ function renderProgressExerciseSummary(entries) {
   const bestRoundEntry = hasRoundReps ? summary.bestRoundReps : summary.bestRoundTime;
   const bestPrimary = isRoundBased
     ? formatExerciseProgressPrimary(bestRoundEntry)
-    : `${formatCompactNumber(summary.bestWeight?.maxWeight || 0)} kg`;
+    : formatLoadModeWeight(summary.bestWeight?.maxWeight || 0, summary.bestWeight?.loadMode);
   const totalPrimary = isRoundBased
     ? `${summary.totalRounds} rounds | ${formatSeconds(summary.totalRoundSeconds)}`
     : `${formatCompactNumber(summary.totalVolume)} kg`;
@@ -3639,7 +3728,7 @@ function renderProgressExerciseHistory(entries) {
     const isRoundBased = entry.validRounds > 0;
     const metricLine = isRoundBased
       ? `${entry.validRounds} rounds | ${formatSeconds(entry.totalRoundSeconds)} | ${entry.roundReps} golpes`
-      : `${entry.validSets} series | max ${formatCompactNumber(entry.maxWeight)} kg | ${formatCompactNumber(entry.volume)} kg vol`;
+      : `${entry.validSets} series | max ${formatLoadModeWeight(entry.maxWeight, entry.loadMode)} | ${formatCompactNumber(entry.volume)} kg vol`;
     const meterWidth = Math.max(4, Math.round((entry.score / maxScore) * 100));
     const prBadges = (entry.personalRecords || []).length
       ? `<div class="pr-badges">${entry.personalRecords.map((record) => `<span class="pr-badge">PR ${escapeHtml(record.label)}</span>`).join('')}</div>`
@@ -4940,12 +5029,14 @@ function renderCatalog() {
 
   catalogList.innerHTML = filteredExercises.map((exercise) => {
     const isSelected = selectedIds.has(exercise._id);
+    const loadMeta = getLoadModeMeta(getExerciseLoadMode(exercise));
+    const loadLabel = (exercise.measurementType || 'sets_reps_weight').startsWith('rounds') ? '' : ` | ${loadMeta.label}`;
     return `
       <article class="catalog-item">
         ${getExerciseImageMarkup(exercise, 'thumb')}
         <div>
           <p class="catalog-title">${escapeHtml(exercise.name)}</p>
-          <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(formatExercisePrescription(exercise))} | ${escapeHtml(exercise.equipment.join(', '))}</div>
+          <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(formatExercisePrescription(exercise))}${escapeHtml(loadLabel)} | ${escapeHtml(exercise.equipment.join(', '))}</div>
         </div>
         <button class="button ${isSelected ? 'button-ghost' : 'button-secondary'}" type="button" data-catalog-id="${exercise._id}" ${isSelected ? 'disabled' : ''}>
           ${isSelected ? 'Adicionado' : 'Adicionar'}
@@ -5058,24 +5149,30 @@ function renderExercisePage() {
   }
 
   exerciseSubtitle.textContent = `// ${filteredExercises.length} exercicios no catalogo | filtros ativos aplicados em tempo real`;
-  exercisePageList.innerHTML = filteredExercises.map((exercise) => `
-    <article class="exercise-library-card" data-exercise-id="${exercise._id}">
-      <header>
-        <span class="row-tag ${getMuscleClass(exercise.category)}">${escapeHtml(exercise.category)}</span>
-        <strong>${escapeHtml(formatExercisePrescription(exercise))}</strong>
-      </header>
-      ${getExerciseImageMarkup(exercise, 'library')}
-      <h3>${escapeHtml(exercise.name)}</h3>
-      <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(getMeasurementLabel(exercise.measurementType || 'sets_reps_weight'))}</div>
-      <div class="equipment-line">${escapeHtml(exercise.equipment.join(', '))}</div>
-      ${getExerciseInstructionMarkup(exercise)}
-      ${getExerciseMediaActionsMarkup(exercise)}
-      <div class="exercise-media-results" data-results-for="${exercise._id}"></div>
-      <div class="mini-meter">
-        <span></span><span></span><span></span>
-      </div>
-    </article>
-  `).join('');
+  exercisePageList.innerHTML = filteredExercises.map((exercise) => {
+    const isRoundBased = (exercise.measurementType || 'sets_reps_weight').startsWith('rounds');
+    const loadMeta = getLoadModeMeta(getExerciseLoadMode(exercise));
+
+    return `
+      <article class="exercise-library-card" data-exercise-id="${exercise._id}">
+        <header>
+          <span class="row-tag ${getMuscleClass(exercise.category)}">${escapeHtml(exercise.category)}</span>
+          <strong>${escapeHtml(formatExercisePrescription(exercise))}</strong>
+        </header>
+        ${getExerciseImageMarkup(exercise, 'library')}
+        <h3>${escapeHtml(exercise.name)}</h3>
+        <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(getMeasurementLabel(exercise.measurementType || 'sets_reps_weight'))}${isRoundBased ? '' : ` | ${escapeHtml(loadMeta.label)}`}</div>
+        <div class="equipment-line">${escapeHtml(exercise.equipment.join(', '))}</div>
+        ${isRoundBased ? '' : `<p class="load-mode-meta compact"><strong>${escapeHtml(loadMeta.fieldLabel)}:</strong> ${escapeHtml(loadMeta.hint)}</p>`}
+        ${getExerciseInstructionMarkup(exercise)}
+        ${getExerciseMediaActionsMarkup(exercise)}
+        <div class="exercise-media-results" data-results-for="${exercise._id}"></div>
+        <div class="mini-meter">
+          <span></span><span></span><span></span>
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
 async function syncExerciseMedia(exerciseId) {
@@ -5161,6 +5258,7 @@ function renderSelectedTemplateExercises() {
   selectedTemplateList.innerHTML = state.selectedTemplateExercises.map((exercise, index) => {
     const measurementType = exercise.measurementType || 'sets_reps_weight';
     const isRoundBased = measurementType === 'rounds_time' || measurementType === 'rounds_time_reps';
+    const loadMeta = getLoadModeMeta(getExerciseLoadMode(exercise));
     const fields = isRoundBased ? `
       <label>
         Rounds
@@ -5191,7 +5289,7 @@ function renderSelectedTemplateExercises() {
         ${getExerciseImageMarkup(exercise, 'thumb')}
         <div>
           <p class="catalog-title">${escapeHtml(exercise.name)}</p>
-          <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(getMeasurementLabel(measurementType))}</div>
+          <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(getMeasurementLabel(measurementType))}${isRoundBased ? '' : ` | ${escapeHtml(loadMeta.label)}`}</div>
         </div>
         ${fields}
         <button class="icon-button remove-template-exercise" type="button" aria-label="Remover exercicio">x</button>
@@ -5579,6 +5677,7 @@ function addTemplateExercise(exercise) {
     subcategory: exercise.subcategory || '',
     modality: exercise.modality || 'strength',
     measurementType: exercise.measurementType || 'sets_reps_weight',
+    loadMode: getExerciseLoadMode(exercise),
     equipment: exercise.equipment || [],
     plannedSets: exercise.defaultSets || 0,
     plannedReps: exercise.defaultReps || '',
@@ -5654,6 +5753,7 @@ function fillTemplateForm(template) {
     subcategory: exercise.subcategory || '',
     modality: exercise.modality || template.workoutTypeCode || 'strength',
     measurementType: exercise.measurementType || template.measurementType || 'sets_reps_weight',
+    loadMode: getExerciseLoadMode(exercise),
     equipment: exercise.equipment || [],
     plannedSets: exercise.plannedSets || 0,
     plannedReps: exercise.plannedReps || '',
@@ -5688,7 +5788,7 @@ function showTemplate(template) {
         <article class="detail-exercise">
           ${getExerciseImageMarkup(exercise, 'thumb')}
           <h3>${exercise.order}. ${escapeHtml(exercise.name)}</h3>
-          <p class="detail-meta">${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(formatExercisePrescription(exercise))}</p>
+          <p class="detail-meta">${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(formatExercisePrescription(exercise))}${(exercise.measurementType || 'sets_reps_weight').startsWith('rounds') ? '' : ` | ${escapeHtml(getLoadModeMeta(getExerciseLoadMode(exercise)).label)}`}</p>
           ${getExerciseInstructionMarkup(exercise)}
         </article>
       `).join('')}
@@ -5758,7 +5858,7 @@ function renderExerciseLogTable(exercise) {
         ${sets.map((set) => `
           <tr>
             <td>${set.setNumber}</td>
-            <td>${set.weight} kg</td>
+              <td>${escapeHtml(formatLoadModeWeight(set.weight, getExerciseLoadMode(exercise)))}</td>
             <td>${set.reps}</td>
           </tr>
         `).join('')}
