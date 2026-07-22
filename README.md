@@ -1,12 +1,14 @@
-# Estrategia Nerd Academy - Gym OS
+# GYM-OS
 
-Modulo de treino da Estrategia Nerd Academy para registrar treinos, fichas,
-missoes diarias, XP, heatmap e imagens de exercicios.
+Sistema de treino da Estrategia Nerd Academy para registrar treinos, fichas,
+missoes diarias, XP, heatmap, conquistas anuais e imagens de exercicios.
 
-Produto atual:
+Identidade oficial:
 
 ```text
-Treino Estrategia Nerd
+Produto: GYM-OS
+Metodologia/ecossistema: Estrategia Nerd Academy
+Jornada: Projeto Anual 2026
 ```
 
 ## Documentacao completa
@@ -18,7 +20,7 @@ missoes e proximas fases esta em:
 DOCUMENTACAO_APP.md
 ```
 
-A evolucao de marca e produto para **Estrategia Nerd Academy** esta em:
+A evolucao de marca, produto e jornada da **Estrategia Nerd Academy** esta em:
 
 ```text
 ROADMAP_ACADEMY.md

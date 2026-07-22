@@ -134,7 +134,7 @@ function renderDocumentationPage(markdown) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Documentacao | Estrategia Nerd Academy</title>
+    <title>Documentacao | GYM-OS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -261,7 +261,7 @@ function renderDocumentationPage(markdown) {
       <header class="doc-header">
         <div>
           <h1>DOCUMENTACAO_APP.md</h1>
-          <p>Estrategia Nerd Academy | Gym OS | Manual de continuidade</p>
+          <p>GYM-OS | Estrategia Nerd Academy | Manual de continuidade</p>
         </div>
         <div class="doc-actions">
           <a class="button button-ghost" href="/">Voltar ao app</a>

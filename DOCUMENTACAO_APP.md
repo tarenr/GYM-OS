@@ -1,6 +1,6 @@
-# Documentacao do App Treino Estrategia Nerd
+# Documentacao do App GYM-OS
 
-Ultima atualizacao: 2026-07-18
+Ultima atualizacao: 2026-07-22
 
 ## Identidade Do Produto
 
@@ -13,13 +13,25 @@ Estrategia Nerd Academy
 Modulo atual:
 
 ```text
-Gym OS - Treino
+GYM-OS
 ```
 
 Produto atual:
 
 ```text
-Treino Estrategia Nerd
+GYM-OS
+```
+
+Metodologia/ecossistema:
+
+```text
+Estrategia Nerd Academy
+```
+
+Jornada atual:
+
+```text
+Projeto Anual 2026
 ```
 
 A decisao de marca foi documentada em:
@@ -36,16 +48,16 @@ ACADEMY_PROGRESS_SYSTEM.md
 
 Resumo da decisao:
 
-- **Estrategia Nerd Academy** e o nome principal do ecossistema;
-- **Gym OS** e o modulo operacional de treino;
-- **Treino Estrategia Nerd** continua sendo o nome do produto atual;
+- **GYM-OS** e o nome oficial do produto/app;
+- **Estrategia Nerd Academy** e a metodologia/ecossistema por tras da jornada;
+- **Projeto Anual 2026** e a jornada ativa de treino;
 - **Nerdcademy** fica reservado para apelidos, campanhas, eventos ou laboratorios, nao como marca principal.
 
 Este documento resume o estado atual do app para permitir continuar o projeto em outro chat sem depender do historico completo da conversa.
 
 ## Visao Geral
 
-O **Treino Estrategia Nerd** e um app local para acompanhar treinos de musculacao, boxe e kickboxing com uma camada de gamificacao.
+O **GYM-OS** e um app local para acompanhar treinos de musculacao, boxe e kickboxing com uma camada de gamificacao dentro da Estrategia Nerd Academy.
 
 O sistema registra:
 
@@ -96,7 +108,7 @@ Mongoose
 ## Estrutura Principal
 
 ```text
-treino-estrategia-nerd/
+GYM-OS/
   src/
     config/
       database.js
@@ -1360,12 +1372,12 @@ Use este texto em um novo chat:
 
 ```text
 Estou trabalhando no projeto local:
-C:\xampp\htdocs\estrategia-nerd\treino-estrategia-nerd
+C:\xampp\htdocs\GYM-OS
 
 Leia primeiro o arquivo DOCUMENTACAO_APP.md.
 
 O app e Node + Express + Mongoose + MongoDB Atlas, frontend HTML/CSS/JS puro.
-O objetivo e continuar o app Treino Estrategia Nerd, que registra treinos, fichas,
+O objetivo e continuar o app GYM-OS, que registra treinos, fichas,
 missoes diarias, XP, heatmap e imagens de exercicios.
 
 Nao saia implementando sem planejar quando eu pedir planejamento.

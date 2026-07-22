@@ -2,7 +2,7 @@
 
 Ultima atualizacao: 2026-07-22
 
-Este documento define o planejamento de longo prazo para XP, niveis, ranks, temporadas, ciclos e conquistas do modulo **Gym OS - Treino** dentro da **Estrategia Nerd Academy**.
+Este documento define o planejamento de longo prazo para XP, niveis, ranks, temporadas, ciclos e conquistas do produto **GYM-OS** dentro da **Estrategia Nerd Academy**.
 
 O objetivo e sustentar aproximadamente **1 ano de treino** sem esgotar recompensas cedo demais.
 

@@ -1,6 +1,6 @@
 # Roadmap Estrategia Nerd Academy
 
-Ultima atualizacao: 2026-07-18
+Ultima atualizacao: 2026-07-22
 
 Este documento define a evolucao do projeto de um app local de treino para um modulo dentro da marca guarda-chuva **Estrategia Nerd Academy**.
 
@@ -18,16 +18,22 @@ Nome principal:
 Estrategia Nerd Academy
 ```
 
-Modulo atual:
+Produto/app atual:
 
 ```text
-Gym OS - Treino
+GYM-OS
 ```
 
-Nome do produto dentro da Academy:
+Metodologia/ecossistema:
 
 ```text
-Treino Estrategia Nerd
+Estrategia Nerd Academy
+```
+
+Jornada ativa:
+
+```text
+Projeto Anual 2026
 ```
 
 O nome **Nerdcademy** fica reservado como apelido, campanha, laboratorio ou evento especial. Ele nao deve substituir a marca principal porque e menos claro, mais dificil de escrever e passa uma impressao mais informal.
@@ -36,7 +42,7 @@ O nome **Nerdcademy** fica reservado como apelido, campanha, laboratorio ou even
 
 ```text
 Estrategia Nerd Academy
-  Gym OS - Treino
+  GYM-OS
     Dashboard
     Missoes
     Treinos
@@ -51,7 +57,7 @@ No futuro, a Academy pode receber novos modulos:
 
 ```text
 Estrategia Nerd Academy
-  Gym OS - Treino
+  GYM-OS
   Study OS - Estudos
   Habit OS - Habitos
   Nutrition OS - Nutricao
@@ -78,7 +84,7 @@ Um sistema de progresso dentro da Estrategia Nerd Academy, onde treinos viram mi
 
 1. O treino continua sendo o centro da experiencia atual.
 2. A Academy vira a marca guarda-chuva.
-3. Gym OS vira o nome operacional do modulo de treino.
+3. GYM-OS vira o nome oficial do produto de treino.
 4. Missoes, XP, ranks e heatmap devem parecer partes do mesmo sistema.
 5. As mudancas de marca nao devem quebrar dados existentes.
 6. O projeto deve evoluir por fases pequenas e validaveis.
@@ -87,13 +93,13 @@ Um sistema de progresso dentro da Estrategia Nerd Academy, onde treinos viram mi
 
 ### Fase 1 - Identidade Base
 
-Status: concluida.
+Status: concluida e consolidada.
 
 Objetivo:
 
-- aplicar "Estrategia Nerd Academy" nos pontos principais de interface e documentacao;
-- manter "Gym OS" como identidade visual do modulo;
-- preservar "Treino Estrategia Nerd" como nome do produto atual.
+- aplicar "GYM-OS" como nome principal do app;
+- manter "Estrategia Nerd Academy" como metodologia/ecossistema;
+- mostrar "Projeto Anual 2026" como jornada ativa.
 
 Tarefas:
 
@@ -248,7 +254,7 @@ Usar:
 ```text
 Academy
 Modulo
-Gym OS
+  GYM-OS
 Missao
 Bloco
 Campanha semanal

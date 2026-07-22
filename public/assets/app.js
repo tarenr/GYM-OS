@@ -101,6 +101,9 @@ const exercisePageSearch = document.querySelector('#exercise-page-search');
 const exercisePageList = document.querySelector('#exercise-page-list');
 const exerciseSummaryCards = document.querySelector('#exercise-summary-cards');
 const hudStreak = document.querySelector('#hud-streak');
+const dashboardJourneyDay = document.querySelector('#dashboard-journey-day');
+const dashboardJourneySeason = document.querySelector('#dashboard-journey-season');
+const dashboardJourneyText = document.querySelector('#dashboard-journey-text');
 const dashboardTotalWorkouts = document.querySelector('#dashboard-total-workouts');
 const dashboardVolume = document.querySelector('#dashboard-volume');
 const dashboardPrs = document.querySelector('#dashboard-prs');
@@ -259,6 +262,22 @@ function escapeHtml(value = '') {
 
 function todayInputValue() {
   return new Date().toISOString().slice(0, 10);
+}
+
+function getJourneyDay(dateKey = todayInputValue()) {
+  const start = new Date(`${academyJourneyStartDate}T00:00:00Z`);
+  const current = new Date(`${dateKey}T00:00:00Z`);
+  const diff = Math.floor((current - start) / 86400000) + 1;
+
+  return Math.max(1, diff);
+}
+
+function getJourneySeasonLabel(dayNumber) {
+  const weekNumber = Math.max(1, Math.ceil(dayNumber / 7));
+  const seasonNumber = Math.min(4, Math.max(1, Math.ceil(weekNumber / 12)));
+  const cycleNumber = Math.min(3, Math.max(1, Math.ceil(((weekNumber - 1) % 12 + 1) / 4)));
+
+  return `T${seasonNumber} C${cycleNumber}`;
 }
 
 function toDateKey(dateValue) {
@@ -2366,6 +2385,7 @@ function renderDashboard() {
   const selectedMissionDayIndex = getSelectedMissionDayIndex();
   const selectedMissionDateKey = getWeekDateKeyForDay(selectedMissionDayIndex, monday);
   const selectedMission = getDailyMissionByDayIndex(selectedMissionDayIndex);
+  const journeyDay = getJourneyDay(todayKey);
   const completedThisWeek = new Set(
     state.allWorkouts
       .filter((workout) => {
@@ -2398,6 +2418,9 @@ function renderDashboard() {
   const xpProgress = Math.min(100, Math.round((level.currentXp / level.nextLevelXp) * 100));
 
   hudStreak.textContent = `${currentStreak} DAYS`;
+  dashboardJourneyDay.textContent = journeyDay;
+  dashboardJourneySeason.textContent = getJourneySeasonLabel(journeyDay);
+  dashboardJourneyText.textContent = `Desde ${formatDate(academyJourneyStartDate)}`;
   dashboardTotalWorkouts.textContent = state.allWorkouts.length;
   dashboardVolume.textContent = formatCompactNumber(totalVolume);
   dashboardPrs.textContent = countMonthlyPrs(state.allWorkouts);
