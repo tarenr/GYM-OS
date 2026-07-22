@@ -136,6 +136,7 @@ const missionStepSets = document.querySelector('#mission-step-sets');
 const missionStepSave = document.querySelector('#mission-step-save');
 const weeklyProgress = document.querySelector('#weekly-progress');
 const weeklyMap = document.querySelector('#weekly-map');
+const missionActions = document.querySelector('#mission-actions');
 const startMissionButton = document.querySelector('#start-mission');
 const heatmapGrid = document.querySelector('#heatmap-grid');
 const achievementProgress = document.querySelector('#achievement-progress');
@@ -496,6 +497,156 @@ function getNextMissionBlock(mission, dateKey = todayInputValue()) {
   }
 
   return activeBlocks.find((block) => !getWorkoutForMissionBlock(dateKey, block)) || null;
+}
+
+function getDashboardBlockState(block, dateKey) {
+  if (!block || block.type === 'recovery') {
+    return {
+      status: 'idle',
+      workout: null,
+      attemptedWorkout: null
+    };
+  }
+
+  const workout = getWorkoutForMissionBlock(dateKey, block);
+  const attemptedWorkout = getWorkoutAttemptForMissionBlock(dateKey, block);
+
+  if (workout) {
+    return {
+      status: 'done',
+      workout,
+      attemptedWorkout: workout
+    };
+  }
+
+  if (attemptedWorkout) {
+    return {
+      status: 'partial',
+      workout: null,
+      attemptedWorkout
+    };
+  }
+
+  return {
+    status: 'pending',
+    workout: null,
+    attemptedWorkout: null
+  };
+}
+
+function getDashboardBlockAction(block, dateKey) {
+  const todayKey = todayInputValue();
+  const stateInfo = getDashboardBlockState(block, dateKey);
+
+  if (!block || block.type === 'recovery') {
+    return {
+      block,
+      stateInfo,
+      label: 'Descanso',
+      meta: 'recuperacao programada',
+      disabled: true,
+      action: '',
+      workoutId: '',
+      templateId: ''
+    };
+  }
+
+  const blockLabel = block.type === 'strength' ? 'Forca' : 'Luta';
+  const blockCode = block.workoutCode || '';
+
+  if (stateInfo.status === 'done') {
+    return {
+      block,
+      stateInfo,
+      label: `${blockLabel} OK`,
+      meta: `${formatMissionBlockCompletion(block, stateInfo.workout)} concluido`,
+      disabled: false,
+      action: 'details',
+      workoutId: stateInfo.workout?._id || '',
+      templateId: ''
+    };
+  }
+
+  if (stateInfo.status === 'partial') {
+    return {
+      block,
+      stateInfo,
+      label: `Editar ${blockLabel}`,
+      meta: `${formatMissionBlockCompletion(block, stateInfo.attemptedWorkout)} parcial`,
+      disabled: false,
+      action: 'edit',
+      workoutId: stateInfo.attemptedWorkout?._id || '',
+      templateId: ''
+    };
+  }
+
+  if (dateKey === todayKey && block.templateId) {
+    return {
+      block,
+      stateInfo,
+      label: `Iniciar ${blockLabel}`,
+      meta: `${blockCode} pendente`,
+      disabled: false,
+      action: 'start',
+      workoutId: '',
+      templateId: block.templateId
+    };
+  }
+
+  return {
+    block,
+    stateInfo,
+    label: dateKey > todayKey ? `${blockLabel} planejada` : `${blockLabel} pendente`,
+    meta: `${blockCode} ${dateKey > todayKey ? 'futuro' : 'nao iniciado'}`,
+    disabled: true,
+    action: '',
+    workoutId: '',
+    templateId: ''
+  };
+}
+
+function renderMissionActionButtons(mission, dateKey) {
+  if (!missionActions) {
+    return;
+  }
+
+  if (!mission || mission.restDay) {
+    missionActions.innerHTML = `
+      <button class="mission-action-button rest" type="button" disabled>
+        <strong>Dia de descanso</strong>
+        <span>recuperacao programada</span>
+      </button>
+    `;
+    return;
+  }
+
+  const actions = (mission.blocks || [])
+    .filter((block) => block.type !== 'recovery')
+    .map((block) => getDashboardBlockAction(block, dateKey));
+
+  if (!actions.length) {
+    missionActions.innerHTML = `
+      <button class="mission-action-button rest" type="button" disabled>
+        <strong>Sem blocos ativos</strong>
+        <span>campanha sem treino obrigatorio</span>
+      </button>
+    `;
+    return;
+  }
+
+  missionActions.innerHTML = actions.map((item) => `
+    <button
+      class="mission-action-button ${escapeHtml(item.stateInfo.status)}"
+      type="button"
+      data-dashboard-mission-action="${escapeHtml(item.action)}"
+      data-template-id="${escapeHtml(item.templateId || '')}"
+      data-workout-id="${escapeHtml(item.workoutId || '')}"
+      ${item.disabled ? 'disabled' : ''}
+    >
+      <strong>${escapeHtml(item.label)}</strong>
+      <span>${escapeHtml(item.meta)}</span>
+    </button>
+  `).join('');
 }
 
 function getWorkoutOriginInfo(workout) {
@@ -2537,6 +2688,7 @@ function renderDashboardMissionPanel(mission, dateKey) {
     missionReward.textContent = '+0 XP';
     startMissionButton.disabled = true;
     startMissionButton.textContent = 'Sem campanha';
+    renderMissionActionButtons(null, dateKey);
     setMissionStep(missionStepTemplate, 'Forca: nao configurado', 'idle');
     setMissionStep(missionStepSets, 'Combate: nao configurado', 'idle');
     setMissionStep(missionStepSave, 'Bonus da campanha: +0 XP', 'idle');
@@ -2591,6 +2743,7 @@ function renderDashboardMissionPanel(mission, dateKey) {
         : nextMissionBlock
           ? `Iniciar ${getBlockLabel(nextMissionBlock).toLowerCase()}`
           : 'Campanha concluida';
+  renderMissionActionButtons(mission, dateKey);
 
   setMissionStep(
     missionStepTemplate,
@@ -2698,6 +2851,7 @@ function renderDashboard() {
       missionReward.textContent = '+0 XP';
       startMissionButton.disabled = true;
       startMissionButton.textContent = 'Dia de descanso';
+      renderMissionActionButtons({ restDay: true, blocks: [] }, todayKey);
       updateMissionSteps({ hasTemplate: true, hasCompletedToday: true, isRest: true });
     } else {
       missionTitle.textContent = `Treino ${todayProtocol.code} - ${workoutNames[todayProtocol.code]}`;
@@ -2710,6 +2864,16 @@ function renderDashboard() {
       missionReward.textContent = completedToday ? '+75 XP OK' : '+75 XP';
       startMissionButton.disabled = !todayTemplate || completedToday;
       startMissionButton.textContent = completedToday ? 'Campanha concluida' : 'Iniciar bloco de hoje';
+      renderMissionActionButtons({
+        restDay: false,
+        blocks: [{
+          type: 'strength',
+          templateId: todayTemplate?._id || '',
+          workoutCode: todayProtocol.code,
+          workoutName: workoutNames[todayProtocol.code],
+          xpReward: 75
+        }]
+      }, todayKey);
       updateMissionSteps({ hasTemplate: Boolean(todayTemplate), hasCompletedToday: completedToday, isRest: false });
     }
   }
@@ -5663,6 +5827,7 @@ form.addEventListener('submit', async (event) => {
     const payload = getFormPayload();
     const selectedTemplate = state.templates.find((template) => template._id === workoutTemplateInput.value);
     const formContext = getWorkoutFormContext(selectedTemplate, dateInput.value);
+    const returnTab = state.workoutFormContext.returnTab || 'daily-missions';
     const shouldReturnToMissions = !state.editingId && (formContext.source === 'mission' || formContext.source === 'substitution');
     const url = state.editingId ? `/api/workouts/${state.editingId}` : '/api/workouts';
     const method = state.editingId ? 'PUT' : 'POST';
@@ -5676,7 +5841,7 @@ form.addEventListener('submit', async (event) => {
     await loadWorkouts();
     renderDailyMissions();
     if (shouldReturnToMissions) {
-      document.querySelector('[data-tab="daily-missions"]').click();
+      document.querySelector(`[data-tab="${returnTab}"]`)?.click();
     }
     setStatus('Treino salvo com sucesso.');
     submitButton.textContent = 'COMMITTED';
@@ -5952,6 +6117,42 @@ workoutTypeFieldFilter.addEventListener('change', () => {
 });
 
 exportHistoryButton.addEventListener('click', exportHistoryCsv);
+
+missionActions?.addEventListener('click', async (event) => {
+  const button = event.target.closest('button[data-dashboard-mission-action]');
+
+  if (!button || button.disabled) {
+    return;
+  }
+
+  const action = button.dataset.dashboardMissionAction;
+
+  if (action === 'start' && button.dataset.templateId) {
+    startTemplateWorkout(button.dataset.templateId, { source: 'mission', returnTab: 'dashboard' });
+    return;
+  }
+
+  if ((action === 'details' || action === 'edit') && button.dataset.workoutId) {
+    let workout;
+
+    try {
+      setStatus('Carregando treino...');
+      workout = await loadWorkoutDetails(button.dataset.workoutId);
+      setStatus('');
+    } catch (error) {
+      setStatus(error.message, true);
+      return;
+    }
+
+    if (action === 'details') {
+      renderDetails(workout);
+    }
+
+    if (action === 'edit') {
+      fillForm(workout);
+    }
+  }
+});
 
 async function handleWorkoutAction(event) {
   const button = event.target.closest('button[data-action]');
