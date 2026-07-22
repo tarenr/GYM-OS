@@ -66,7 +66,7 @@ button:disabled {
 
 .app-layout {
   display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
+  grid-template-columns: 280px minmax(0, 1fr);
   min-height: 100vh;
   max-width: 100%;
 }
@@ -170,11 +170,11 @@ button:disabled {
 }
 
 .app-shell {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1520px, calc(100% - 48px));
   max-width: 100%;
   min-width: 0;
   margin: 0 auto;
-  padding: 28px 0 48px;
+  padding: 32px 0 56px;
 }
 
 .hud-header {
@@ -345,14 +345,14 @@ h4 {
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
 }
 
 .stat-card {
-  min-height: 196px;
+  min-height: 210px;
   align-content: start;
-  padding: 24px;
+  padding: 26px;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -486,8 +486,8 @@ h4 {
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  gap: 24px;
-  margin-top: 32px;
+  gap: 28px;
+  margin-top: 36px;
 }
 
 .dashboard-control-grid {
@@ -1892,7 +1892,7 @@ h4 {
 .log-preview-panel,
 .achievements-panel,
 .weekly-missions-panel {
-  padding: 22px;
+  padding: 26px;
 }
 
 .detail-panel,
@@ -1905,8 +1905,8 @@ h4 {
   justify-content: space-between;
   gap: 16px;
   align-items: start;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
   border-bottom: 1px solid var(--border);
   background: transparent;
 }
@@ -1919,7 +1919,7 @@ h4 {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 18px;
 }
 
 .workout-origin-panel {
@@ -3053,18 +3053,18 @@ textarea:focus {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 26px;
 }
 
 .summary-card {
-  min-height: 126px;
+  min-height: 140px;
   border: 1px solid var(--border);
   border-top: 3px solid var(--green);
   border-radius: 10px;
   background: rgba(22, 27, 34, 0.94);
-  padding: 16px;
+  padding: 20px;
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
 }
 
@@ -3104,6 +3104,10 @@ textarea:focus {
   font-size: 0.68rem;
   font-weight: 900;
   text-transform: uppercase;
+}
+
+.summary-card strong {
+  font-size: 1.35rem;
 }
 
 .summary-card.blue .summary-icon {
@@ -3224,14 +3228,14 @@ textarea:focus {
 
 .toolbar-panel {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
   align-items: end;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: rgba(22, 27, 34, 0.94);
-  padding: 16px;
+  padding: 20px;
 }
 
 .toolbar-left,
@@ -3290,14 +3294,14 @@ textarea:focus {
 
 .history-surface {
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .list-header,
 .workout-row {
   display: grid;
-  grid-template-columns: 54px 1.7fr 1.1fr 1fr 0.82fr 0.72fr 0.58fr 116px;
-  gap: 14px;
+  grid-template-columns: 58px minmax(280px, 2fr) minmax(190px, 1.2fr) minmax(120px, 0.8fr) minmax(110px, 0.75fr) minmax(92px, 0.6fr) minmax(74px, 0.45fr) minmax(210px, 0.9fr);
+  gap: 18px;
   align-items: center;
 }
 
@@ -3319,7 +3323,7 @@ textarea:focus {
   border: 1px solid var(--border);
   border-radius: 10px;
   background: rgba(22, 27, 34, 0.94);
-  padding: 16px 18px;
+  padding: 20px 22px;
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
@@ -3342,10 +3346,11 @@ textarea:focus {
 .row-name .sub,
 .row-date span {
   display: block;
-  margin-top: 3px;
+  margin-top: 5px;
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 600;
+  line-height: 1.45;
 }
 
 .row-tags,
@@ -3361,8 +3366,8 @@ textarea:focus {
   border-radius: 4px;
   background: rgba(0, 255, 65, 0.1);
   color: var(--green);
-  padding: 3px 8px;
-  font-size: 0.62rem;
+  padding: 4px 9px;
+  font-size: 0.66rem;
   font-weight: 900;
   text-transform: uppercase;
 }
@@ -3460,7 +3465,22 @@ textarea:focus {
 .row-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 6px;
+  gap: 8px;
+}
+
+.compact-action {
+  min-height: 36px;
+  padding: 0 10px;
+  font-size: 0.68rem;
+}
+
+.danger-action {
+  border-color: rgba(248, 81, 73, 0.34);
+  color: var(--red);
+}
+
+.danger-action:hover {
+  background: rgba(248, 81, 73, 0.12);
 }
 
 .icon-button.neutral {
@@ -3482,8 +3502,8 @@ textarea:focus {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
 }
 
 .archive-card,
@@ -3528,7 +3548,7 @@ textarea:focus {
 .archive-card header,
 .template-card header,
 .exercise-library-card header {
-  padding: 18px 20px 14px;
+  padding: 20px 22px 16px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -3541,7 +3561,7 @@ textarea:focus {
 }
 
 .archive-card .card-stats-grid {
-  padding: 16px 20px 0;
+  padding: 18px 22px 0;
 }
 
 .card-stats-grid {
@@ -3581,14 +3601,14 @@ textarea:focus {
 
 .archive-card .workout-bar,
 .archive-card .workout-note {
-  margin-right: 20px;
-  margin-left: 20px;
+  margin-right: 22px;
+  margin-left: 22px;
 }
 
 .archive-card footer {
   margin-top: 16px;
   border-top: 1px solid var(--border);
-  padding: 12px 20px;
+  padding: 14px 22px;
   color: var(--muted);
   font-size: 0.76rem;
 }
@@ -3631,8 +3651,8 @@ textarea:focus {
 .exercise-catalog-grid,
 .type-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 18px;
 }
 
 .template-card {
@@ -3912,7 +3932,7 @@ textarea:focus {
 
 @media (max-width: 620px) {
   .app-shell {
-    width: min(100% - 20px, 1180px);
+    width: calc(100% - 20px);
     padding-top: 10px;
   }
 

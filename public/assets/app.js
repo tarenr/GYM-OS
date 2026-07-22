@@ -4269,9 +4269,9 @@ function renderHistoryListRow(workout, index) {
       <div class="row-duration">${duration ? `${duration} min` : '-'}</div>
       <div class="row-sets">${completedUnits}</div>
       <div class="row-actions">
-        <button class="icon-button neutral" type="button" data-action="details" data-id="${workout._id}" aria-label="Ver detalhes">v</button>
-        <button class="icon-button neutral" type="button" data-action="edit" data-id="${workout._id}" aria-label="Editar">e</button>
-        <button class="icon-button danger" type="button" data-action="delete" data-id="${workout._id}" aria-label="Excluir">x</button>
+        <button class="button button-secondary compact-action" type="button" data-action="details" data-id="${workout._id}">Ver</button>
+        <button class="button button-ghost compact-action" type="button" data-action="edit" data-id="${workout._id}">Editar</button>
+        <button class="button button-ghost compact-action danger-action" type="button" data-action="delete" data-id="${workout._id}">Excluir</button>
       </div>
     </article>
   `;
