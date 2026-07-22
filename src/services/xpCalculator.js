@@ -22,8 +22,29 @@ function isValidRound(round) {
 
 function isCompletedWorkout(workout) {
   return (workout.exercises || []).some((exercise) => (
-    (exercise.sets || []).some(isValidSet) || (exercise.rounds || []).some(isValidRound)
+    !exercise.skipped
+    && ((exercise.sets || []).some(isValidSet) || (exercise.rounds || []).some(isValidRound))
   ));
+}
+
+function getWorkoutPlannedExecutionRatio(workout) {
+  const plannedExercises = (workout.exercises || []).filter((exercise) => (exercise.source || 'planned') === 'planned');
+  const exercises = plannedExercises.length ? plannedExercises : workout.exercises || [];
+
+  if (!exercises.length) {
+    return 0;
+  }
+
+  const validExercises = exercises.filter((exercise) => (
+    !exercise.skipped
+    && ((exercise.sets || []).some(isValidSet) || (exercise.rounds || []).some(isValidRound))
+  )).length;
+
+  return validExercises / exercises.length;
+}
+
+function isMissionEligibleWorkout(workout) {
+  return isCompletedWorkout(workout) && getWorkoutPlannedExecutionRatio(workout) >= 0.6;
 }
 
 function getTemplateBlockType(template) {
@@ -101,6 +122,19 @@ function getWorkoutForMissionBlock(dateKey, block, completedWorkouts, templatesB
 export function calculateWorkoutXpBreakdown(workout) {
   const exercises = workout?.exercises || [];
   const exerciseDetails = exercises.map((exercise) => {
+    if (exercise.skipped) {
+      return {
+        name: exercise.name || 'Exercicio',
+        skipped: true,
+        valid: false,
+        validSets: 0,
+        validRounds: 0,
+        validReps: 0,
+        repsBonus: 0,
+        xp: 0
+      };
+    }
+
     const validSets = (exercise.sets || []).filter(isValidSet);
     const validRounds = (exercise.rounds || []).filter(isValidRound);
     const validReps = validSets.reduce((total, set) => total + Number(set.reps || 0), 0)
@@ -111,6 +145,7 @@ export function calculateWorkoutXpBreakdown(workout) {
 
     return {
       name: exercise.name || 'Exercicio',
+      skipped: false,
       valid,
       validSets: validSets.length,
       validRounds: validRounds.length,
@@ -123,8 +158,9 @@ export function calculateWorkoutXpBreakdown(workout) {
   const validSets = exerciseDetails.reduce((total, exercise) => total + exercise.validSets, 0);
   const validRounds = exerciseDetails.reduce((total, exercise) => total + exercise.validRounds, 0);
   const repsBonus = exerciseDetails.reduce((total, exercise) => total + exercise.repsBonus, 0);
+  const skippedExercises = exerciseDetails.filter((exercise) => exercise.skipped).length;
   const completed = validExercises > 0;
-  const allExercisesValid = exercises.length > 0 && validExercises === exercises.length;
+  const allExercisesValid = exercises.length > 0 && skippedExercises === 0 && validExercises === exercises.length;
   const base = completed ? 30 : 0;
   const exerciseXp = validExercises * 10;
   const setXp = validSets * 5;
@@ -141,6 +177,7 @@ export function calculateWorkoutXpBreakdown(workout) {
     repsBonus,
     completionBonus,
     validExercises,
+    skippedExercises,
     totalExercises: exercises.length,
     validSets,
     validRounds,
@@ -175,7 +212,7 @@ async function getCampaignEntriesByWorkout(dateKey, workoutsForDate) {
   });
   const templatesByCode = new Map(templates.map((template) => [template.code, template]));
   const templatesById = new Map(templates.map((template) => [String(template._id), template]));
-  const completedWorkouts = workoutsForDate.filter(isCompletedWorkout);
+  const completedWorkouts = workoutsForDate.filter(isMissionEligibleWorkout);
   const requiredBlocks = (mission.blocks || []).filter((block) => block.type !== 'recovery');
   const entriesByWorkout = new Map();
   const completedEntries = requiredBlocks.map((block) => ({

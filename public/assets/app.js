@@ -526,6 +526,10 @@ function getWorkoutOriginInfo(workout) {
 
 function calculateWorkoutVolume(workout) {
   return workout.exercises.reduce((workoutTotal, exercise) => {
+    if (exercise.skipped) {
+      return workoutTotal;
+    }
+
     return workoutTotal + (exercise.sets || []).reduce((setTotal, set) => {
       return setTotal + Number(set.weight || 0) * Number(set.reps || 0);
     }, 0);
@@ -533,24 +537,44 @@ function calculateWorkoutVolume(workout) {
 }
 
 function calculateExerciseVolume(exercise) {
+  if (exercise.skipped) {
+    return 0;
+  }
+
   return (exercise.sets || []).reduce((total, set) => total + Number(set.weight || 0) * Number(set.reps || 0), 0);
 }
 
 function calculateExerciseMaxWeight(exercise) {
+  if (exercise.skipped) {
+    return 0;
+  }
+
   return Math.max(0, ...(exercise.sets || []).map((set) => Number(set.weight || 0)));
 }
 
 function calculateExerciseMaxReps(exercise) {
+  if (exercise.skipped) {
+    return 0;
+  }
+
   return Math.max(0, ...(exercise.sets || []).map((set) => Number(set.reps || 0)));
 }
 
 function calculateExerciseRoundSeconds(exercise) {
+  if (exercise.skipped) {
+    return 0;
+  }
+
   return (exercise.rounds || [])
     .filter((round) => round.completed !== false)
     .reduce((total, round) => total + Number(round.durationSeconds || 0), 0);
 }
 
 function calculateExerciseRoundReps(exercise) {
+  if (exercise.skipped) {
+    return 0;
+  }
+
   return (exercise.rounds || [])
     .filter((round) => round.completed !== false)
     .reduce((total, round) => total + Number(round.reps || 0), 0);
@@ -610,14 +634,47 @@ function getMuscleClass(muscle = '') {
 
 function countValidSets(workout) {
   return workout.exercises.reduce((total, exercise) => {
+    if (exercise.skipped) {
+      return total;
+    }
+
     return total + (exercise.sets || []).filter((set) => Number(set.weight) > 0 && Number(set.reps) > 0).length;
   }, 0);
 }
 
 function countValidRounds(workout) {
   return workout.exercises.reduce((total, exercise) => {
+    if (exercise.skipped) {
+      return total;
+    }
+
     return total + (exercise.rounds || []).filter((round) => round.completed !== false && Number(round.durationSeconds || 0) > 0).length;
   }, 0);
+}
+
+function countSkippedExercises(workout) {
+  return (workout.exercises || []).filter((exercise) => exercise.skipped).length;
+}
+
+function hasValidExerciseExecution(exercise) {
+  return !exercise.skipped
+    && ((exercise.sets || []).some((set) => Number(set.weight) > 0 && Number(set.reps) > 0)
+      || (exercise.rounds || []).some((round) => round.completed !== false && Number(round.durationSeconds || 0) > 0));
+}
+
+function getWorkoutPlannedExecutionRatio(workout) {
+  const plannedExercises = (workout.exercises || []).filter((exercise) => (exercise.source || 'planned') === 'planned');
+  const exercises = plannedExercises.length ? plannedExercises : workout.exercises || [];
+
+  if (!exercises.length) {
+    return 0;
+  }
+
+  return exercises.filter(hasValidExerciseExecution).length / exercises.length;
+}
+
+function isMissionEligibleWorkout(workout) {
+  return isCompletedWorkout(workout) && getWorkoutPlannedExecutionRatio(workout) >= 0.6;
 }
 
 function countCompletedUnits(workout) {
@@ -661,7 +718,7 @@ function getWorkoutBlockType(workout) {
 
 function getWorkoutForMissionBlock(dateKey, block) {
   const completedWorkouts = state.allWorkouts.filter((workout) => (
-    toDateKey(workout.date) === dateKey && isCompletedWorkout(workout)
+    toDateKey(workout.date) === dateKey && isMissionEligibleWorkout(workout)
   ));
   const exactWorkout = completedWorkouts.find((workout) => workout.workoutCode === block.workoutCode);
 
@@ -675,7 +732,37 @@ function getWorkoutForMissionBlock(dateKey, block) {
 
     return workoutDateKey === dateKey
       && isCompletedWorkout(workout)
+      && isMissionEligibleWorkout(workout)
       && missionDateKey === dateKey
+      && workout.missionBlockType === block.type
+      && workout.missionOriginalWorkoutCode === block.workoutCode;
+  });
+
+  if (assignedWorkout) {
+    return assignedWorkout;
+  }
+
+  return completedWorkouts.find((workout) => (
+    workout.workoutCode !== block.workoutCode
+    && !workout.missionOriginalWorkoutCode
+    && getWorkoutBlockType(workout) === block.type
+  ));
+}
+
+function getWorkoutAttemptForMissionBlock(dateKey, block) {
+  const completedWorkouts = state.allWorkouts.filter((workout) => (
+    toDateKey(workout.date) === dateKey && isCompletedWorkout(workout)
+  ));
+  const exactWorkout = completedWorkouts.find((workout) => workout.workoutCode === block.workoutCode);
+
+  if (exactWorkout) {
+    return exactWorkout;
+  }
+
+  const assignedWorkout = completedWorkouts.find((workout) => {
+    const missionDateKey = workout.missionDate ? toDateKey(workout.missionDate) : '';
+
+    return missionDateKey === dateKey
       && workout.missionBlockType === block.type
       && workout.missionOriginalWorkoutCode === block.workoutCode;
   });
@@ -699,7 +786,18 @@ function getMissionBlockEntryForWorkout(workout) {
     return null;
   }
 
-  const block = (mission.blocks || []).find((item) => getWorkoutForMissionBlock(dateKey, item)?._id === workout._id);
+  const block = (mission.blocks || []).find((item) => {
+    const missionDateKey = workout.missionDate ? toDateKey(workout.missionDate) : '';
+
+    if (missionDateKey === dateKey
+      && workout.missionBlockType === item.type
+      && workout.missionOriginalWorkoutCode === item.workoutCode) {
+      return true;
+    }
+
+    return workout.workoutCode === item.workoutCode
+      || getWorkoutForMissionBlock(dateKey, item)?._id === workout._id;
+  });
 
   return block ? { mission, block } : null;
 }
@@ -1028,7 +1126,7 @@ function renderDashboardWeeklySchedule(monday) {
     const dateKey = date.toISOString().slice(0, 10);
     const status = getMissionCompletionForDate(mission, dateKey);
     const isToday = dateKey === todayInputValue();
-    const stateClass = mission.restDay ? 'rest' : status.complete ? 'done' : status.completed > 0 ? 'partial' : isToday ? 'today' : 'pending';
+    const stateClass = mission.restDay ? 'rest' : status.complete ? 'done' : status.completed > 0 || status.attempted > 0 ? 'partial' : isToday ? 'today' : 'pending';
     const codes = (mission.blocks || []).map((block) => {
       const completedWorkout = getWorkoutForMissionBlock(dateKey, block);
 
@@ -1706,6 +1804,40 @@ function refreshExerciseNumbers() {
   });
 }
 
+function updateExerciseSkippedState(card) {
+  const skippedInput = card.querySelector('.exercise-skipped');
+  const reasonInput = card.querySelector('.exercise-skip-reason');
+  const skipped = Boolean(skippedInput?.checked);
+
+  card.dataset.skipped = skipped ? 'true' : 'false';
+  card.classList.toggle('exercise-skipped-card', skipped);
+
+  card.querySelectorAll('.set-row input').forEach((input) => {
+    input.disabled = skipped;
+    input.required = !skipped && (input.classList.contains('set-weight')
+      || input.classList.contains('set-reps')
+      || input.classList.contains('round-duration')
+      || input.classList.contains('round-rest'));
+
+    if (skipped) {
+      input.value = '';
+    }
+  });
+
+  card.querySelectorAll('.set-row button, .add-set').forEach((button) => {
+    button.disabled = skipped;
+  });
+
+  if (reasonInput) {
+    reasonInput.disabled = !skipped;
+    reasonInput.hidden = !skipped;
+
+    if (!skipped) {
+      reasonInput.value = '';
+    }
+  }
+}
+
 function addExercise(exercise = {}) {
   const fragment = exerciseTemplate.content.cloneNode(true);
   const card = fragment.querySelector('.exercise-card');
@@ -1736,6 +1868,7 @@ function addExercise(exercise = {}) {
   card.dataset.imageSourceUrl = exercise.imageSourceUrl || '';
   card.dataset.instructions = '[]';
   card.dataset.tips = JSON.stringify(Array.isArray(exercise.tips) ? exercise.tips : []);
+  card.dataset.skipped = exercise.skipped ? 'true' : 'false';
 
   if (exercise.plannedSets || exercise.plannedReps || exercise.plannedRounds) {
     card.classList.add('workout-generated');
@@ -1756,6 +1889,22 @@ function addExercise(exercise = {}) {
     meta.className = 'planned-meta';
     meta.textContent = `${card.dataset.source === 'extra' ? 'Adicionado no treino' : 'Planejado'}: ${formatExercisePrescription(exercise)}`;
     card.querySelector('.form-grid').after(meta);
+  }
+
+  if ((card.dataset.source || 'planned') === 'planned') {
+    const skipControl = document.createElement('div');
+    skipControl.className = 'exercise-skip-control';
+    skipControl.innerHTML = `
+      <label>
+        <input class="exercise-skipped" type="checkbox" ${exercise.skipped ? 'checked' : ''} />
+        <span>Nao vou fazer este exercicio hoje</span>
+      </label>
+      <input class="exercise-skip-reason" type="text" placeholder="Motivo opcional" value="${escapeHtml(exercise.skipReason || '')}" ${exercise.skipped ? '' : 'hidden disabled'} />
+    `;
+    const anchor = card.querySelector('.planned-meta') || card.querySelector('.form-grid');
+
+    anchor.after(skipControl);
+    skipControl.querySelector('.exercise-skipped').addEventListener('change', () => updateExerciseSkippedState(card));
   }
 
   if (isRoundBased) {
@@ -1785,6 +1934,7 @@ function addExercise(exercise = {}) {
     refreshSetNumbers(setsList);
   });
   card.querySelector('.add-set').textContent = isRoundBased ? 'Adicionar round' : 'Adicionar serie';
+  updateExerciseSkippedState(card);
 
   card.querySelector('.remove-exercise').addEventListener('click', () => {
     if (exerciseList.children.length > 1) {
@@ -2002,12 +2152,13 @@ function getFormPayload() {
   const exercises = [...exerciseList.children].map((card) => {
     const measurementType = card.dataset.measurementType || 'sets_reps_weight';
     const isRoundBased = measurementType === 'rounds_time' || measurementType === 'rounds_time_reps';
-    const sets = isRoundBased ? [] : [...card.querySelectorAll('.set-row')].map((row, index) => ({
+    const skipped = card.dataset.skipped === 'true';
+    const sets = skipped || isRoundBased ? [] : [...card.querySelectorAll('.set-row')].map((row, index) => ({
       setNumber: index + 1,
       weight: Number(row.querySelector('.set-weight').value),
       reps: Number(row.querySelector('.set-reps').value)
     }));
-    const rounds = isRoundBased ? [...card.querySelectorAll('.round-row')].map((row, index) => ({
+    const rounds = !skipped && isRoundBased ? [...card.querySelectorAll('.round-row')].map((row, index) => ({
       roundNumber: index + 1,
       durationSeconds: Number(row.querySelector('.round-duration').value),
       restSeconds: Number(row.querySelector('.round-rest').value),
@@ -2039,8 +2190,10 @@ function getFormPayload() {
       imageSourceUrl: card.dataset.imageSourceUrl || '',
       instructions: [],
       tips: JSON.parse(card.dataset.tips || '[]'),
-      completedSets: sets.length,
-      completedRounds: rounds.length,
+      completedSets: skipped ? 0 : sets.length,
+      completedRounds: skipped ? 0 : rounds.length,
+      skipped,
+      skipReason: skipped ? card.querySelector('.exercise-skip-reason')?.value.trim() || '' : '',
       sets,
       rounds,
       notes: card.querySelector('.exercise-notes').value.trim()
@@ -2483,7 +2636,7 @@ function renderDashboard() {
       ? 'descanso'
       : missionStatus?.complete
         ? 'feito'
-        : missionStatus?.completed > 0
+        : missionStatus?.completed > 0 || missionStatus?.attempted > 0
           ? 'parcial'
           : isToday
             ? 'hoje'
@@ -2564,19 +2717,21 @@ function renderDailyMissionBlocks(mission) {
 
 function getMissionCompletionForDate(mission, dateKey) {
   if (!mission) {
-    return { required: 0, completed: 0, pending: 0, complete: false };
+    return { required: 0, completed: 0, attempted: 0, pending: 0, complete: false };
   }
 
   if (mission.restDay) {
-    return { required: 0, completed: 0, pending: 0, complete: true };
+    return { required: 0, completed: 0, attempted: 0, pending: 0, complete: true };
   }
 
   const requiredBlocks = (mission.blocks || []).filter((block) => block.type !== 'recovery');
   const completedBlocks = requiredBlocks.filter((block) => getWorkoutForMissionBlock(dateKey, block));
+  const attemptedBlocks = requiredBlocks.filter((block) => getWorkoutAttemptForMissionBlock(dateKey, block));
 
   return {
     required: requiredBlocks.length,
     completed: completedBlocks.length,
+    attempted: attemptedBlocks.length,
     pending: Math.max(0, requiredBlocks.length - completedBlocks.length),
     complete: requiredBlocks.length > 0 && completedBlocks.length === requiredBlocks.length
   };
@@ -2622,7 +2777,7 @@ function renderDailyMissionStats(todayMission) {
       icon: '2X',
       label: 'Blocos hoje',
       value: String(todayStatus.required),
-      detail: `${todayStatus.completed} feitos / ${todayStatus.pending} pendentes`,
+      detail: `${todayStatus.completed} feitos / ${todayStatus.attempted} tentados / ${todayStatus.pending} pendentes`,
       tone: 'blue'
     },
     {
@@ -2658,7 +2813,7 @@ function getMissionStatusLabel(mission, dateKey) {
   const status = getMissionCompletionForDate(mission, dateKey);
 
   if (status.complete) return 'Concluida';
-  if (status.completed > 0) return 'Parcial';
+  if (status.completed > 0 || status.attempted > 0) return 'Parcial';
   if (dateKey > todayKey) return 'Planejada';
   if (dateKey === todayKey) return 'Hoje';
 
@@ -2765,7 +2920,7 @@ function getXpWorkouts() {
 function getExerciseProgressEntries() {
   const entries = state.allWorkouts
     .filter(isCompletedWorkout)
-    .flatMap((workout) => (workout.exercises || []).map((exercise) => {
+    .flatMap((workout) => (workout.exercises || []).filter((exercise) => !exercise.skipped).map((exercise) => {
       const measurementType = exercise.measurementType || 'sets_reps_weight';
       const validSets = (exercise.sets || []).filter((set) => Number(set.weight) > 0 && Number(set.reps) > 0);
       const validRounds = (exercise.rounds || []).filter((round) => round.completed !== false && Number(round.durationSeconds || 0) > 0);
@@ -3895,6 +4050,7 @@ function renderWorkoutCard(workout) {
   const volume = calculateWorkoutVolume(workout);
   const validSets = countValidSets(workout);
   const validRounds = countValidRounds(workout);
+  const skippedCount = countSkippedExercises(workout);
   const completedUnits = countCompletedUnits(workout);
   const duration = Number(workout.durationMinutes || 0);
   const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// Sessao registrada no protocolo.';
@@ -3915,7 +4071,7 @@ function renderWorkoutCard(workout) {
         </div>
       </div>
       <div class="workout-stats-row">
-        <span>${workout.exercises.length} exercicios</span>
+        <span>${workout.exercises.length} exercicios${skippedCount ? ` | ${skippedCount} pulados` : ''}</span>
         <strong>${volume ? `${formatCompactNumber(volume)} kg` : `${validRounds} rounds`}</strong>
       </div>
       <div class="workout-bar">
@@ -4000,6 +4156,7 @@ function renderHistoryListRow(workout, index) {
   const duration = Number(workout.durationMinutes || 0);
   const validSets = countValidSets(workout);
   const validRounds = countValidRounds(workout);
+  const skippedCount = countSkippedExercises(workout);
   const completedUnits = countCompletedUnits(workout);
   const rowNumber = String(index + 1).padStart(3, '0');
 
@@ -4008,7 +4165,7 @@ function renderHistoryListRow(workout, index) {
       <div class="row-id">#${rowNumber}</div>
       <div class="row-name">
         Treino ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}
-        <span class="sub">${workout.exercises.length} exercicios | ${validSets} series | ${validRounds} rounds</span>
+        <span class="sub">${workout.exercises.length} exercicios | ${validSets} series | ${validRounds} rounds${skippedCount ? ` | ${skippedCount} pulados` : ''}</span>
       </div>
       <div class="row-tags"><span class="row-tag ${origin.className}">${origin.label}</span>${renderWorkoutTags(tags)}</div>
       <div class="row-date">
@@ -4034,6 +4191,7 @@ function renderHistoryCard(workout) {
   const duration = Number(workout.durationMinutes || 0);
   const validSets = countValidSets(workout);
   const validRounds = countValidRounds(workout);
+  const skippedCount = countSkippedExercises(workout);
   const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// Sem observacoes registradas.';
 
   return `
@@ -4047,7 +4205,7 @@ function renderHistoryCard(workout) {
       <div class="card-stats-grid">
         <div class="card-stat">
           <span>Exercicios</span>
-          <strong>${workout.exercises.length}</strong>
+          <strong>${workout.exercises.length}${skippedCount ? `/${skippedCount}p` : ''}</strong>
         </div>
         <div class="card-stat">
           <span>Volume</span>
@@ -4108,12 +4266,13 @@ function resetHistoryPageAndRender() {
 function exportHistoryCsv() {
   const workouts = getFilteredHistoryWorkouts();
   const rows = [
-    ['data', 'ficha', 'nome', 'exercicios', 'series_validas', 'volume_kg', 'duracao_min', 'observacoes'],
+    ['data', 'ficha', 'nome', 'exercicios', 'pulados', 'series_validas', 'volume_kg', 'duracao_min', 'observacoes'],
     ...workouts.map((workout) => [
       toDateKey(workout.date),
       workout.workoutCode,
       workout.workoutName,
       workout.exercises.length,
+      countSkippedExercises(workout),
       countValidSets(workout),
       calculateWorkoutVolume(workout),
       workout.durationMinutes || 0,
@@ -4195,26 +4354,44 @@ Status: Descanso planejado`
     const completedBlockEntries = requiredBlocks
       .map((block) => ({ block, workout: getWorkoutForMissionBlock(dateKey, block) }))
       .filter((entry) => entry.workout);
+    const attemptedBlockEntries = requiredBlocks
+      .map((block) => ({ block, workout: getWorkoutAttemptForMissionBlock(dateKey, block) }))
+      .filter((entry) => entry.workout);
     const completedWorkoutIds = new Set(completedBlockEntries.map((entry) => entry.workout._id));
+    const attemptedWorkoutIds = new Set(attemptedBlockEntries.map((entry) => entry.workout._id));
     const completedBlocks = completedBlockEntries.map((entry) => entry.block);
     const missingBlocks = requiredBlocks.filter((block) => !getWorkoutForMissionBlock(dateKey, block));
     const completedLabels = completedBlockEntries
       .map((entry) => formatMissionBlockCompletion(entry.block, entry.workout))
       .join(', ') || 'nenhum';
+    const attemptedLabels = attemptedBlockEntries
+      .map((entry) => `${formatMissionBlockCompletion(entry.block, entry.workout)} parcial`)
+      .join(', ') || 'nenhum';
     const missingLabels = missingBlocks.map((block) => block.workoutCode).join(', ') || 'nenhum';
     const extraLabels = completedWorkouts
-      .filter((workout) => !completedWorkoutIds.has(workout._id))
+      .filter((workout) => !completedWorkoutIds.has(workout._id) && !attemptedWorkoutIds.has(workout._id))
       .map((workout) => workout.workoutCode)
       .sort()
       .join(', ');
 
-    if (completedBlocks.length === 0) {
+    if (completedBlocks.length === 0 && attemptedBlockEntries.length === 0) {
       return withExtra({
         className: 'heat-missed',
         title: `${formatDate(dateKey)}
 Status: Perdida
 Missao: ${missionCodes}
 Feito: nenhum
+Faltou: ${missingLabels}`
+      }, extraLabels);
+    }
+
+    if (completedBlocks.length === 0 && attemptedBlockEntries.length > 0) {
+      return withExtra({
+        className: 'heat-partial',
+        title: `${formatDate(dateKey)}
+Status: Parcial
+Missao: ${missionCodes}
+Feito: ${attemptedLabels}
 Faltou: ${missingLabels}`
       }, extraLabels);
     }
@@ -5141,6 +5318,10 @@ function showTemplate(template) {
 function renderExerciseLogTable(exercise) {
   const isRoundBased = exercise.measurementType === 'rounds_time' || exercise.measurementType === 'rounds_time_reps';
 
+  if (exercise.skipped) {
+    return `<p class="empty-state compact">Exercicio pulado${exercise.skipReason ? `: ${escapeHtml(exercise.skipReason)}` : '.'}</p>`;
+  }
+
   if (isRoundBased) {
     const rounds = exercise.rounds || [];
 
@@ -5240,12 +5421,13 @@ function renderWorkoutXpBreakdown(workout) {
     : [
         { label: 'Base do treino', value: execution.base },
         { label: `${execution.validExercises}/${execution.totalExercises} exercicios validos`, value: execution.exerciseXp },
+        { label: `${execution.skippedExercises || 0} exercicios pulados`, value: 0, show: Boolean(execution.skippedExercises) },
         { label: `${execution.validSets} series validas`, value: execution.setXp },
         { label: `${execution.validRounds} rounds validos`, value: execution.roundXp },
         { label: 'Reps/golpes validos', value: execution.repsBonus },
         { label: 'Treino completo', value: execution.completionBonus },
         ...campaign.entries.map((entry) => ({ label: entry.label, value: entry.xp }))
-      ].filter((row) => Number(row.value || 0) > 0);
+      ].filter((row) => Number(row.value || 0) > 0 || row.show);
 
   return `
     <section class="xp-breakdown">
@@ -5278,24 +5460,26 @@ function renderDetails(workout) {
   }));
   const plannedCount = exercisesWithSource.filter((item) => item.source === 'planned').length;
   const extraCount = exercisesWithSource.filter((item) => item.source === 'extra').length;
+  const skippedCount = countSkippedExercises(workout);
 
   detailTitle.textContent = `${workout.workoutCode} - ${workout.workoutName}`;
   detailContent.innerHTML = `
-    <p class="detail-meta">${formatDate(workout.date)} | ${plannedCount} planejados | ${extraCount} adicionados | ${workout.exercises.length} exercicios</p>
+    <p class="detail-meta">${formatDate(workout.date)} | ${plannedCount} planejados | ${extraCount} adicionados | ${skippedCount} pulados | ${workout.exercises.length} exercicios</p>
     ${workout.notes ? `<p>${escapeHtml(workout.notes)}</p>` : ''}
     ${renderWorkoutXpBreakdown(workout)}
     <div class="detail-grid">
       ${exercisesWithSource.map(({ exercise, source }) => `
-        <article class="detail-exercise ${source === 'extra' ? 'extra-exercise' : ''}">
+        <article class="detail-exercise ${source === 'extra' ? 'extra-exercise' : ''} ${exercise.skipped ? 'skipped-exercise' : ''}">
           ${getExerciseImageMarkup(exercise, 'thumb')}
           <div class="detail-exercise-head">
             <h3>${escapeHtml(exercise.name)}</h3>
-            <span class="row-tag ${source === 'extra' ? 'extra' : 'mission'}">${escapeHtml(getExerciseSourceLabel(source))}</span>
+            <span class="row-tag ${exercise.skipped ? 'skipped' : source === 'extra' ? 'extra' : 'mission'}">${exercise.skipped ? 'Pulado' : escapeHtml(getExerciseSourceLabel(source))}</span>
           </div>
           <p class="detail-meta">
             ${escapeHtml(formatExerciseGroup(exercise))}
             | planejado: ${escapeHtml(formatExercisePrescription(exercise))}
-            | feito: ${exercise.measurementType === 'rounds_time' || exercise.measurementType === 'rounds_time_reps' ? `${exercise.completedRounds || (exercise.rounds || []).length} rounds` : `${exercise.completedSets || (exercise.sets || []).length} series`}
+            | feito: ${exercise.skipped ? 'pulado' : exercise.measurementType === 'rounds_time' || exercise.measurementType === 'rounds_time_reps' ? `${exercise.completedRounds || (exercise.rounds || []).length} rounds` : `${exercise.completedSets || (exercise.sets || []).length} series`}
+            ${exercise.skipReason ? ` | motivo: ${escapeHtml(exercise.skipReason)}` : ''}
             ${exercise.notes ? ` | ${escapeHtml(exercise.notes)}` : ''}
           </p>
           ${getExerciseInstructionMarkup(exercise)}

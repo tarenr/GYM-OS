@@ -177,6 +177,15 @@ const exerciseSchema = new mongoose.Schema(
       default: 0,
       min: 0
     },
+    skipped: {
+      type: Boolean,
+      default: false
+    },
+    skipReason: {
+      type: String,
+      default: '',
+      trim: true
+    },
     sets: {
       type: [setSchema],
       default: []

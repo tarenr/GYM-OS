@@ -408,6 +408,8 @@ Cada exercicio dentro do treino:
   imageAlt: String,
   completedSets: Number,
   completedRounds: Number,
+  skipped: Boolean,
+  skipReason: String,
   sets: [],
   rounds: [],
   notes: String
@@ -834,8 +836,30 @@ Fluxo:
 2. escolher ficha;
 3. sistema carrega exercicios planejados;
 4. opcionalmente adicionar exercicios extras do mesmo tipo da ficha;
-5. preencher carga e repeticoes por serie, ou rounds no caso de luta;
-6. salvar.
+5. marcar exercicios planejados como pulados quando nao forem feitos;
+6. preencher carga e repeticoes por serie, ou rounds no caso de luta;
+7. salvar.
+
+Exercicios pulados:
+
+```text
+Cada exercicio planejado da ficha possui a opcao "Nao vou fazer este exercicio hoje".
+Quando marcada, a execucao daquele exercicio e desabilitada e o app permite registrar um motivo opcional.
+O exercicio continua salvo no treino como parte da ficha original, mas aparece no detalhe como Pulado.
+```
+
+Regra:
+
+```text
+Exercicio pulado nao gera XP de execucao, nao conta como serie/round valido e impede o bonus de treino completo.
+```
+
+Regra de conclusao do bloco da campanha:
+
+```text
+O bloco conta como concluido quando pelo menos 60% dos exercicios planejados da ficha possuem execucao valida.
+Se a execucao ficar abaixo disso, o treino ainda fica salvo no historico, mas a campanha tende a aparecer como parcial/pendente.
+```
 
 Ao adicionar exercicio durante o treino, o catalogo respeita a modalidade da ficha:
 
@@ -1115,6 +1139,16 @@ XP do treino =
 +8 XP por round valido
 +1 XP a cada 5 repeticoes/golpes validos, limite de 10 XP por exercicio
 +20 XP se todos os exercicios do treino tiverem execucao valida
+```
+
+Exercicios marcados como pulados:
+
+```text
+Nao recebem XP.
+Nao contam como exercicio valido.
+Nao contam como serie ou round valido.
+Impedem o bonus de treino completo.
+Continuam registrados no historico para mostrar o que foi planejado e nao executado.
 ```
 
 Missao diaria:

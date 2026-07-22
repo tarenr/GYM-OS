@@ -2110,6 +2110,12 @@ textarea:focus {
   background: rgba(176, 92, 255, 0.055);
 }
 
+.exercise-card.exercise-skipped-card,
+.detail-exercise.skipped-exercise {
+  border-color: rgba(139, 148, 158, 0.34);
+  background: rgba(139, 148, 158, 0.06);
+}
+
 .detail-exercise-head {
   display: flex;
   justify-content: space-between;
@@ -2321,6 +2327,37 @@ textarea:focus {
 .planned-meta {
   margin: -4px 0 12px;
   font-size: 0.84rem;
+}
+
+.exercise-skip-control {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  background: rgba(139, 148, 158, 0.055);
+  padding: 10px;
+}
+
+.exercise-skip-control label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted-strong);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.exercise-skip-control input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--orange);
+}
+
+.exercise-skipped-card .sets-list,
+.exercise-skipped-card .exercise-actions {
+  opacity: 0.48;
 }
 
 .exercise-media-frame {
@@ -3328,6 +3365,12 @@ textarea:focus {
   border-color: rgba(176, 92, 255, 0.32);
   background: rgba(176, 92, 255, 0.12);
   color: #b05cff;
+}
+
+.row-tag.skipped {
+  border-color: rgba(139, 148, 158, 0.42);
+  background: rgba(139, 148, 158, 0.12);
+  color: var(--muted);
 }
 
 .row-tag.substitution {

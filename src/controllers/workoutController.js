@@ -47,8 +47,10 @@ function normalizeWorkoutPayload(payload) {
       tips: Array.isArray(exercise.tips) ? exercise.tips : [],
       completedSets: Number(exercise.completedSets || 0),
       completedRounds: Number(exercise.completedRounds || 0),
-      sets: exercise.sets || [],
-      rounds: exercise.rounds || [],
+      skipped: Boolean(exercise.skipped),
+      skipReason: String(exercise.skipReason || '').trim(),
+      sets: exercise.skipped ? [] : exercise.sets || [],
+      rounds: exercise.skipped ? [] : exercise.rounds || [],
       notes: exercise.notes || ''
     })),
     notes: payload.notes || ''
@@ -85,6 +87,10 @@ function validateWorkoutPayload(payload) {
 
     const measurementType = exercise.measurementType || 'sets_reps_weight';
     const isRoundBased = measurementType === 'rounds_time' || measurementType === 'rounds_time_reps';
+
+    if (exercise.skipped) {
+      return;
+    }
 
     if (isRoundBased) {
       if (!Array.isArray(exercise.rounds) || exercise.rounds.length === 0) {
