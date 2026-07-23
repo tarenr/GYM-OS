@@ -122,6 +122,8 @@ const dashboardPlayerRank = document.querySelector('#dashboard-player-rank');
 const dashboardPlayerXpFill = document.querySelector('#dashboard-player-xp-fill');
 const dashboardPlayerXpText = document.querySelector('#dashboard-player-xp-text');
 const dashboardLevelRing = document.querySelector('#dashboard-level-ring');
+const journeyCommandBadge = document.querySelector('#journey-command-badge');
+const journeyCommandGrid = document.querySelector('#journey-command-grid');
 const dashboardVolumeChart = document.querySelector('#dashboard-volume-chart');
 const dashboardVolumeSummary = document.querySelector('#dashboard-volume-summary');
 const dashboardMuscleDistribution = document.querySelector('#dashboard-muscle-distribution');
@@ -2946,6 +2948,131 @@ function renderDashboardMissionPanel(mission, dateKey) {
   );
 }
 
+function getWeeklyCampaignCommand(monday = getMonday()) {
+  const todayKey = todayInputValue();
+  const stats = {
+    required: 0,
+    complete: 0,
+    partial: 0,
+    openToday: 0,
+    overdue: 0
+  };
+
+  state.dailyMissions.forEach((mission) => {
+    if (mission.restDay) {
+      return;
+    }
+
+    const dateKey = getWeekDateKeyForDay(mission.dayIndex, monday);
+    const status = getMissionCompletionForDate(mission, dateKey);
+
+    stats.required += status.required;
+    stats.complete += status.completed;
+
+    if (status.completed > 0 || status.attempted > 0) {
+      stats.partial += status.complete ? 0 : 1;
+    }
+
+    if (dateKey === todayKey && !status.complete) {
+      stats.openToday += status.pending;
+    }
+
+    if (dateKey < todayKey && !status.complete) {
+      stats.overdue += status.pending;
+    }
+  });
+
+  return stats;
+}
+
+function getWeeklyExecutionCommand(weeklyWorkouts = []) {
+  const qualities = weeklyWorkouts.map(getWorkoutExecutionQuality);
+  const plannedQualities = qualities.filter((quality) => quality.plannedCount > 0);
+  const average = plannedQualities.length
+    ? Math.round(plannedQualities.reduce((total, quality) => total + quality.percent, 0) / plannedQualities.length)
+    : 0;
+  const skipped = qualities.reduce((total, quality) => total + quality.skippedCount, 0);
+  const extras = qualities.reduce((total, quality) => total + quality.extraCount, 0);
+  const best = [...plannedQualities].sort((a, b) => b.percent - a.percent)[0];
+
+  return {
+    average,
+    skipped,
+    extras,
+    bestLabel: best ? `${best.label} ${best.percent}%` : 'sem ficha'
+  };
+}
+
+function renderJourneyCommand({ journeyPosition, weeklyStatus, weeklyQuality, weeklyWorkouts, weeklyVolume, totalXp }) {
+  if (!journeyCommandGrid) {
+    return;
+  }
+
+  if (journeyCommandBadge) {
+    journeyCommandBadge.textContent = journeyPosition.label;
+  }
+
+  const journeyTotalDays = academyJourneyWeeks * 7;
+  const cycleXp = weeklyWorkouts.reduce((total, workout) => total + getWorkoutXpInfo(workout).total, 0);
+  const healthLabel = weeklyStatus.overdue > 0
+    ? 'Atencao'
+    : weeklyQuality.average >= 80 || weeklyWorkouts.length > 0
+      ? 'No ritmo'
+      : 'Em aberto';
+  const healthDetail = weeklyStatus.overdue > 0
+    ? `${weeklyStatus.overdue} blocos atrasados`
+    : `${weeklyStatus.openToday} blocos em aberto hoje`;
+
+  const cards = [
+    {
+      code: 'YEAR',
+      label: 'Jornada anual',
+      value: `Dia ${journeyPosition.day}/${journeyTotalDays}`,
+      detail: `Semana ${journeyPosition.week}/${academyJourneyWeeks} | ${journeyPosition.annualPercent}% do ano`,
+      tone: 'green'
+    },
+    {
+      code: 'WEEK',
+      label: 'Semana',
+      value: `${weeklyStatus.complete}/${weeklyStatus.required || 0}`,
+      detail: `Hoje aberto: ${weeklyStatus.openToday} | Atrasados: ${weeklyStatus.overdue}`,
+      tone: weeklyStatus.overdue > 0 ? 'red' : 'blue'
+    },
+    {
+      code: 'QUAL',
+      label: 'Execucao',
+      value: `${weeklyQuality.average}%`,
+      detail: `${weeklyQuality.bestLabel} | ${weeklyQuality.skipped} pulados | ${weeklyQuality.extras} extras`,
+      tone: weeklyQuality.average >= 80 ? 'green' : weeklyQuality.average >= 60 ? 'orange' : 'red'
+    },
+    {
+      code: 'CYCLE',
+      label: 'Ciclo atual',
+      value: `C${journeyPosition.cycleInSeason} S${journeyPosition.weekInCycle}/${academyCycleWeeks}`,
+      detail: `${formatCompactNumber(weeklyVolume)} kg semana | ${cycleXp} XP semana`,
+      tone: 'purple'
+    },
+    {
+      code: 'MODE',
+      label: 'Saude da jornada',
+      value: healthLabel,
+      detail: `${healthDetail} | XP total ${formatCompactNumber(totalXp)}`,
+      tone: weeklyStatus.overdue > 0 ? 'red' : 'green'
+    }
+  ];
+
+  journeyCommandGrid.innerHTML = cards.map((card) => `
+    <article class="journey-command-card ${escapeHtml(card.tone)}">
+      <span>${escapeHtml(card.code)}</span>
+      <div>
+        <small>${escapeHtml(card.label)}</small>
+        <strong>${escapeHtml(card.value)}</strong>
+        <p>${escapeHtml(card.detail)}</p>
+      </div>
+    </article>
+  `).join('');
+}
+
 function renderDashboard() {
   const completedXpWorkouts = state.allWorkouts.filter(isCompletedWorkout);
   const hasCompleteSnapshotXp = completedXpWorkouts.length > 0
@@ -2993,6 +3120,8 @@ function renderDashboard() {
         date.setDate(monday.getDate() + index);
         return completedThisWeek.has(`${date.toISOString().slice(0, 10)}-${item.code}`);
       }).length;
+  const weeklyStatus = getWeeklyCampaignCommand(monday);
+  const weeklyQuality = getWeeklyExecutionCommand(weeklyWorkouts);
   const totalXp = hasCompleteSnapshotXp ? workoutXp : workoutXp + campaignXp.total;
   const level = calculateLevel(totalXp);
   const rank = getRankForLevel(level.level);
@@ -3021,6 +3150,14 @@ function renderDashboard() {
   dashboardPlayerXpText.textContent = `${level.currentXp} / ${level.nextLevelXp} XP | ${xpProgress}% ate o proximo nivel`;
   dashboardLevelRing.style.strokeDashoffset = `${245 - (245 * xpProgress) / 100}`;
   weeklyProgress.textContent = `${completedTrainingDays}/6`;
+  renderJourneyCommand({
+    journeyPosition,
+    weeklyStatus,
+    weeklyQuality,
+    weeklyWorkouts,
+    weeklyVolume,
+    totalXp
+  });
 
   if (state.dailyMissions.length) {
     renderDashboardMissionPanel(selectedMission, selectedMissionDateKey);

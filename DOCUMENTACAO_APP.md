@@ -680,6 +680,7 @@ Documentacao
 Mostra:
 
 - total de treinos;
+- comando da jornada anual;
 - volume;
 - PRs do mes;
 - nivel e rank;
@@ -691,6 +692,30 @@ Mostra:
 - feed de atividade;
 - conquistas anuais da jornada Academy;
 - heatmap.
+
+Bloco estrategico:
+
+```text
+JOURNEY_COMMAND.sys
+```
+
+Mostra:
+
+- dia e semana dentro da jornada anual;
+- progresso percentual do ano;
+- blocos completos da semana;
+- blocos de hoje ainda em aberto;
+- blocos atrasados de dias anteriores;
+- qualidade media da execucao semanal;
+- ciclo atual, XP e volume da semana;
+- saude da jornada.
+
+Regra de pendencia:
+
+```text
+Hoje em aberto nao e atraso.
+Um bloco so vira atrasado quando a data fica menor que o dia atual.
+```
 
 Na parte da missao, os botoes `SEG`, `TER`, `QUA`, `QUI`, `SEX`, `SAB`, `DOM` sao clicaveis.
 
