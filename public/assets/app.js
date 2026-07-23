@@ -4906,6 +4906,17 @@ Status: Descanso planejado`
       .join(', ');
 
     if (completedBlocks.length === 0 && attemptedBlockEntries.length === 0) {
+      if (dateKey === todayKey) {
+        return withExtra({
+          className: 'heat-today',
+          title: `${formatDate(dateKey)}
+Status: Em aberto
+Missao: ${missionCodes}
+Feito: nenhum
+Faltou: ${missingLabels}`
+        }, extraLabels);
+      }
+
       return withExtra({
         className: 'heat-missed',
         title: `${formatDate(dateKey)}

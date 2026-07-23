@@ -1180,6 +1180,7 @@ Estados:
 
 ```text
 Futuro
+Hoje em aberto
 Perdeu
 Parcial
 OK
@@ -1191,6 +1192,8 @@ Regras:
 
 - dias futuros aparecem no grid;
 - tooltip de dia futuro mostra somente a data;
+- dia atual sem treino aparece como em aberto, nao como perdido;
+- um dia so aparece como perdido apos virar dia passado;
 - dias passados mostram data, status, missao, feito e faltou;
 - descanso planejado nao quebra sequencia;
 - treino extra pode aparecer como informacao adicional.
