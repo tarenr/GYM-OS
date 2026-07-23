@@ -148,6 +148,7 @@ GYM-OS/
     server.js
 
   public/
+    favicon.svg
     index.html
     assets/
       app.js

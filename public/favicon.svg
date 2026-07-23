@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="GYM-OS">
+  <rect width="64" height="64" rx="12" fill="#0d1117"/>
+  <rect x="7" y="7" width="50" height="50" rx="9" fill="#111820" stroke="#00ff41" stroke-width="4"/>
+  <path d="M18 24h10v5h-5v6h8v5H18V24Z" fill="#00ff41"/>
+  <path d="M35 24h11v5h-6v3h5v5h-5v3h7v5H35V24Z" fill="#58a6ff"/>
+  <path d="M14 49h36" stroke="#00ff41" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+  <path d="M15 15h8M29 15h20" stroke="#58a6ff" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+</svg>
