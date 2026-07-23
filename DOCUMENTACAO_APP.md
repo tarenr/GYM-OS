@@ -1179,13 +1179,13 @@ const heatmapWeekCount = 16;
 Estados:
 
 ```text
-Futuro
-Hoje em aberto
-Perdeu
-Parcial
-OK
-Descanso
-Extra
+FUTURO - dias depois de hoje
+HOJE - dia atual em aberto
+PERDEU - dia passado sem treino/tentativa valida
+PARCIAL - missao tentada ou incompleta
+OK - missao completa
+DESC - descanso planejado
+EXTRA - indicador de treino extra no dia
 ```
 
 Regras:
