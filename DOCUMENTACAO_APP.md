@@ -916,6 +916,21 @@ O app usa esse modo para:
 - mostrar carga com contexto no detalhe do treino;
 - melhorar leitura de PRs e evolucao por exercicio.
 
+Configuracao manual:
+
+```text
+Editor de ficha: cada exercicio de forca possui um seletor de modo de carga.
+Treino em andamento: cada exercicio de forca tambem permite alterar o modo apenas para aquela sessao.
+```
+
+Isso resolve exercicios hibridos, por exemplo:
+
+```text
+Rosca direta com halteres ou barra curta
+```
+
+Nesses casos, a ficha pode ter um padrao, mas o treino do dia pode registrar uma variacao sem alterar a ficha original.
+
 Importante:
 
 ```text

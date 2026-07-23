@@ -1886,6 +1886,20 @@ function getLoadModeMeta(loadMode = 'dumbbell_each') {
   return modes[loadMode] || modes.dumbbell_each;
 }
 
+function getLoadModeOptionsMarkup(currentValue = 'dumbbell_each') {
+  const options = [
+    ['dumbbell_each', 'Halteres'],
+    ['bar_total', 'Barra'],
+    ['machine_stack', 'Maquina'],
+    ['bodyweight', 'Peso corporal'],
+    ['non_weight', 'Sem carga']
+  ];
+
+  return options.map(([value, label]) => (
+    `<option value="${value}" ${value === currentValue ? 'selected' : ''}>${escapeHtml(label)}</option>`
+  )).join('');
+}
+
 function formatLoadModeWeight(weight, loadMode) {
   const value = formatCompactNumber(Number(weight || 0));
   const meta = getLoadModeMeta(loadMode);
@@ -2081,6 +2095,7 @@ function createSetRow(set = {}, loadMode = 'dumbbell_each') {
   const row = document.createElement('div');
   row.className = 'set-row';
   const loadMeta = getLoadModeMeta(loadMode);
+  row.dataset.loadMode = loadMode;
 
   row.innerHTML = `
     <span class="set-number">S</span>
@@ -2105,6 +2120,23 @@ function createSetRow(set = {}, loadMode = 'dumbbell_each') {
   });
 
   return row;
+}
+
+function updateSetRowLoadMode(row, loadMode = 'dumbbell_each') {
+  const loadMeta = getLoadModeMeta(loadMode);
+  const weightInput = row.querySelector('.set-weight');
+  const unitLabel = row.querySelector('.set-field small');
+
+  row.dataset.loadMode = loadMode;
+
+  if (weightInput) {
+    weightInput.placeholder = loadMeta.fieldLabel;
+    weightInput.setAttribute('aria-label', `${loadMeta.fieldLabel} em kg`);
+  }
+
+  if (unitLabel) {
+    unitLabel.textContent = loadMeta.unit;
+  }
 }
 
 function createRoundRow(round = {}) {
@@ -2190,6 +2222,19 @@ function updateExerciseSkippedState(card) {
   }
 }
 
+function updateExerciseLoadModeState(card, nextLoadMode) {
+  const loadMode = nextLoadMode || card.dataset.loadMode || 'dumbbell_each';
+  const loadMeta = getLoadModeMeta(loadMode);
+  const loadInfo = card.querySelector('.load-mode-meta');
+
+  card.dataset.loadMode = loadMode;
+  card.querySelectorAll('.set-row:not(.round-row)').forEach((row) => updateSetRowLoadMode(row, loadMode));
+
+  if (loadInfo) {
+    loadInfo.innerHTML = `<strong>${escapeHtml(loadMeta.label)}:</strong> ${escapeHtml(loadMeta.hint)}`;
+  }
+}
+
 function addExercise(exercise = {}) {
   const fragment = exerciseTemplate.content.cloneNode(true);
   const card = fragment.querySelector('.exercise-card');
@@ -2246,10 +2291,23 @@ function addExercise(exercise = {}) {
     card.querySelector('.form-grid').after(meta);
 
     if (!isRoundBased) {
+      const loadControl = document.createElement('label');
+      loadControl.className = 'load-mode-control';
+      loadControl.innerHTML = `
+        Modo de carga
+        <select class="exercise-load-mode">
+          ${getLoadModeOptionsMarkup(loadMode)}
+        </select>
+      `;
+      meta.after(loadControl);
+
       const loadInfo = document.createElement('p');
       loadInfo.className = 'load-mode-meta';
       loadInfo.innerHTML = `<strong>${escapeHtml(loadMeta.label)}:</strong> ${escapeHtml(loadMeta.hint)}`;
-      meta.after(loadInfo);
+      loadControl.after(loadInfo);
+      loadControl.querySelector('.exercise-load-mode').addEventListener('change', (event) => {
+        updateExerciseLoadModeState(card, event.target.value);
+      });
     }
   }
 
@@ -2292,7 +2350,7 @@ function addExercise(exercise = {}) {
       durationSeconds: exercise.plannedDurationSeconds || '',
       restSeconds: exercise.plannedRestSeconds || '',
       intensity: 7
-    }) : createSetRow({}, loadMode));
+    }) : createSetRow({}, card.dataset.loadMode || loadMode));
     refreshSetNumbers(setsList);
   });
   card.querySelector('.add-set').textContent = isRoundBased ? 'Adicionar round' : 'Adicionar serie';
@@ -5258,7 +5316,8 @@ function renderSelectedTemplateExercises() {
   selectedTemplateList.innerHTML = state.selectedTemplateExercises.map((exercise, index) => {
     const measurementType = exercise.measurementType || 'sets_reps_weight';
     const isRoundBased = measurementType === 'rounds_time' || measurementType === 'rounds_time_reps';
-    const loadMeta = getLoadModeMeta(getExerciseLoadMode(exercise));
+    const loadMode = getExerciseLoadMode(exercise);
+    const loadMeta = getLoadModeMeta(loadMode);
     const fields = isRoundBased ? `
       <label>
         Rounds
@@ -5280,6 +5339,12 @@ function renderSelectedTemplateExercises() {
       <label>
         Repeticoes
         <input class="template-planned-reps" type="text" value="${escapeHtml(exercise.plannedReps || '')}" required />
+      </label>
+      <label>
+        Carga
+        <select class="template-load-mode">
+          ${getLoadModeOptionsMarkup(loadMode)}
+        </select>
       </label>
     `;
 
@@ -5637,6 +5702,7 @@ function syncSelectedTemplateInputs() {
     const exercise = state.selectedTemplateExercises[index];
     const setsInput = row.querySelector('.template-planned-sets');
     const repsInput = row.querySelector('.template-planned-reps');
+    const loadModeInput = row.querySelector('.template-load-mode');
     const roundsInput = row.querySelector('.template-planned-rounds');
     const durationInput = row.querySelector('.template-planned-duration');
     const restInput = row.querySelector('.template-planned-rest');
@@ -5647,6 +5713,10 @@ function syncSelectedTemplateInputs() {
 
     if (repsInput) {
       exercise.plannedReps = repsInput.value.trim();
+    }
+
+    if (loadModeInput) {
+      exercise.loadMode = loadModeInput.value;
     }
 
     if (roundsInput) {

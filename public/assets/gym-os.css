@@ -2439,6 +2439,21 @@ textarea:focus {
   font-size: 0.7rem;
 }
 
+.load-mode-control {
+  display: grid;
+  gap: 6px;
+  margin: -2px 0 12px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.load-mode-control select,
+.template-load-mode {
+  min-height: 40px;
+}
+
 .exercise-skip-control {
   display: grid;
   gap: 8px;
