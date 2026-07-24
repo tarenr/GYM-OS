@@ -585,50 +585,52 @@ src/data/weeklyDailyMissions.js
 Rotina:
 
 ```text
-Segunda: Musculacao A + BOXE_01
-Terca:   Musculacao B + KICK_01
-Quarta:  Musculacao A + BOXE_02
-Quinta:  Musculacao B + KICK_02
-Sexta:   Musculacao C + BOXE_03
-Sabado:  Musculacao A + KICK_03
+Segunda: Musculacao A
+Terca:   Musculacao B
+Quarta:  Musculacao C
+Quinta:  Musculacao A
+Sexta:   Musculacao B
+Sabado:  Musculacao C
 Domingo: Descanso planejado
 ```
+
+Nesta fase da jornada anual, luta esta pausada e nao entra como bloco obrigatorio da campanha.
 
 Detalhes:
 
 ```text
-Segunda - Protocolo de Entrada
+Segunda - Fundacao A
 A - Peito e triceps
-BOXE_01 - Boxe 01 - Fundamentos
-XP: 120 + 80 + 50 bonus
+XP: 150 + 30 bonus
 
-Terca - Base de Combate
+Terca - Fundacao B
 B - Costas e biceps
-KICK_01 - Kickboxing 01 - Base e Chutes
-XP: 120 + 80 + 50 bonus
+XP: 150 + 30 bonus
 
-Quarta - Nucleo de Forca
-A - Peito e triceps
-BOXE_02 - Boxe 02 - Combinacoes
-XP: 120 + 90 + 50 bonus
-
-Quinta - Combo Tecnico
-B - Costas e biceps
-KICK_02 - Kickboxing 02 - Combinacoes
-XP: 120 + 90 + 50 bonus
-
-Sexta - Teste de Resistencia
+Quarta - Fundacao C
 C - Pernas e ombros
-BOXE_03 - Boxe 03 - Defesa e Condicionamento
-XP: 120 + 100 + 50 bonus
+XP: 150 + 30 bonus
 
-Sabado - Boss Semanal
+Quinta - Fundacao A Reforco
 A - Peito e triceps
-KICK_03 - Kickboxing 03 - Defesa e Condicionamento
-XP: 120 + 110 + 50 bonus
+XP: 150 + 30 bonus
+
+Sexta - Fundacao B Reforco
+B - Costas e biceps
+XP: 150 + 30 bonus
+
+Sabado - Fundacao C Reforco
+C - Pernas e ombros
+XP: 150 + 30 bonus
 
 Domingo - Recuperacao Programada
 XP: 0
+```
+
+Sincronizacao manual das missoes no MongoDB Atlas:
+
+```bash
+npm run missions:sync
 ```
 
 ## Fichas de Musculacao
@@ -1320,9 +1322,12 @@ A regra antiga ABC (`+75`, `+40 por A/B/C`, `+60`, `+150`) foi removida do calcu
 A UI das campanhas usa XP por bloco:
 
 ```text
-Musculacao: 120 XP
-Luta: 80/90/100/110 XP
-Bonus da campanha: 50 XP
+Fase atual:
+Musculacao: 150 XP
+Bonus da campanha: 30 XP
+
+Fase futura com luta reativada:
+Luta: a definir no balanceamento de XP anual
 ```
 
 ## XP v2
@@ -1360,9 +1365,9 @@ Continuam registrados no historico para mostrar o que foi planejado e nao execut
 Missao diaria:
 
 ```text
-Musculacao concluida: +120 XP
-Luta concluida: +80/+90/+100/+110 XP
-Todos os blocos concluidos: +50 XP
+Musculacao concluida: +150 XP
+Todos os blocos concluidos: +30 XP
+Total diario atual: +180 XP
 ```
 
 Nao dar XP diretamente por quilo levantado.

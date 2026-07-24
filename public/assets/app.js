@@ -238,10 +238,10 @@ const documentationDocs = {
 const weeklySchedule = [
   { day: 1, label: 'SEG', code: 'A' },
   { day: 2, label: 'TER', code: 'B' },
-  { day: 3, label: 'QUA', code: 'A' },
-  { day: 4, label: 'QUI', code: 'B' },
-  { day: 5, label: 'SEX', code: 'C' },
-  { day: 6, label: 'SAB', code: 'A' },
+  { day: 3, label: 'QUA', code: 'C' },
+  { day: 4, label: 'QUI', code: 'A' },
+  { day: 5, label: 'SEX', code: 'B' },
+  { day: 6, label: 'SAB', code: 'C' },
   { day: 0, label: 'DOM', code: 'DESC' }
 ];
 const heatmapStartDate = '2026-07-22';
@@ -535,17 +535,6 @@ function getNextMissionBlock(mission, dateKey = todayInputValue()) {
   }
 
   const activeBlocks = (mission.blocks || []).filter((block) => block.type !== 'recovery' && block.templateId);
-  const strengthBlock = activeBlocks.find((block) => block.type === 'strength');
-  const combatBlock = activeBlocks.find((block) => block.type === 'combat');
-
-  if (strengthBlock && !getWorkoutForMissionBlock(dateKey, strengthBlock)) {
-    return strengthBlock;
-  }
-
-  if (combatBlock && !getWorkoutForMissionBlock(dateKey, combatBlock)) {
-    return combatBlock;
-  }
-
   return activeBlocks.find((block) => !getWorkoutForMissionBlock(dateKey, block)) || null;
 }
 
@@ -2871,6 +2860,16 @@ function setMissionStep(element, text, status) {
   element.classList.toggle('idle', status === 'idle');
 }
 
+function getMissionRequiredBlocks(mission) {
+  return (mission?.blocks || []).filter((block) => block.type !== 'recovery');
+}
+
+function formatMissionBlockStatus(block, workout) {
+  const status = workout ? 'OK' : 'pendente';
+
+  return `${getBlockLabel(block)} ${formatMissionBlockCompletion(block, workout)} ${status}`;
+}
+
 function renderDashboardMissionPanel(mission, dateKey) {
   const todayKey = todayInputValue();
   const isToday = dateKey === todayKey;
@@ -2886,32 +2885,28 @@ function renderDashboardMissionPanel(mission, dateKey) {
     startMissionButton.textContent = 'Sem campanha';
     renderMissionActionButtons(null, dateKey);
     setMissionStep(missionStepTemplate, 'Forca: nao configurado', 'idle');
-    setMissionStep(missionStepSets, 'Combate: nao configurado', 'idle');
+    setMissionStep(missionStepSets, 'Objetivo: nao configurado', 'idle');
     setMissionStep(missionStepSave, 'Bonus da campanha: +0 XP', 'idle');
     return;
   }
 
-  const strengthBlock = (mission.blocks || []).find((block) => block.type === 'strength');
-  const combatBlock = (mission.blocks || []).find((block) => block.type === 'combat');
-  const completedStrengthWorkout = strengthBlock?.workoutCode ? getWorkoutForMissionBlock(dateKey, strengthBlock) : null;
-  const completedCombatWorkout = combatBlock?.workoutCode ? getWorkoutForMissionBlock(dateKey, combatBlock) : null;
-  const completedStrength = strengthBlock?.workoutCode
-    ? Boolean(completedStrengthWorkout)
-    : mission.restDay;
-  const completedCombat = combatBlock?.workoutCode
-    ? Boolean(completedCombatWorkout)
-    : mission.restDay;
-  const completedMission = mission.restDay || (completedStrength && completedCombat);
-  const hasPartialProgress = completedStrength || completedCombat;
+  const requiredBlocks = getMissionRequiredBlocks(mission);
+  const blockEntries = requiredBlocks.map((block) => ({
+    block,
+    workout: getWorkoutForMissionBlock(dateKey, block)
+  }));
+  const completedMission = mission.restDay || (requiredBlocks.length > 0 && blockEntries.every((entry) => entry.workout));
+  const hasPartialProgress = blockEntries.some((entry) => entry.workout);
   const nextMissionBlock = isToday ? getNextMissionBlock(mission, dateKey) : null;
   const possibleXp = getMissionTotalXp(mission);
-  const strengthStatus = completedStrength ? 'OK' : 'pendente';
-  const combatStatus = completedCombat ? 'OK' : 'pendente';
+  const blockSummary = blockEntries.length
+    ? blockEntries.map((entry) => formatMissionBlockStatus(entry.block, entry.workout)).join(' | ')
+    : 'Sem blocos obrigatorios';
 
   missionTitle.textContent = mission.missionName;
   missionDescription.textContent = mission.restDay
     ? `${formatDate(dateKey)} | Recuperacao programada. A sequencia da Academy continua preservada.`
-    : `Forca ${strengthBlock?.workoutCode || '--'} ${strengthStatus} + combate ${combatBlock?.workoutCode || '--'} ${combatStatus} | ${mission.intensity}`;
+    : `${blockSummary} | ${mission.intensity}`;
   missionBadge.textContent = mission.restDay
     ? 'DESCANSO'
     : completedMission
@@ -2941,15 +2936,26 @@ function renderDashboardMissionPanel(mission, dateKey) {
           : 'Campanha concluida';
   renderMissionActionButtons(mission, dateKey);
 
+  const primaryEntry = blockEntries[0];
+  const secondaryEntry = blockEntries[1];
+
   setMissionStep(
     missionStepTemplate,
-    mission.restDay ? 'Recuperacao programada' : `Forca: ${formatMissionBlockCompletion(strengthBlock, completedStrengthWorkout)}`,
-    mission.restDay ? 'idle' : completedStrength ? 'done' : 'pending'
+    mission.restDay
+      ? 'Recuperacao programada'
+      : primaryEntry
+        ? `${getBlockLabel(primaryEntry.block)}: ${formatMissionBlockCompletion(primaryEntry.block, primaryEntry.workout)}`
+        : 'Sem bloco obrigatorio',
+    mission.restDay ? 'idle' : primaryEntry?.workout ? 'done' : primaryEntry ? 'pending' : 'idle'
   );
   setMissionStep(
     missionStepSets,
-    mission.restDay ? 'Sem bloco obrigatorio' : `Combate: ${formatMissionBlockCompletion(combatBlock, completedCombatWorkout)}`,
-    mission.restDay ? 'idle' : completedCombat ? 'done' : 'pending'
+    mission.restDay
+      ? 'Sem bloco obrigatorio'
+      : secondaryEntry
+        ? `${getBlockLabel(secondaryEntry.block)}: ${formatMissionBlockCompletion(secondaryEntry.block, secondaryEntry.workout)}`
+        : 'Luta pausada nesta fase',
+    mission.restDay ? 'idle' : secondaryEntry?.workout ? 'done' : secondaryEntry ? 'pending' : 'idle'
   );
   setMissionStep(
     missionStepSave,

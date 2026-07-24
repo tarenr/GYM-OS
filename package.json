@@ -12,6 +12,7 @@
     "demo:clear": "node scripts/clear-demo-workouts.js --yes",
     "journey:clear:preview": "node scripts/clear-prejourney-workouts.js",
     "journey:clear:prestart": "node scripts/clear-prejourney-workouts.js --yes",
+    "missions:sync": "node scripts/sync-daily-missions.js",
     "xp:recalculate:preview": "node scripts/recalculate-xp.js",
     "xp:recalculate": "node scripts/recalculate-xp.js --write",
     "media:preview": "node scripts/sync-wger-media.js",

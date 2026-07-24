@@ -2,68 +2,56 @@ export const weeklyDailyMissions = [
   {
     dayIndex: 1,
     dayOfWeek: 'Segunda',
-    missionName: 'Protocolo de Entrada',
-    intensity: 'Forca de empurrar + boxe tecnico',
+    missionName: 'Fundacao A',
+    intensity: 'Peito e triceps | recomposicao corporal',
     strengthCode: 'A',
-    combatCode: 'BOXE_01',
-    strengthXp: 120,
-    combatXp: 80,
-    bonusXp: 50
+    strengthXp: 150,
+    bonusXp: 30
   },
   {
     dayIndex: 2,
     dayOfWeek: 'Terca',
-    missionName: 'Base de Combate',
-    intensity: 'Costas e biceps + kick tecnico',
+    missionName: 'Fundacao B',
+    intensity: 'Costas e biceps | recomposicao corporal',
     strengthCode: 'B',
-    combatCode: 'KICK_01',
-    strengthXp: 120,
-    combatXp: 80,
-    bonusXp: 50
+    strengthXp: 150,
+    bonusXp: 30
   },
   {
     dayIndex: 3,
     dayOfWeek: 'Quarta',
-    missionName: 'Nucleo de Forca',
-    intensity: 'Peito e triceps + boxe de combinacoes',
-    strengthCode: 'A',
-    combatCode: 'BOXE_02',
-    strengthXp: 120,
-    combatXp: 90,
-    bonusXp: 50
+    missionName: 'Fundacao C',
+    intensity: 'Pernas e ombros | recomposicao corporal',
+    strengthCode: 'C',
+    strengthXp: 150,
+    bonusXp: 30
   },
   {
     dayIndex: 4,
     dayOfWeek: 'Quinta',
-    missionName: 'Combo Tecnico',
-    intensity: 'Costas e biceps + kick de combinacoes',
-    strengthCode: 'B',
-    combatCode: 'KICK_02',
-    strengthXp: 120,
-    combatXp: 90,
-    bonusXp: 50
+    missionName: 'Fundacao A Reforco',
+    intensity: 'Peito e triceps | segunda volta da semana',
+    strengthCode: 'A',
+    strengthXp: 150,
+    bonusXp: 30
   },
   {
     dayIndex: 5,
     dayOfWeek: 'Sexta',
-    missionName: 'Teste de Resistencia',
-    intensity: 'Pernas e ombros + boxe intenso',
-    strengthCode: 'C',
-    combatCode: 'BOXE_03',
-    strengthXp: 120,
-    combatXp: 100,
-    bonusXp: 50
+    missionName: 'Fundacao B Reforco',
+    intensity: 'Costas e biceps | segunda volta da semana',
+    strengthCode: 'B',
+    strengthXp: 150,
+    bonusXp: 30
   },
   {
     dayIndex: 6,
     dayOfWeek: 'Sabado',
-    missionName: 'Boss Semanal',
-    intensity: 'Peito e triceps + kick intenso',
-    strengthCode: 'A',
-    combatCode: 'KICK_03',
-    strengthXp: 120,
-    combatXp: 110,
-    bonusXp: 50
+    missionName: 'Fundacao C Reforco',
+    intensity: 'Pernas e ombros | fechamento da semana',
+    strengthCode: 'C',
+    strengthXp: 150,
+    bonusXp: 30
   },
   {
     dayIndex: 0,

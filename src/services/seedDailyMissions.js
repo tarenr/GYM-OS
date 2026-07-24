@@ -16,12 +16,20 @@ function buildBlock(template, type, xpReward, intensity) {
 
 export async function seedDailyMissions() {
   const templateCodes = weeklyDailyMissions.flatMap((mission) => (
-    mission.restDay ? [] : [mission.strengthCode, mission.combatCode]
+    mission.restDay ? [] : [mission.strengthCode, mission.combatCode].filter(Boolean)
   ));
   const templates = await WorkoutTemplate.find({ code: { $in: templateCodes }, active: true });
   const templateByCode = new Map(templates.map((template) => [template.code, template]));
 
   const operations = weeklyDailyMissions.map((mission) => {
+    const activeBlocks = [
+      mission.strengthCode
+        ? buildBlock(templateByCode.get(mission.strengthCode), 'strength', mission.strengthXp, mission.intensity)
+        : null,
+      mission.combatCode
+        ? buildBlock(templateByCode.get(mission.combatCode), 'combat', mission.combatXp, mission.intensity)
+        : null
+    ].filter(Boolean);
     const blocks = mission.restDay
       ? [{
           templateId: null,
@@ -32,10 +40,7 @@ export async function seedDailyMissions() {
           intensity: mission.intensity,
           xpReward: 0
         }]
-      : [
-          buildBlock(templateByCode.get(mission.strengthCode), 'strength', mission.strengthXp, mission.intensity),
-          buildBlock(templateByCode.get(mission.combatCode), 'combat', mission.combatXp, mission.intensity)
-        ];
+      : activeBlocks;
 
     return {
       updateOne: {
