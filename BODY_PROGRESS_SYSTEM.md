@@ -297,20 +297,25 @@ Primeira versao entregue:
 - coxa esquerda;
 - observacoes;
 - cards de resumo;
+- leitura inteligente de tendencia;
+- alerta leve quando a ultima medicao passa de 14 dias;
+- mini graficos de peso, cintura e abdomen;
+- resumo por ciclo atual da jornada anual;
 - historico com editar/excluir;
 - card resumido no dashboard anual.
+- conquista `Primeira Medicao`.
 
 ### Fase 4 - Graficos
 
-- Peso.
-- Cintura.
-- Abdomen.
-- Comparacao por periodo.
+- Peso implementado em mini grafico.
+- Cintura implementada em mini grafico.
+- Abdomen implementado em mini grafico.
+- Comparacao por periodo fica para fase futura.
 
 ### Fase 5 - Inteligencia E Conquistas
 
-- Mensagens de tendencia.
-- Conquistas por acompanhamento.
+- Mensagens de tendencia implementadas.
+- Conquista `Primeira Medicao` implementada.
 - Metas corporais.
 
 ### Fase 6 - Fotos

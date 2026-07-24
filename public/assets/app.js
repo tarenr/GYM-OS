@@ -219,6 +219,9 @@ const bodyProgressStatus = document.querySelector('#body-progress-status');
 const bodyMeasurementReset = document.querySelector('#body-measurement-reset');
 const bodyMeasurementSubmit = document.querySelector('#body-measurement-submit');
 const bodyProgressHistory = document.querySelector('#body-progress-history');
+const bodyProgressInsight = document.querySelector('#body-progress-insight');
+const bodyProgressCycle = document.querySelector('#body-progress-cycle');
+const bodyProgressChartGrid = document.querySelector('#body-progress-chart-grid');
 const documentationStatus = document.querySelector('#documentation-status');
 const documentationIndex = document.querySelector('#documentation-index');
 const documentationContent = document.querySelector('#documentation-content');
@@ -4081,6 +4084,7 @@ function getAnnualAchievementStats(items, exerciseEntries) {
   const journeyWorkouts = journeyItems.map((item) => item.workout);
   const journeyExerciseEntries = getJourneyExerciseEntries(exerciseEntries);
   const totalXp = journeyItems.reduce((total, item) => total + item.xp.total, 0);
+  const journeyBodyMeasurements = getSortedBodyMeasurements().filter((measurement) => isJourneyDate(measurement.measuredAt));
   const level = calculateLevel(totalXp).level;
   const activeWeekDays = new Map();
   const campaignWeeks = new Map();
@@ -4125,6 +4129,7 @@ function getAnnualAchievementStats(items, exerciseEntries) {
     journeyWorkouts,
     journeyExerciseEntries,
     totalXp,
+    bodyMeasurements: journeyBodyMeasurements.length,
     level,
     completedWorkouts: journeyWorkouts.length,
     strengthWorkouts: blockTypes.get('strength') || 0,
@@ -4181,6 +4186,14 @@ function getAnnualAchievements(stats) {
       title: 'Primeiro PR',
       description: 'Bater o primeiro recorde pessoal dentro da jornada.',
       progress: stats.totalPrs,
+      target: 1
+    }),
+    makeAnnualAchievement({
+      id: 'first-body-measurement',
+      category: 'Corporal',
+      title: 'Primeira Medicao',
+      description: 'Registrar a primeira avaliacao corporal da jornada.',
+      progress: stats.bodyMeasurements,
       target: 1
     }),
     makeAnnualAchievement({
@@ -4335,7 +4348,7 @@ function renderAchievementCategorySummary(achievements) {
     return;
   }
 
-  const categories = ['Entrada', 'Consistencia', 'Performance', 'Modalidade', 'Campanha', 'Nivel'];
+  const categories = ['Entrada', 'Consistencia', 'Performance', 'Modalidade', 'Campanha', 'Corporal', 'Nivel'];
 
   progressAchievementCategoryList.innerHTML = categories.map((category) => {
     const categoryAchievements = achievements.filter((achievement) => achievement.category === category);
@@ -4765,6 +4778,162 @@ function getSortedBodyMeasurements() {
   return [...state.bodyMeasurements].sort((a, b) => new Date(a.measuredAt) - new Date(b.measuredAt));
 }
 
+function getBodyDelta(first, latest, field) {
+  if (!first || !latest) {
+    return 0;
+  }
+
+  if (field === 'weightKg') {
+    return Number(latest.weightKg || 0) - Number(first.weightKg || 0);
+  }
+
+  return Number(latest.measurementsCm?.[field] || 0) - Number(first.measurementsCm?.[field] || 0);
+}
+
+function getBodyInsight(measurements, daysSinceLast) {
+  if (!measurements.length) {
+    return {
+      title: 'Primeira medicao pendente',
+      detail: 'Registre peso e medidas para iniciar a leitura de recomposicao corporal.',
+      tone: 'idle'
+    };
+  }
+
+  if (measurements.length === 1) {
+    return {
+      title: 'Marco corporal criado',
+      detail: 'A proxima medicao vai permitir comparar tendencia de peso, cintura e abdomen.',
+      tone: 'ok'
+    };
+  }
+
+  const first = measurements[0];
+  const latest = measurements[measurements.length - 1];
+  const weightDelta = getBodyDelta(first, latest, 'weightKg');
+  const waistDelta = getBodyDelta(first, latest, 'waist');
+  const abdomenDelta = getBodyDelta(first, latest, 'abdomen');
+
+  if (daysSinceLast > 14) {
+    return {
+      title: 'Medicao atrasada',
+      detail: `${daysSinceLast} dias desde o ultimo registro. Uma nova medicao fecha melhor o ciclo atual.`,
+      tone: 'warn'
+    };
+  }
+
+  if (Math.abs(weightDelta) <= 1 && (waistDelta < 0 || abdomenDelta < 0)) {
+    return {
+      title: 'Recomposicao positiva',
+      detail: `Peso estavel e medidas centrais em queda: cintura ${formatBodyDelta(waistDelta, ' cm')} | abdomen ${formatBodyDelta(abdomenDelta, ' cm')}.`,
+      tone: 'ok'
+    };
+  }
+
+  if (weightDelta > 0 && (waistDelta < 0 || abdomenDelta < 0)) {
+    return {
+      title: 'Peso subiu, medida caiu',
+      detail: `Isso pode ser recomposicao. Peso ${formatBodyDelta(weightDelta, ' kg')} | cintura ${formatBodyDelta(waistDelta, ' cm')}.`,
+      tone: 'ok'
+    };
+  }
+
+  if (waistDelta < 0 || abdomenDelta < 0) {
+    return {
+      title: 'Medidas centrais melhorando',
+      detail: `Cintura ${formatBodyDelta(waistDelta, ' cm')} | abdomen ${formatBodyDelta(abdomenDelta, ' cm')} desde o inicio.`,
+      tone: 'ok'
+    };
+  }
+
+  return {
+    title: 'Tendencia em observacao',
+    detail: `Peso ${formatBodyDelta(weightDelta, ' kg')} | cintura ${formatBodyDelta(waistDelta, ' cm')} desde o inicio.`,
+    tone: 'watch'
+  };
+}
+
+function getBodyCycleSummary(measurements) {
+  const position = getJourneyPosition();
+  const cycleStartDay = ((position.cycleInSeason - 1) * academyCycleWeeks * 7) + 1;
+  const cycleStart = new Date(`${academyJourneyStartDate}T00:00:00`);
+
+  cycleStart.setDate(cycleStart.getDate() + cycleStartDay - 1);
+
+  const cycleMeasurements = measurements.filter((measurement) => new Date(measurement.measuredAt) >= cycleStart);
+  const first = cycleMeasurements[0];
+  const latest = cycleMeasurements[cycleMeasurements.length - 1];
+
+  return {
+    label: `T${position.seasonNumber} C${position.cycleInSeason}`,
+    count: cycleMeasurements.length,
+    weightDelta: getBodyDelta(first, latest, 'weightKg'),
+    waistDelta: getBodyDelta(first, latest, 'waist'),
+    startDate: cycleStart.toISOString().slice(0, 10)
+  };
+}
+
+function renderBodyProgressCharts(measurements) {
+  if (!bodyProgressChartGrid) {
+    return;
+  }
+
+  if (measurements.length < 2) {
+    bodyProgressChartGrid.innerHTML = '<p class="empty-state">Registre pelo menos duas medicoes para gerar graficos corporais.</p>';
+    return;
+  }
+
+  const chartConfigs = [
+    { key: 'weightKg', label: 'Peso', suffix: ' kg', tone: 'green' },
+    { key: 'waist', label: 'Cintura', suffix: ' cm', tone: 'blue' },
+    { key: 'abdomen', label: 'Abdomen', suffix: ' cm', tone: 'orange' }
+  ];
+
+  bodyProgressChartGrid.innerHTML = chartConfigs.map((config) => {
+    const points = measurements
+      .map((measurement) => ({
+        dateKey: getBodyMeasurementDateKey(measurement),
+        value: config.key === 'weightKg'
+          ? Number(measurement.weightKg || 0)
+          : Number(measurement.measurementsCm?.[config.key] || 0)
+      }))
+      .filter((point) => point.value > 0);
+
+    if (!points.length) {
+      return `
+        <article class="body-progress-chart ${escapeHtml(config.tone)}">
+          <header>
+            <span>${escapeHtml(config.label)}</span>
+            <strong>-</strong>
+          </header>
+          <p>sem dados suficientes</p>
+        </article>
+      `;
+    }
+
+    const min = Math.min(...points.map((point) => point.value));
+    const max = Math.max(...points.map((point) => point.value));
+    const range = Math.max(1, max - min);
+    const bars = points.map((point) => {
+      const height = Math.max(12, Math.round(((point.value - min) / range) * 72) + 12);
+
+      return `<span style="height:${height}px" title="${escapeHtml(formatDate(point.dateKey))} | ${escapeHtml(formatMeasurementValue(point.value, config.suffix))}"></span>`;
+    }).join('');
+    const first = points[0];
+    const latest = points[points.length - 1];
+
+    return `
+      <article class="body-progress-chart ${escapeHtml(config.tone)}">
+        <header>
+          <span>${escapeHtml(config.label)}</span>
+          <strong>${escapeHtml(formatBodyDelta(Number(latest?.value || 0) - Number(first?.value || 0), config.suffix))}</strong>
+        </header>
+        <div class="body-chart-bars">${bars}</div>
+        <p>${escapeHtml(formatMeasurementValue(first?.value, config.suffix))} -> ${escapeHtml(formatMeasurementValue(latest?.value, config.suffix))}</p>
+      </article>
+    `;
+  }).join('');
+}
+
 function renderBodyProgress() {
   if (!bodyProgressSummaryCards || !bodyProgressHistory) {
     return;
@@ -4813,6 +4982,28 @@ function renderBodyProgress() {
       tone: 'purple'
     }
   ]);
+
+  const insight = getBodyInsight(measurements, daysSinceLast);
+  const cycle = getBodyCycleSummary(measurements);
+
+  if (bodyProgressInsight) {
+    bodyProgressInsight.className = `body-progress-insight ${insight.tone}`;
+    bodyProgressInsight.innerHTML = `
+      <span>LEITURA</span>
+      <h3>${escapeHtml(insight.title)}</h3>
+      <p>${escapeHtml(insight.detail)}</p>
+    `;
+  }
+
+  if (bodyProgressCycle) {
+    bodyProgressCycle.innerHTML = `
+      <span>CICLO ATUAL</span>
+      <h3>${escapeHtml(cycle.label)} | ${cycle.count} medicao${cycle.count === 1 ? '' : 'es'}</h3>
+      <p>Desde ${escapeHtml(formatDate(cycle.startDate))}: peso ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | cintura ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
+    `;
+  }
+
+  renderBodyProgressCharts(measurements);
 
   if (!measurements.length) {
     bodyProgressHistory.innerHTML = '<p class="empty-state">Nenhuma medicao corporal registrada ainda.</p>';

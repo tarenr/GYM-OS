@@ -719,7 +719,7 @@ Define um modulo opcional de peso e medidas para acompanhar recomposicao corpora
 Status da v1:
 
 ```text
-Model, rotas, formulario, resumo, historico e card no dashboard implementados.
+Model, rotas, formulario, resumo, historico, card no dashboard, mini graficos, leitura inteligente, resumo por ciclo e primeira conquista corporal implementados.
 ```
 
 ### Dashboard
@@ -1195,6 +1195,17 @@ coxa direita
 coxa esquerda
 observacoes
 ```
+
+Interface:
+
+- painel `BODY_PROGRESS.sys` na aba `Evolucao`;
+- resumo de peso, cintura, abdomen e ultima medicao;
+- leitura inteligente de tendencia;
+- aviso leve quando a medicao passa de 14 dias;
+- mini graficos de peso, cintura e abdomen;
+- resumo do ciclo atual da jornada;
+- historico com editar/excluir;
+- conquista anual `Primeira Medicao`.
 
 ### Documentacao
 
