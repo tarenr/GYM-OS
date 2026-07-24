@@ -260,16 +260,45 @@ Fotos nunca devem ser publicas por padrao.
 
 ### Fase 2 - Modelo E API
 
-- Criar `src/models/BodyMeasurement.js`.
-- Criar controller.
-- Criar rotas.
-- Validar campos opcionais.
+- Implementado em `src/models/BodyMeasurement.js`.
+- Implementado em `src/controllers/bodyMeasurementController.js`.
+- Implementado em `src/routes/bodyMeasurementRoutes.js`.
+- Campos opcionais validados.
 
 ### Fase 3 - Interface Basica
 
-- Criar formulario de medicao.
-- Criar lista de medicoes.
-- Mostrar resumo inicial vs atual.
+- Implementado na aba `Evolucao`, painel `BODY_PROGRESS.sys`.
+- Formulario de medicao criado.
+- Lista de medicoes criada.
+- Resumo inicial vs atual criado.
+
+## API Implementada
+
+```text
+GET    /api/body-measurements
+GET    /api/body-measurements/:id
+POST   /api/body-measurements
+PUT    /api/body-measurements/:id
+DELETE /api/body-measurements/:id
+```
+
+## Interface Implementada
+
+Primeira versao entregue:
+
+- formulario de medicao corporal;
+- peso;
+- cintura;
+- abdomen;
+- peito;
+- braco direito;
+- braco esquerdo;
+- coxa direita;
+- coxa esquerda;
+- observacoes;
+- cards de resumo;
+- historico com editar/excluir;
+- card resumido no dashboard anual.
 
 ### Fase 4 - Graficos
 
@@ -296,4 +325,10 @@ Depois de ajustar as missoes por objetivo, implementar:
 
 ```text
 BodyMeasurement model + rotas basicas + formulario simples.
+```
+
+Status:
+
+```text
+Implementado na v1.
 ```

@@ -4,6 +4,7 @@ import express from 'express';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { bodyMeasurementRoutes } from './routes/bodyMeasurementRoutes.js';
 import { connectDatabase } from './config/database.js';
 import { dailyMissionRoutes } from './routes/dailyMissionRoutes.js';
 import { exerciseMediaRoutes } from './routes/exerciseMediaRoutes.js';
@@ -291,6 +292,7 @@ app.use('/api/daily-missions', dailyMissionRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/workout-types', workoutTypeRoutes);
 app.use('/api/workouts', workoutRoutes);
+app.use('/api/body-measurements', bodyMeasurementRoutes);
 
 app.get('/health', (request, response) => {
   response.json({ status: 'ok' });

@@ -13,6 +13,7 @@ const state = {
   templates: [],
   workoutTypes: [],
   dailyMissions: [],
+  bodyMeasurements: [],
   selectedTemplateExercises: [],
   selectedTemplateMeta: {
     level: '',
@@ -28,6 +29,7 @@ const state = {
   editingId: null,
   templateEditingId: null,
   workoutTypeEditingId: null,
+  bodyMeasurementEditingId: null,
   templateSearch: '',
   templateTypeFilter: 'all',
   templateMeasurementFilter: 'all',
@@ -200,6 +202,23 @@ const progressCompareCount = document.querySelector('#progress-compare-count');
 const progressExerciseCompare = document.querySelector('#progress-exercise-compare');
 const progressPrCount = document.querySelector('#progress-pr-count');
 const progressPrList = document.querySelector('#progress-pr-list');
+const bodyProgressCount = document.querySelector('#body-progress-count');
+const bodyProgressSummaryCards = document.querySelector('#body-progress-summary-cards');
+const bodyMeasurementForm = document.querySelector('#body-measurement-form');
+const bodyMeasuredAtInput = document.querySelector('#body-measured-at');
+const bodyWeightKgInput = document.querySelector('#body-weight-kg');
+const bodyWaistInput = document.querySelector('#body-waist');
+const bodyAbdomenInput = document.querySelector('#body-abdomen');
+const bodyChestInput = document.querySelector('#body-chest');
+const bodyRightArmInput = document.querySelector('#body-right-arm');
+const bodyLeftArmInput = document.querySelector('#body-left-arm');
+const bodyRightThighInput = document.querySelector('#body-right-thigh');
+const bodyLeftThighInput = document.querySelector('#body-left-thigh');
+const bodyNotesInput = document.querySelector('#body-notes');
+const bodyProgressStatus = document.querySelector('#body-progress-status');
+const bodyMeasurementReset = document.querySelector('#body-measurement-reset');
+const bodyMeasurementSubmit = document.querySelector('#body-measurement-submit');
+const bodyProgressHistory = document.querySelector('#body-progress-history');
 const documentationStatus = document.querySelector('#documentation-status');
 const documentationIndex = document.querySelector('#documentation-index');
 const documentationContent = document.querySelector('#documentation-content');
@@ -2749,6 +2768,12 @@ async function loadDailyMissions() {
   renderDashboard();
 }
 
+async function loadBodyMeasurements() {
+  state.bodyMeasurements = await requestJson('/api/body-measurements');
+  renderBodyProgress();
+  renderDashboard();
+}
+
 function slugifyDocumentationHeading(value = '') {
   const slug = String(value)
     .normalize('NFD')
@@ -3031,6 +3056,10 @@ function getWeeklyExecutionCommand(weeklyWorkouts = []) {
   };
 }
 
+function getLatestBodyMeasurement() {
+  return getSortedBodyMeasurements().at(-1) || null;
+}
+
 function renderJourneyCommand({ journeyPosition, weeklyStatus, weeklyQuality, weeklyWorkouts, weeklyVolume, totalXp }) {
   if (!journeyCommandGrid) {
     return;
@@ -3050,6 +3079,8 @@ function renderJourneyCommand({ journeyPosition, weeklyStatus, weeklyQuality, we
   const healthDetail = weeklyStatus.overdue > 0
     ? `${weeklyStatus.overdue} blocos atrasados`
     : `${weeklyStatus.openToday} blocos em aberto hoje`;
+  const latestBodyMeasurement = getLatestBodyMeasurement();
+  const latestBodyValues = latestBodyMeasurement?.measurementsCm || {};
 
   const cards = [
     {
@@ -3086,6 +3117,15 @@ function renderJourneyCommand({ journeyPosition, weeklyStatus, weeklyQuality, we
       value: healthLabel,
       detail: `${healthDetail} | XP total ${formatCompactNumber(totalXp)}`,
       tone: weeklyStatus.overdue > 0 ? 'red' : 'green'
+    },
+    {
+      code: 'BODY',
+      label: 'Evolucao corporal',
+      value: latestBodyMeasurement ? formatMeasurementValue(latestBodyMeasurement.weightKg, ' kg') : '-',
+      detail: latestBodyMeasurement
+        ? `Cintura ${formatMeasurementValue(latestBodyValues.waist, ' cm')} | ${formatDate(getBodyMeasurementDateKey(latestBodyMeasurement))}`
+        : 'registre a primeira medicao',
+      tone: 'orange'
     }
   ];
 
@@ -4636,6 +4676,175 @@ function renderProgress() {
   renderAnnualAchievements(items, exerciseEntries);
   renderProgressExercise(exerciseEntries);
   renderProgressLog(items);
+  renderBodyProgress();
+}
+
+function formatMeasurementValue(value, suffix = '') {
+  const number = Number(value || 0);
+
+  if (!number) {
+    return '-';
+  }
+
+  return `${number.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}${suffix}`;
+}
+
+function formatBodyDelta(value, suffix = '') {
+  const number = Number(value || 0);
+
+  if (!number) {
+    return 'sem variacao';
+  }
+
+  return `${number > 0 ? '+' : ''}${number.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}${suffix}`;
+}
+
+function getBodyMeasurementDateKey(measurement) {
+  return toDateKey(measurement.measuredAt || measurement.date || new Date());
+}
+
+function getBodyMeasurementPayload() {
+  return {
+    measuredAt: bodyMeasuredAtInput.value,
+    weightKg: Number(bodyWeightKgInput.value || 0),
+    measurementsCm: {
+      waist: Number(bodyWaistInput.value || 0),
+      abdomen: Number(bodyAbdomenInput.value || 0),
+      chest: Number(bodyChestInput.value || 0),
+      rightArm: Number(bodyRightArmInput.value || 0),
+      leftArm: Number(bodyLeftArmInput.value || 0),
+      rightThigh: Number(bodyRightThighInput.value || 0),
+      leftThigh: Number(bodyLeftThighInput.value || 0)
+    },
+    notes: bodyNotesInput.value.trim()
+  };
+}
+
+function setBodyProgressStatus(message, isError = false) {
+  if (!bodyProgressStatus) {
+    return;
+  }
+
+  bodyProgressStatus.textContent = message;
+  bodyProgressStatus.classList.toggle('error', isError);
+}
+
+function resetBodyMeasurementForm() {
+  state.bodyMeasurementEditingId = null;
+
+  if (!bodyMeasurementForm) {
+    return;
+  }
+
+  bodyMeasurementForm.reset();
+  bodyMeasuredAtInput.value = todayInputValue();
+  bodyMeasurementSubmit.textContent = 'SALVAR_MEDICAO';
+  setBodyProgressStatus('');
+}
+
+function fillBodyMeasurementForm(measurement) {
+  const values = measurement.measurementsCm || {};
+
+  state.bodyMeasurementEditingId = measurement._id;
+  bodyMeasuredAtInput.value = getBodyMeasurementDateKey(measurement);
+  bodyWeightKgInput.value = measurement.weightKg || '';
+  bodyWaistInput.value = values.waist || '';
+  bodyAbdomenInput.value = values.abdomen || '';
+  bodyChestInput.value = values.chest || '';
+  bodyRightArmInput.value = values.rightArm || '';
+  bodyLeftArmInput.value = values.leftArm || '';
+  bodyRightThighInput.value = values.rightThigh || '';
+  bodyLeftThighInput.value = values.leftThigh || '';
+  bodyNotesInput.value = measurement.notes || '';
+  bodyMeasurementSubmit.textContent = 'ATUALIZAR_MEDICAO';
+  setBodyProgressStatus('Editando medicao selecionada.');
+  bodyMeasurementForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function getSortedBodyMeasurements() {
+  return [...state.bodyMeasurements].sort((a, b) => new Date(a.measuredAt) - new Date(b.measuredAt));
+}
+
+function renderBodyProgress() {
+  if (!bodyProgressSummaryCards || !bodyProgressHistory) {
+    return;
+  }
+
+  const measurements = getSortedBodyMeasurements();
+  const first = measurements[0];
+  const latest = measurements[measurements.length - 1];
+  const latestValues = latest?.measurementsCm || {};
+  const firstValues = first?.measurementsCm || {};
+  const daysSinceLast = latest
+    ? Math.max(0, Math.floor((new Date(`${todayInputValue()}T00:00:00`) - new Date(`${getBodyMeasurementDateKey(latest)}T00:00:00`)) / 86400000))
+    : 0;
+
+  if (bodyProgressCount) {
+    bodyProgressCount.textContent = `${measurements.length} REG`;
+  }
+
+  renderSummaryCards(bodyProgressSummaryCards, [
+    {
+      icon: 'KG',
+      label: 'Peso atual',
+      value: formatMeasurementValue(latest?.weightKg, ' kg'),
+      detail: first && latest ? `${formatBodyDelta(Number(latest.weightKg || 0) - Number(first.weightKg || 0), ' kg')} desde o inicio` : 'aguardando primeira medicao',
+      tone: 'green'
+    },
+    {
+      icon: 'CIN',
+      label: 'Cintura',
+      value: formatMeasurementValue(latestValues.waist, ' cm'),
+      detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} desde o inicio` : 'medida principal da recomposicao',
+      tone: 'blue'
+    },
+    {
+      icon: 'ABD',
+      label: 'Abdomen',
+      value: formatMeasurementValue(latestValues.abdomen, ' cm'),
+      detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} desde o inicio` : 'acompanhe a tendencia',
+      tone: 'orange'
+    },
+    {
+      icon: 'DAY',
+      label: 'Ultima medicao',
+      value: latest ? formatDate(getBodyMeasurementDateKey(latest)) : '-',
+      detail: latest ? `${daysSinceLast} dias desde o ultimo registro` : 'sem registros corporais ainda',
+      tone: 'purple'
+    }
+  ]);
+
+  if (!measurements.length) {
+    bodyProgressHistory.innerHTML = '<p class="empty-state">Nenhuma medicao corporal registrada ainda.</p>';
+    return;
+  }
+
+  bodyProgressHistory.innerHTML = [...measurements].reverse().map((measurement) => {
+    const values = measurement.measurementsCm || {};
+
+    return `
+      <article class="body-progress-row">
+        <div>
+          <span class="template-code">${escapeHtml(formatDate(getBodyMeasurementDateKey(measurement)))}</span>
+          <h3>${escapeHtml(formatMeasurementValue(measurement.weightKg, ' kg'))}</h3>
+          <p>${escapeHtml([
+            `cintura ${formatMeasurementValue(values.waist, ' cm')}`,
+            `abdomen ${formatMeasurementValue(values.abdomen, ' cm')}`,
+            `peito ${formatMeasurementValue(values.chest, ' cm')}`
+          ].join(' | '))}</p>
+          <p>${escapeHtml([
+            `bracos ${formatMeasurementValue(values.rightArm, ' cm')} / ${formatMeasurementValue(values.leftArm, ' cm')}`,
+            `coxas ${formatMeasurementValue(values.rightThigh, ' cm')} / ${formatMeasurementValue(values.leftThigh, ' cm')}`
+          ].join(' | '))}</p>
+          ${measurement.notes ? `<p>${escapeHtml(measurement.notes)}</p>` : ''}
+        </div>
+        <div class="history-actions">
+          <button class="button button-ghost" type="button" data-body-action="edit" data-id="${measurement._id}">Editar</button>
+          <button class="button button-ghost" type="button" data-body-action="delete" data-id="${measurement._id}">Excluir</button>
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
 function updateMissionSteps({ hasTemplate, hasCompletedToday, isRest }) {
@@ -6525,6 +6734,62 @@ progressAchievementStatusFilter?.addEventListener('change', () => {
   renderProgress();
 });
 
+bodyMeasurementForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  setBodyProgressStatus('Salvando...');
+
+  try {
+    const payload = getBodyMeasurementPayload();
+    const url = state.bodyMeasurementEditingId ? `/api/body-measurements/${state.bodyMeasurementEditingId}` : '/api/body-measurements';
+    const method = state.bodyMeasurementEditingId ? 'PUT' : 'POST';
+
+    await requestJson(url, {
+      method,
+      body: JSON.stringify(payload)
+    });
+
+    resetBodyMeasurementForm();
+    await loadBodyMeasurements();
+    setBodyProgressStatus('Medicao salva com sucesso.');
+  } catch (error) {
+    setBodyProgressStatus(error.message, true);
+  }
+});
+
+bodyMeasurementReset?.addEventListener('click', resetBodyMeasurementForm);
+
+bodyProgressHistory?.addEventListener('click', async (event) => {
+  const button = event.target.closest('button[data-body-action]');
+
+  if (!button) {
+    return;
+  }
+
+  const measurement = state.bodyMeasurements.find((item) => item._id === button.dataset.id);
+
+  if (!measurement) {
+    setBodyProgressStatus('Medicao nao encontrada.', true);
+    return;
+  }
+
+  if (button.dataset.bodyAction === 'edit') {
+    fillBodyMeasurementForm(measurement);
+    return;
+  }
+
+  if (button.dataset.bodyAction === 'delete') {
+    const confirmed = window.confirm('Excluir esta medicao corporal?');
+
+    if (!confirmed) {
+      return;
+    }
+
+    await requestJson(`/api/body-measurements/${measurement._id}`, { method: 'DELETE' });
+    await loadBodyMeasurements();
+    setBodyProgressStatus('Medicao excluida.');
+  }
+});
+
 document.querySelectorAll('[data-history-view]').forEach((button) => {
   button.addEventListener('click', () => {
     document.querySelectorAll('[data-history-view]').forEach((item) => item.classList.remove('active'));
@@ -6913,6 +7178,7 @@ templateList.addEventListener('click', async (event) => {
 resetForm();
 resetWorkoutTypeForm();
 resetTemplateForm();
+resetBodyMeasurementForm();
 
 const initialTab = getInitialTabFromLocation();
 
@@ -6928,3 +7194,4 @@ loadWorkoutTypes()
   .then(loadTemplates)
   .catch((error) => setWorkoutTypeStatus(error.message, true));
 loadDailyMissions().catch((error) => setStatus(error.message, true));
+loadBodyMeasurements().catch((error) => setBodyProgressStatus(error.message, true));

@@ -385,6 +385,69 @@
           <div class="season-progress-grid" id="season-progress-grid"></div>
         </section>
 
+        <section class="panel body-progress-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="panel-icon">KG</span>
+              <h2>BODY_PROGRESS.sys</h2>
+            </div>
+            <span class="panel-badge" id="body-progress-count">0 REG</span>
+          </div>
+          <section class="summary-grid page-summary compact-summary" id="body-progress-summary-cards" aria-label="Resumo da evolucao corporal"></section>
+          <section class="content-grid body-progress-grid">
+            <form class="body-progress-form" id="body-measurement-form">
+              <div class="form-grid">
+                <label>
+                  DATA
+                  <input id="body-measured-at" type="date" required />
+                </label>
+                <label>
+                  PESO_KG
+                  <input id="body-weight-kg" type="number" min="0" step="0.1" placeholder="0.0" />
+                </label>
+                <label>
+                  CINTURA_CM
+                  <input id="body-waist" type="number" min="0" step="0.1" placeholder="0.0" />
+                </label>
+                <label>
+                  ABDOMEN_CM
+                  <input id="body-abdomen" type="number" min="0" step="0.1" placeholder="0.0" />
+                </label>
+                <label>
+                  PEITO_CM
+                  <input id="body-chest" type="number" min="0" step="0.1" placeholder="0.0" />
+                </label>
+                <label>
+                  BRACO_DIR_CM
+                  <input id="body-right-arm" type="number" min="0" step="0.1" placeholder="0.0" />
+                </label>
+                <label>
+                  BRACO_ESQ_CM
+                  <input id="body-left-arm" type="number" min="0" step="0.1" placeholder="0.0" />
+                </label>
+                <label>
+                  COXA_DIR_CM
+                  <input id="body-right-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
+                </label>
+                <label>
+                  COXA_ESQ_CM
+                  <input id="body-left-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
+                </label>
+              </div>
+              <label>
+                OBSERVACOES
+                <textarea id="body-notes" rows="3" maxlength="500" placeholder="// contexto da medicao"></textarea>
+              </label>
+              <div class="form-actions">
+                <span class="status-message" id="body-progress-status" role="status"></span>
+                <button class="button button-ghost" type="button" id="body-measurement-reset">Limpar</button>
+                <button class="button button-primary" type="submit" id="body-measurement-submit">SALVAR_MEDICAO</button>
+              </div>
+            </form>
+            <div class="body-progress-history" id="body-progress-history"></div>
+          </section>
+        </section>
+
         <section class="content-grid analytics-grid">
           <article class="panel">
             <div class="panel-header">

@@ -716,6 +716,12 @@ BODY_PROGRESS_SYSTEM.md
 
 Define um modulo opcional de peso e medidas para acompanhar recomposicao corporal sem transformar peso em cobranca diaria.
 
+Status da v1:
+
+```text
+Model, rotas, formulario, resumo, historico e card no dashboard implementados.
+```
+
 ### Dashboard
 
 Mostra:
@@ -1160,6 +1166,35 @@ Tem filtros por:
 - subcategoria;
 - tipo de medicao;
 - busca textual.
+
+### Evolucao Corporal
+
+Registra medicoes corporais opcionais para acompanhar recomposicao.
+
+Endpoints:
+
+```text
+GET    /api/body-measurements
+GET    /api/body-measurements/:id
+POST   /api/body-measurements
+PUT    /api/body-measurements/:id
+DELETE /api/body-measurements/:id
+```
+
+Campos da v1:
+
+```text
+data
+peso
+cintura
+abdomen
+peito
+braco direito
+braco esquerdo
+coxa direita
+coxa esquerda
+observacoes
+```
 
 ### Documentacao
 
