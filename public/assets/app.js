@@ -222,6 +222,16 @@ const documentationDocs = {
     title: 'ACADEMY_PROGRESS_SYSTEM.md',
     downloadUrl: '/ACADEMY_PROGRESS_SYSTEM.md',
     downloadLabel: 'Baixar Progressao'
+  },
+  missionGoal: {
+    title: 'MISSION_GOAL_SYSTEM.md',
+    downloadUrl: '/MISSION_GOAL_SYSTEM.md',
+    downloadLabel: 'Baixar Missoes'
+  },
+  bodyProgress: {
+    title: 'BODY_PROGRESS_SYSTEM.md',
+    downloadUrl: '/BODY_PROGRESS_SYSTEM.md',
+    downloadLabel: 'Baixar Evolucao'
   }
 };
 

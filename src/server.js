@@ -25,10 +25,14 @@ const publicPath = path.resolve(__dirname, '../public');
 const documentationPath = path.resolve(__dirname, '../DOCUMENTACAO_APP.md');
 const academyRoadmapPath = path.resolve(__dirname, '../ROADMAP_ACADEMY.md');
 const academyProgressSystemPath = path.resolve(__dirname, '../ACADEMY_PROGRESS_SYSTEM.md');
+const missionGoalSystemPath = path.resolve(__dirname, '../MISSION_GOAL_SYSTEM.md');
+const bodyProgressSystemPath = path.resolve(__dirname, '../BODY_PROGRESS_SYSTEM.md');
 const documentationFiles = {
   app: documentationPath,
   academy: academyRoadmapPath,
-  progressSystem: academyProgressSystemPath
+  progressSystem: academyProgressSystemPath,
+  missionGoal: missionGoalSystemPath,
+  bodyProgress: bodyProgressSystemPath
 };
 
 function escapeHtml(value = '') {
@@ -314,6 +318,24 @@ app.get('/ACADEMY_PROGRESS_SYSTEM.md', async (request, response, next) => {
   try {
     response.type('text/markdown; charset=utf-8');
     response.send(await readFile(academyProgressSystemPath, 'utf8'));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/MISSION_GOAL_SYSTEM.md', async (request, response, next) => {
+  try {
+    response.type('text/markdown; charset=utf-8');
+    response.send(await readFile(missionGoalSystemPath, 'utf8'));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/BODY_PROGRESS_SYSTEM.md', async (request, response, next) => {
+  try {
+    response.type('text/markdown; charset=utf-8');
+    response.send(await readFile(bodyProgressSystemPath, 'utf8'));
   } catch (error) {
     next(error);
   }

@@ -46,6 +46,18 @@ Sistema anual de progressao:
 ACADEMY_PROGRESS_SYSTEM.md
 ```
 
+Sistema de missoes por objetivo:
+
+```text
+MISSION_GOAL_SYSTEM.md
+```
+
+Sistema de evolucao corporal:
+
+```text
+BODY_PROGRESS_SYSTEM.md
+```
+
 Resumo da decisao:
 
 - **GYM-OS** e o nome oficial do produto/app;
@@ -72,6 +84,11 @@ O sistema registra:
 - heatmap de atividade;
 - XP, niveis, ranks e insignias planejadas;
 - imagens dos exercicios.
+
+Sistemas planejados:
+
+- missoes por objetivo;
+- evolucao corporal com peso e medidas.
 
 O projeto roda localmente em:
 
@@ -169,6 +186,8 @@ GYM-OS/
     seed-demo-workouts.js
     sync-wger-media.js
 
+  BODY_PROGRESS_SYSTEM.md
+  MISSION_GOAL_SYSTEM.md
   package.json
   env.example
   README.md
@@ -673,7 +692,27 @@ Documentacao
   - Manual
   - Roadmap
   - Progressao
+  - Missoes por objetivo
+  - Evolucao corporal
 ```
+
+### Sistemas Planejados
+
+Missoes por objetivo:
+
+```text
+MISSION_GOAL_SYSTEM.md
+```
+
+Define o objetivo atual como recomposicao corporal com base de forca, modalidade ativa `strength`, luta pausada e padrao semanal `A B C A B C DESC`.
+
+Evolucao corporal:
+
+```text
+BODY_PROGRESS_SYSTEM.md
+```
+
+Define um modulo opcional de peso e medidas para acompanhar recomposicao corporal sem transformar peso em cobranca diaria.
 
 ### Dashboard
 
@@ -1150,9 +1189,31 @@ A central de documentacao agora separa:
 Manual - DOCUMENTACAO_APP.md
 Roadmap - ROADMAP_ACADEMY.md
 Progressao - ACADEMY_PROGRESS_SYSTEM.md
+Missoes - MISSION_GOAL_SYSTEM.md
+Corporal - BODY_PROGRESS_SYSTEM.md
 ```
 
-O menu lateral possui um grupo `Documentacao` com atalhos para `Manual`, `Roadmap` e `Progressao`.
+O menu lateral possui um grupo `Documentacao` com atalhos para `Manual`, `Roadmap`, `Progressao`, `Missoes` e `Corporal`.
+
+Arquivos publicos:
+
+```text
+GET /DOCUMENTACAO_APP.md
+GET /ROADMAP_ACADEMY.md
+GET /ACADEMY_PROGRESS_SYSTEM.md
+GET /MISSION_GOAL_SYSTEM.md
+GET /BODY_PROGRESS_SYSTEM.md
+```
+
+Consulta via API:
+
+```text
+GET /api/documentation?doc=app
+GET /api/documentation?doc=academy
+GET /api/documentation?doc=progressSystem
+GET /api/documentation?doc=missionGoal
+GET /api/documentation?doc=bodyProgress
+```
 
 ## Imagens dos Exercicios
 
