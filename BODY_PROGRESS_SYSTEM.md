@@ -38,6 +38,8 @@ Para este objetivo, as metricas mais uteis sao:
 - peito;
 - bracos;
 - coxas;
+- quadril;
+- panturrilhas;
 - observacoes.
 
 ## Campos Da Primeira Versao
@@ -47,22 +49,22 @@ Primeira entrega recomendada:
 ```text
 data da medicao
 peso
-cintura
-abdomen
 peito
 braco direito
 braco esquerdo
+cintura
+abdomen
+quadril
 coxa direita
 coxa esquerda
+panturrilha direita
+panturrilha esquerda
 observacoes
 ```
 
 Campos para depois:
 
 ```text
-quadril
-panturrilha direita
-panturrilha esquerda
 percentual de gordura
 fotos de progresso
 meta corporal
@@ -293,8 +295,11 @@ Primeira versao entregue:
 - peito;
 - braco direito;
 - braco esquerdo;
+- quadril;
 - coxa direita;
 - coxa esquerda;
+- panturrilha direita;
+- panturrilha esquerda;
 - observacoes;
 - cards de resumo;
 - leitura inteligente de tendencia;
@@ -302,6 +307,7 @@ Primeira versao entregue:
 - mini graficos de peso, cintura e abdomen;
 - resumo por ciclo atual da jornada anual;
 - historico com editar/excluir;
+- exibicao das medidas salvas em ordem corporal;
 - card resumido no dashboard anual.
 - conquista `Primeira Medicao`.
 

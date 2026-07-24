@@ -401,43 +401,61 @@
           <section class="body-progress-chart-grid" id="body-progress-chart-grid" aria-label="Graficos de evolucao corporal"></section>
           <section class="content-grid body-progress-grid">
             <form class="body-progress-form" id="body-measurement-form">
-              <div class="form-grid">
-                <label>
+              <div class="body-measurement-grid">
+                <label class="body-measurement-field">
                   DATA
                   <input id="body-measured-at" type="date" required />
                 </label>
-                <label>
+                <label class="body-measurement-field">
                   PESO_KG
                   <input id="body-weight-kg" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
-                <label>
-                  CINTURA_CM
-                  <input id="body-waist" type="number" min="0" step="0.1" placeholder="0.0" />
-                </label>
-                <label>
-                  ABDOMEN_CM
-                  <input id="body-abdomen" type="number" min="0" step="0.1" placeholder="0.0" />
-                </label>
-                <label>
+                <label class="body-measurement-field full">
                   PEITO_CM
                   <input id="body-chest" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
-                <label>
-                  BRACO_DIR_CM
-                  <input id="body-right-arm" type="number" min="0" step="0.1" placeholder="0.0" />
+                <div class="body-measurement-pair">
+                  <label class="body-measurement-field">
+                    BRACO_DIR_CM
+                    <input id="body-right-arm" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                  <label class="body-measurement-field">
+                    BRACO_ESQ_CM
+                    <input id="body-left-arm" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                </div>
+                <label class="body-measurement-field full">
+                  CINTURA_CM
+                  <input id="body-waist" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
-                <label>
-                  BRACO_ESQ_CM
-                  <input id="body-left-arm" type="number" min="0" step="0.1" placeholder="0.0" />
+                <label class="body-measurement-field full">
+                  ABDOMEN_CM
+                  <input id="body-abdomen" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
-                <label>
-                  COXA_DIR_CM
-                  <input id="body-right-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
+                <label class="body-measurement-field full">
+                  QUADRIL_CM
+                  <input id="body-hips" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
-                <label>
-                  COXA_ESQ_CM
-                  <input id="body-left-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
-                </label>
+                <div class="body-measurement-pair">
+                  <label class="body-measurement-field">
+                    COXA_DIR_CM
+                    <input id="body-right-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                  <label class="body-measurement-field">
+                    COXA_ESQ_CM
+                    <input id="body-left-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                </div>
+                <div class="body-measurement-pair">
+                  <label class="body-measurement-field">
+                    PANTURRILHA_DIR_CM
+                    <input id="body-right-calf" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                  <label class="body-measurement-field">
+                    PANTURRILHA_ESQ_CM
+                    <input id="body-left-calf" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                </div>
               </div>
               <label>
                 OBSERVACOES

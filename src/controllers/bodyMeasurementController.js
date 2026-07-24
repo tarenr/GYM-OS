@@ -1,7 +1,18 @@
 import mongoose from 'mongoose';
 import { BodyMeasurement } from '../models/BodyMeasurement.js';
 
-const measurementFields = ['waist', 'abdomen', 'chest', 'rightArm', 'leftArm', 'rightThigh', 'leftThigh'];
+const measurementFields = [
+  'chest',
+  'rightArm',
+  'leftArm',
+  'waist',
+  'abdomen',
+  'hips',
+  'rightThigh',
+  'leftThigh',
+  'rightCalf',
+  'leftCalf'
+];
 
 function normalizeNumber(value) {
   const number = Number(value || 0);

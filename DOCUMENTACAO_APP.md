@@ -1186,13 +1186,16 @@ Campos da v1:
 ```text
 data
 peso
-cintura
-abdomen
 peito
 braco direito
 braco esquerdo
+cintura
+abdomen
+quadril
 coxa direita
 coxa esquerda
+panturrilha direita
+panturrilha esquerda
 observacoes
 ```
 
@@ -1205,6 +1208,7 @@ Interface:
 - mini graficos de peso, cintura e abdomen;
 - resumo do ciclo atual da jornada;
 - historico com editar/excluir;
+- exibicao em ordem corporal, com pares direito/esquerdo na mesma linha;
 - conquista anual `Primeira Medicao`.
 
 ### Documentacao

@@ -5,10 +5,13 @@ const measurementsSchema = new mongoose.Schema(
     waist: { type: Number, default: 0, min: 0, max: 300 },
     abdomen: { type: Number, default: 0, min: 0, max: 300 },
     chest: { type: Number, default: 0, min: 0, max: 300 },
+    hips: { type: Number, default: 0, min: 0, max: 300 },
     rightArm: { type: Number, default: 0, min: 0, max: 150 },
     leftArm: { type: Number, default: 0, min: 0, max: 150 },
     rightThigh: { type: Number, default: 0, min: 0, max: 200 },
-    leftThigh: { type: Number, default: 0, min: 0, max: 200 }
+    leftThigh: { type: Number, default: 0, min: 0, max: 200 },
+    rightCalf: { type: Number, default: 0, min: 0, max: 150 },
+    leftCalf: { type: Number, default: 0, min: 0, max: 150 }
   },
   { _id: false }
 );

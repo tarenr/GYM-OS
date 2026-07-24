@@ -210,10 +210,13 @@ const bodyWeightKgInput = document.querySelector('#body-weight-kg');
 const bodyWaistInput = document.querySelector('#body-waist');
 const bodyAbdomenInput = document.querySelector('#body-abdomen');
 const bodyChestInput = document.querySelector('#body-chest');
+const bodyHipsInput = document.querySelector('#body-hips');
 const bodyRightArmInput = document.querySelector('#body-right-arm');
 const bodyLeftArmInput = document.querySelector('#body-left-arm');
 const bodyRightThighInput = document.querySelector('#body-right-thigh');
 const bodyLeftThighInput = document.querySelector('#body-left-thigh');
+const bodyRightCalfInput = document.querySelector('#body-right-calf');
+const bodyLeftCalfInput = document.querySelector('#body-left-calf');
 const bodyNotesInput = document.querySelector('#body-notes');
 const bodyProgressStatus = document.querySelector('#body-progress-status');
 const bodyMeasurementReset = document.querySelector('#body-measurement-reset');
@@ -4721,13 +4724,16 @@ function getBodyMeasurementPayload() {
     measuredAt: bodyMeasuredAtInput.value,
     weightKg: Number(bodyWeightKgInput.value || 0),
     measurementsCm: {
-      waist: Number(bodyWaistInput.value || 0),
-      abdomen: Number(bodyAbdomenInput.value || 0),
       chest: Number(bodyChestInput.value || 0),
       rightArm: Number(bodyRightArmInput.value || 0),
       leftArm: Number(bodyLeftArmInput.value || 0),
+      waist: Number(bodyWaistInput.value || 0),
+      abdomen: Number(bodyAbdomenInput.value || 0),
+      hips: Number(bodyHipsInput.value || 0),
       rightThigh: Number(bodyRightThighInput.value || 0),
-      leftThigh: Number(bodyLeftThighInput.value || 0)
+      leftThigh: Number(bodyLeftThighInput.value || 0),
+      rightCalf: Number(bodyRightCalfInput.value || 0),
+      leftCalf: Number(bodyLeftCalfInput.value || 0)
     },
     notes: bodyNotesInput.value.trim()
   };
@@ -4764,10 +4770,13 @@ function fillBodyMeasurementForm(measurement) {
   bodyWaistInput.value = values.waist || '';
   bodyAbdomenInput.value = values.abdomen || '';
   bodyChestInput.value = values.chest || '';
+  bodyHipsInput.value = values.hips || '';
   bodyRightArmInput.value = values.rightArm || '';
   bodyLeftArmInput.value = values.leftArm || '';
   bodyRightThighInput.value = values.rightThigh || '';
   bodyLeftThighInput.value = values.leftThigh || '';
+  bodyRightCalfInput.value = values.rightCalf || '';
+  bodyLeftCalfInput.value = values.leftCalf || '';
   bodyNotesInput.value = measurement.notes || '';
   bodyMeasurementSubmit.textContent = 'ATUALIZAR_MEDICAO';
   setBodyProgressStatus('Editando medicao selecionada.');
@@ -4934,6 +4943,39 @@ function renderBodyProgressCharts(measurements) {
   }).join('');
 }
 
+function getBodyMeasurementLines(values = {}) {
+  return [
+    {
+      label: 'Peito',
+      value: formatMeasurementValue(values.chest, ' cm')
+    },
+    {
+      label: 'Bracos',
+      value: `Dir ${formatMeasurementValue(values.rightArm, ' cm')} | Esq ${formatMeasurementValue(values.leftArm, ' cm')}`
+    },
+    {
+      label: 'Cintura',
+      value: formatMeasurementValue(values.waist, ' cm')
+    },
+    {
+      label: 'Abdomen',
+      value: formatMeasurementValue(values.abdomen, ' cm')
+    },
+    {
+      label: 'Quadril',
+      value: formatMeasurementValue(values.hips, ' cm')
+    },
+    {
+      label: 'Coxas',
+      value: `Dir ${formatMeasurementValue(values.rightThigh, ' cm')} | Esq ${formatMeasurementValue(values.leftThigh, ' cm')}`
+    },
+    {
+      label: 'Panturrilhas',
+      value: `Dir ${formatMeasurementValue(values.rightCalf, ' cm')} | Esq ${formatMeasurementValue(values.leftCalf, ' cm')}`
+    }
+  ];
+}
+
 function renderBodyProgress() {
   if (!bodyProgressSummaryCards || !bodyProgressHistory) {
     return;
@@ -5018,15 +5060,14 @@ function renderBodyProgress() {
         <div>
           <span class="template-code">${escapeHtml(formatDate(getBodyMeasurementDateKey(measurement)))}</span>
           <h3>${escapeHtml(formatMeasurementValue(measurement.weightKg, ' kg'))}</h3>
-          <p>${escapeHtml([
-            `cintura ${formatMeasurementValue(values.waist, ' cm')}`,
-            `abdomen ${formatMeasurementValue(values.abdomen, ' cm')}`,
-            `peito ${formatMeasurementValue(values.chest, ' cm')}`
-          ].join(' | '))}</p>
-          <p>${escapeHtml([
-            `bracos ${formatMeasurementValue(values.rightArm, ' cm')} / ${formatMeasurementValue(values.leftArm, ' cm')}`,
-            `coxas ${formatMeasurementValue(values.rightThigh, ' cm')} / ${formatMeasurementValue(values.leftThigh, ' cm')}`
-          ].join(' | '))}</p>
+          <div class="body-measurement-lines">
+            ${getBodyMeasurementLines(values).map((line) => `
+              <p>
+                <span>${escapeHtml(line.label)}</span>
+                <strong>${escapeHtml(line.value)}</strong>
+              </p>
+            `).join('')}
+          </div>
           ${measurement.notes ? `<p>${escapeHtml(measurement.notes)}</p>` : ''}
         </div>
         <div class="history-actions">

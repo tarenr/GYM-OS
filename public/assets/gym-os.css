@@ -1383,6 +1383,29 @@ h4 {
   padding: 16px;
 }
 
+.body-measurement-grid,
+.body-measurement-pair {
+  display: grid;
+  gap: 12px;
+}
+
+.body-measurement-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.body-measurement-pair,
+.body-measurement-field.full {
+  grid-column: 1 / -1;
+}
+
+.body-measurement-pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.body-measurement-field {
+  min-width: 0;
+}
+
 .body-progress-row {
   display: flex;
   justify-content: space-between;
@@ -1410,6 +1433,33 @@ h4 {
   color: var(--muted);
   font-size: 0.78rem;
   overflow-wrap: anywhere;
+}
+
+.body-measurement-lines {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.body-measurement-lines p {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.45fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 6px;
+}
+
+.body-measurement-lines span {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.body-measurement-lines strong {
+  color: var(--muted-strong);
+  font-size: 0.78rem;
 }
 
 .progress-exercise-panel {
@@ -4196,6 +4246,11 @@ textarea:focus {
 
   .body-progress-insight-grid,
   .body-progress-chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .body-measurement-grid,
+  .body-measurement-pair {
     grid-template-columns: 1fr;
   }
 
