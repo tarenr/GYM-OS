@@ -1011,7 +1011,13 @@ function getWorkoutForMissionBlock(dateKey, block) {
 
   return completedWorkouts.find((workout) => (
     workout.workoutCode !== block.workoutCode
-    && !workout.missionOriginalWorkoutCode
+    && (
+      !workout.missionOriginalWorkoutCode
+      || (
+        toDateKey(workout.missionDate || workout.date) === dateKey
+        && workout.missionBlockType === block.type
+      )
+    )
     && getWorkoutBlockType(workout) === block.type
   ));
 }
@@ -1040,7 +1046,13 @@ function getWorkoutAttemptForMissionBlock(dateKey, block) {
 
   return completedWorkouts.find((workout) => (
     workout.workoutCode !== block.workoutCode
-    && !workout.missionOriginalWorkoutCode
+    && (
+      !workout.missionOriginalWorkoutCode
+      || (
+        toDateKey(workout.missionDate || workout.date) === dateKey
+        && workout.missionBlockType === block.type
+      )
+    )
     && getWorkoutBlockType(workout) === block.type
   ));
 }
