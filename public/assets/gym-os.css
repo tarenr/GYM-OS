@@ -440,27 +440,37 @@ h4 {
 
 .hero-metrics span,
 .stat-card {
+  --stat-accent: var(--phosphor);
+  --stat-accent-soft: rgba(0, 255, 65, 0.08);
   position: relative;
   display: grid;
   gap: 5px;
   min-height: 78px;
   padding: 16px;
   border: 1px solid var(--border);
-  border-left: 3px solid var(--phosphor);
+  border-left: 4px solid var(--stat-accent);
   border-radius: 0;
   background: var(--bg-panel);
   color: var(--muted);
   overflow: hidden;
 }
 
-.hero-metrics span::before,
-.stat-card::before {
+.hero-metrics span::before {
   content: "";
   position: absolute;
   inset: 0 auto auto 0;
   width: 100%;
   height: 2px;
   background: linear-gradient(90deg, var(--green), transparent);
+}
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--stat-accent), transparent 92%);
+  box-shadow: 0 0 16px var(--stat-accent);
 }
 
 .hero-metrics strong {
@@ -482,9 +492,34 @@ h4 {
 }
 
 .stat-card:hover {
-  border-left-color: var(--phosphor);
-  box-shadow: var(--shadow), 0 0 18px rgba(0, 255, 135, 0.06);
+  border-left-color: var(--stat-accent);
+  box-shadow: var(--shadow), 0 0 18px var(--stat-accent-soft);
   transform: translateY(-2px);
+}
+
+.dashboard-grid .stat-card:nth-child(1) {
+  --stat-accent: var(--phosphor);
+  --stat-accent-soft: rgba(0, 255, 135, 0.08);
+}
+
+.dashboard-grid .stat-card:nth-child(2) {
+  --stat-accent: var(--gold);
+  --stat-accent-soft: rgba(210, 153, 34, 0.1);
+}
+
+.dashboard-grid .stat-card:nth-child(3) {
+  --stat-accent: var(--volt);
+  --stat-accent-soft: rgba(88, 166, 255, 0.1);
+}
+
+.dashboard-grid .stat-card:nth-child(4) {
+  --stat-accent: #36f4c7;
+  --stat-accent-soft: rgba(54, 244, 199, 0.1);
+}
+
+.dashboard-grid .stat-card:nth-child(5) {
+  --stat-accent: var(--ember);
+  --stat-accent-soft: rgba(248, 81, 73, 0.1);
 }
 
 .journey-command-panel {
@@ -499,14 +534,53 @@ h4 {
 }
 
 .journey-command-card {
+  --command-accent: var(--phosphor);
+  --command-accent-soft: rgba(0, 255, 65, 0.08);
+  position: relative;
   display: grid;
   grid-template-columns: 46px minmax(0, 1fr);
   gap: 12px;
   min-width: 0;
   border: 1px solid var(--border);
+  border-left: 4px solid var(--command-accent);
   border-radius: 8px;
   background: var(--bg);
   padding: 14px;
+  overflow: hidden;
+}
+
+.journey-command-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--command-accent), transparent 92%);
+  box-shadow: 0 0 14px var(--command-accent);
+}
+
+.journey-command-card:nth-child(1) {
+  --command-accent: var(--phosphor);
+  --command-accent-soft: rgba(0, 255, 135, 0.08);
+}
+
+.journey-command-card:nth-child(2) {
+  --command-accent: var(--gold);
+  --command-accent-soft: rgba(210, 153, 34, 0.1);
+}
+
+.journey-command-card:nth-child(3) {
+  --command-accent: var(--volt);
+  --command-accent-soft: rgba(88, 166, 255, 0.1);
+}
+
+.journey-command-card:nth-child(4) {
+  --command-accent: #36f4c7;
+  --command-accent-soft: rgba(54, 244, 199, 0.1);
+}
+
+.journey-command-card:nth-child(5) {
+  --command-accent: var(--ember);
+  --command-accent-soft: rgba(248, 81, 73, 0.1);
 }
 
 .journey-command-card > span {
@@ -514,10 +588,10 @@ h4 {
   width: 40px;
   height: 40px;
   place-items: center;
-  border: 1px solid rgba(0, 255, 65, 0.28);
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
-  background: rgba(0, 255, 65, 0.08);
-  color: var(--green);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
   font-size: 0.62rem;
   font-weight: 900;
 }
@@ -541,27 +615,27 @@ h4 {
 }
 
 .journey-command-card.blue > span {
-  border-color: rgba(88, 166, 255, 0.34);
-  background: rgba(88, 166, 255, 0.1);
-  color: var(--blue);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
 }
 
 .journey-command-card.orange > span {
-  border-color: rgba(210, 153, 34, 0.34);
-  background: rgba(210, 153, 34, 0.1);
-  color: var(--orange);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
 }
 
 .journey-command-card.red > span {
-  border-color: rgba(248, 81, 73, 0.34);
-  background: rgba(248, 81, 73, 0.1);
-  color: var(--red);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
 }
 
 .journey-command-card.purple > span {
-  border-color: rgba(210, 168, 255, 0.34);
-  background: rgba(210, 168, 255, 0.1);
-  color: #d2a8ff;
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
 }
 
 .stat-top {
@@ -578,9 +652,9 @@ h4 {
   justify-content: center;
   padding: 2px 8px;
   min-height: 22px;
-  border: 1px solid var(--phosphor-dim);
-  background: transparent;
-  color: var(--phosphor);
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
   font-family: var(--font-display);
   font-size: 0.72rem;
   font-weight: 700;
@@ -590,21 +664,21 @@ h4 {
 }
 
 .stat-blue .stat-icon {
-  border-color: rgba(88, 166, 255, 0.26);
-  background: rgba(88, 166, 255, 0.1);
-  color: var(--blue);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
 }
 
 .stat-red .stat-icon {
-  border-color: rgba(248, 81, 73, 0.26);
-  background: rgba(248, 81, 73, 0.1);
-  color: var(--red);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
 }
 
 .stat-orange .stat-icon {
-  border-color: rgba(210, 153, 34, 0.3);
-  background: rgba(210, 153, 34, 0.12);
-  color: var(--orange);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
 }
 
 .stat-trend {
@@ -619,18 +693,6 @@ h4 {
   font-size: 0.66rem;
   font-weight: 900;
   text-transform: uppercase;
-}
-
-.stat-blue::before {
-  background: linear-gradient(90deg, var(--blue), transparent);
-}
-
-.stat-red::before {
-  background: linear-gradient(90deg, var(--red), transparent);
-}
-
-.stat-orange::before {
-  background: linear-gradient(90deg, var(--orange), transparent);
 }
 
 .stat-label,
@@ -654,7 +716,7 @@ h4 {
 }
 
 .stat-value {
-  color: var(--phosphor);
+  color: var(--stat-accent);
   margin-top: 6px;
   font-family: var(--font-display);
   font-size: 2.2rem;
@@ -663,15 +725,15 @@ h4 {
 }
 
 .stat-blue .stat-value {
-  color: var(--volt);
+  color: var(--stat-accent);
 }
 
 .stat-red .stat-value {
-  color: var(--ember);
+  color: var(--stat-accent);
 }
 
 .stat-orange .stat-value {
-  color: var(--gold);
+  color: var(--stat-accent);
 }
 
 .xp-bar {
