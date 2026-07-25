@@ -1384,6 +1384,30 @@ h4 {
   fill: var(--bg);
   stroke: var(--green);
   stroke-width: 2;
+  cursor: help;
+  outline: none;
+  transition: filter 0.15s ease, r 0.15s ease, stroke-width 0.15s ease;
+}
+
+.trend-dot:hover,
+.trend-dot:focus {
+  filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.55));
+  stroke-width: 3;
+}
+
+.trend-dot-best {
+  fill: rgba(210, 153, 34, 0.18);
+  stroke: var(--gold);
+}
+
+.trend-dot-current {
+  fill: rgba(88, 166, 255, 0.16);
+  stroke: var(--volt);
+}
+
+.trend-dot-empty {
+  opacity: 0.46;
+  stroke: var(--muted);
 }
 
 .trend-axis-text {

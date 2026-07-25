@@ -1564,8 +1564,13 @@ function renderDashboardVolumeChart() {
   const points = trend.map((week, index) => {
     const x = left + (chartWidth / Math.max(1, trend.length - 1)) * index;
     const y = top + chartHeight - (week.volume / maxVolume) * chartHeight;
+    const previousVolume = trend[index - 1]?.volume ?? null;
+    const delta = previousVolume === null ? 0 : week.volume - previousVolume;
+    const deltaLabel = previousVolume === null
+      ? 'primeira semana da serie'
+      : `${delta >= 0 ? '+' : ''}${formatCompactNumber(delta)} kg vs semana anterior`;
 
-    return { ...week, x, y };
+    return { ...week, delta, deltaLabel, x, y };
   });
   const totalTrendVolume = trend.reduce((total, week) => total + week.volume, 0);
   const bestWeek = trend.reduce((best, week) => (week.volume > best.volume ? week : best), trend[0]);
@@ -1607,11 +1612,33 @@ function renderDashboardVolumeChart() {
       }).join('')}
       <path class="trend-area" d="${areaPath}"></path>
       <path class="trend-line" d="${linePath}"></path>
-      ${points.map((point) => `
-        <circle class="trend-dot" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="4">
-          <title>${point.label}: ${formatNumber(point.volume)} kg | ${point.workouts} treinos</title>
+      ${points.map((point, index) => {
+        const isBestPoint = point.label === bestWeek.label && point.volume === bestWeek.volume;
+        const isCurrentPoint = index === points.length - 1;
+        const pointRole = isBestPoint
+          ? 'melhor semana'
+          : isCurrentPoint
+            ? 'semana atual'
+            : point.volume > 0
+              ? 'semana com treino'
+              : 'sem volume registrado';
+        const tooltip = `${point.label} | ${pointRole}
+Volume: ${formatNumber(point.volume)} kg
+Treinos: ${point.workouts}
+${point.deltaLabel}`;
+        const dotClass = [
+          'trend-dot',
+          isBestPoint ? 'trend-dot-best' : '',
+          isCurrentPoint ? 'trend-dot-current' : '',
+          point.volume <= 0 ? 'trend-dot-empty' : ''
+        ].filter(Boolean).join(' ');
+
+        return `
+        <circle class="${dotClass}" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="${isBestPoint || isCurrentPoint ? 5 : 4}" tabindex="0" role="img" aria-label="${escapeHtml(tooltip)}">
+          <title>${escapeHtml(tooltip)}</title>
         </circle>
-      `).join('')}
+      `;
+      }).join('')}
       ${points.filter((_, index) => index % 2 === 0 || index === points.length - 1).map((point) => `
         <text class="trend-axis-text" x="${point.x.toFixed(2)}" y="${height - 14}" text-anchor="middle">${escapeHtml(point.label)}</text>
       `).join('')}
