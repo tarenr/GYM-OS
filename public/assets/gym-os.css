@@ -228,9 +228,11 @@ button:disabled {
 /* ---------- FIGHTER CARD HEADER ---------- */
 .fighter-card {
   position: relative;
-  background: linear-gradient(120deg, rgba(0,255,135,0.07), rgba(13,21,18,0.4) 40%);
-  border: 1px solid var(--border);
-  border-top: none;
+  background:
+    linear-gradient(120deg, rgba(0, 255, 135, 0.09), rgba(13, 21, 18, 0.46) 40%),
+    rgba(6, 9, 8, 0.76);
+  border: 1px solid rgba(0, 255, 135, 0.28);
+  border-top-color: rgba(0, 255, 135, 0.34);
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%);
   padding: 26px 32px 34px 28px;
   display: flex;
@@ -240,6 +242,10 @@ button:disabled {
   gap: 24px;
   margin-bottom: 24px;
   overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 255, 135, 0.07),
+    inset 0 1px 0 rgba(0, 255, 135, 0.24),
+    0 16px 34px rgba(0, 0, 0, 0.3);
   z-index: 20;
 }
 
@@ -249,9 +255,9 @@ button:disabled {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 2px;
-  background: linear-gradient(var(--phosphor), transparent);
-  box-shadow: 0 0 12px var(--phosphor);
+  width: 3px;
+  background: linear-gradient(var(--phosphor), rgba(0, 255, 135, 0.34), transparent);
+  box-shadow: 0 0 18px rgba(0, 255, 135, 0.9);
 }
 
 .fc-left {
