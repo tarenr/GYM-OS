@@ -3385,29 +3385,40 @@ function renderDashboardEvolutionSubtab() {
   }
 
   if (dashSeasonGrid) {
-    dashSeasonGrid.innerHTML = academySeasons.map((season) => {
-      const isCurrentSeason = season.number === position.seasonNumber;
+    const progressItems = [
+      {
+        label: 'Jornada anual',
+        value: `${position.annualPercent}%`,
+        detail: `Semana ${position.week}/${academyJourneyWeeks}`,
+        percent: position.annualPercent,
+        className: 'annual'
+      },
+      {
+        label: `Temporada ${position.seasonNumber} - ${position.season.name}`,
+        value: `${position.seasonPercent}%`,
+        detail: position.season.focus,
+        percent: position.seasonPercent,
+        className: 'season'
+      },
+      {
+        label: `Ciclo ${position.cycleInSeason}`,
+        value: `${position.cyclePercent}%`,
+        detail: `Semana ${position.weekInCycle}/${academyCycleWeeks} do ciclo atual`,
+        percent: position.cyclePercent,
+        className: 'cycle'
+      }
+    ];
 
-      return `
-        <article class="season-card ${isCurrentSeason ? 'active-season' : ''}">
-          <header>
-            <span>TEMPORADA ${season.number}</span>
-            <strong>${escapeHtml(season.name)}</strong>
-          </header>
-          <p>${escapeHtml(season.focus)}</p>
-          <div class="season-weeks">
-            ${Array.from({ length: academySeasonWeeks }, (_, index) => {
-              const weekNumber = ((season.number - 1) * academySeasonWeeks) + index + 1;
-              const isCompleted = weekNumber < position.week;
-              const isCurrent = weekNumber === position.week;
-              const stateClass = isCompleted ? 'completed' : isCurrent ? 'current' : 'future';
-
-              return `<span class="season-week-dot ${stateClass}" title="Semana ${weekNumber}"></span>`;
-            }).join('')}
-          </div>
-        </article>
-      `;
-    }).join('');
+    dashSeasonGrid.innerHTML = progressItems.map((item) => `
+      <article class="season-progress-card ${escapeHtml(item.className)}">
+        <div>
+          <span>${escapeHtml(item.label)}</span>
+          <strong>${escapeHtml(item.value)}</strong>
+        </div>
+        <p>${escapeHtml(item.detail)}</p>
+        <div class="achievement-meter"><span style="width:${item.percent}%"></span></div>
+      </article>
+    `).join('');
   }
 
   // 3. Body Progress Section
@@ -7639,6 +7650,9 @@ document.querySelectorAll('.dash-subnav-btn').forEach((button) => {
     const targetSubtab = document.getElementById(`dash-subtab-${targetTab}`);
     if (targetSubtab) {
       targetSubtab.classList.add('active');
+    }
+    if (targetTab === 'evolution') {
+      renderDashboardEvolutionSubtab();
     }
   });
 });
