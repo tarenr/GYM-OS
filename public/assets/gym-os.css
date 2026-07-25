@@ -1331,13 +1331,13 @@ h4 {
   display: grid;
   flex: 1;
   gap: 16px;
-  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.85fr);
+  grid-template-columns: minmax(0, 1.7fr) minmax(250px, 0.8fr);
   padding: 18px 0 0;
 }
 
 .volume-chart {
   display: grid;
-  height: 230px;
+  height: 270px;
   min-height: 0;
   place-items: center;
   border: 1px solid var(--border);
@@ -1455,21 +1455,21 @@ h4 {
 .muscle-distribution {
   display: grid;
   flex: 1;
-  gap: 14px;
+  gap: 10px;
   align-content: start;
-  padding: 18px 20px 20px;
+  padding: 16px 18px 18px;
 }
 
 .muscle-metric-summary {
   display: grid;
-  gap: 5px;
+  gap: 4px;
   border: 1px solid var(--border);
   border-left: 4px solid var(--phosphor);
   border-radius: 8px;
   background:
     linear-gradient(90deg, rgba(0, 255, 135, 0.07), rgba(88, 166, 255, 0.035)),
     var(--bg);
-  padding: 12px;
+  padding: 10px;
 }
 
 .muscle-metric-summary span {
@@ -1496,19 +1496,19 @@ h4 {
 .muscle-radar-wrap {
   display: grid;
   place-items: center;
-  min-height: 310px;
+  min-height: 250px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background:
     radial-gradient(circle at center, rgba(0, 255, 135, 0.07), transparent 52%),
     var(--bg);
-  padding: 10px;
+  padding: 8px;
 }
 
 .muscle-radar-wrap canvas {
   width: 100% !important;
-  max-width: 420px;
-  height: 290px !important;
+  max-width: 360px;
+  height: 235px !important;
 }
 
 /* Muscle Bars */
@@ -1516,18 +1516,18 @@ h4 {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 7px;
 }
 
 .muscle-item {
   display: grid;
   min-width: 0;
-  gap: 7px;
+  gap: 5px;
   border: 1px solid var(--border);
   border-left: 4px solid var(--phosphor);
   border-radius: 8px;
   background: rgba(0, 255, 135, 0.035);
-  padding: 10px;
+  padding: 8px 10px;
   outline: none;
 }
 
@@ -4952,6 +4952,10 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
+  .volume-chart {
+    height: 245px;
+  }
+
   .chart-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -5182,7 +5186,7 @@ textarea:focus {
   }
 
   .volume-chart {
-    height: 200px;
+    height: 210px;
   }
 
   .chart-summary {
