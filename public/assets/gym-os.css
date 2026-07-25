@@ -465,12 +465,7 @@ h4 {
 }
 
 .stat-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--stat-accent), transparent 92%);
-  box-shadow: 0 0 16px var(--stat-accent);
+  content: none;
 }
 
 .hero-metrics strong {
@@ -550,12 +545,7 @@ h4 {
 }
 
 .journey-command-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--command-accent), transparent 92%);
-  box-shadow: 0 0 14px var(--command-accent);
+  content: none;
 }
 
 .journey-command-card:nth-child(1) {
@@ -588,10 +578,10 @@ h4 {
   width: 40px;
   height: 40px;
   place-items: center;
-  border: 1px solid var(--border-strong);
+  border: 1px solid color-mix(in srgb, var(--command-accent) 45%, transparent);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text);
+  background: var(--command-accent-soft);
+  color: var(--command-accent);
   font-size: 0.62rem;
   font-weight: 900;
 }
@@ -615,27 +605,27 @@ h4 {
 }
 
 .journey-command-card.blue > span {
-  border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text);
+  border-color: color-mix(in srgb, var(--command-accent) 45%, transparent);
+  background: var(--command-accent-soft);
+  color: var(--command-accent);
 }
 
 .journey-command-card.orange > span {
-  border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text);
+  border-color: color-mix(in srgb, var(--command-accent) 45%, transparent);
+  background: var(--command-accent-soft);
+  color: var(--command-accent);
 }
 
 .journey-command-card.red > span {
-  border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text);
+  border-color: color-mix(in srgb, var(--command-accent) 45%, transparent);
+  background: var(--command-accent-soft);
+  color: var(--command-accent);
 }
 
 .journey-command-card.purple > span {
-  border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text);
+  border-color: color-mix(in srgb, var(--command-accent) 45%, transparent);
+  background: var(--command-accent-soft);
+  color: var(--command-accent);
 }
 
 .stat-top {
@@ -652,9 +642,9 @@ h4 {
   justify-content: center;
   padding: 2px 8px;
   min-height: 22px;
-  border: 1px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--stat-accent) 42%, transparent);
+  background: var(--stat-accent-soft);
+  color: var(--stat-accent);
   font-family: var(--font-display);
   font-size: 0.72rem;
   font-weight: 700;
@@ -664,21 +654,21 @@ h4 {
 }
 
 .stat-blue .stat-icon {
-  border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text);
+  border-color: color-mix(in srgb, var(--stat-accent) 42%, transparent);
+  background: var(--stat-accent-soft);
+  color: var(--stat-accent);
 }
 
 .stat-red .stat-icon {
-  border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text);
+  border-color: color-mix(in srgb, var(--stat-accent) 42%, transparent);
+  background: var(--stat-accent-soft);
+  color: var(--stat-accent);
 }
 
 .stat-orange .stat-icon {
-  border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text);
+  border-color: color-mix(in srgb, var(--stat-accent) 42%, transparent);
+  background: var(--stat-accent-soft);
+  color: var(--stat-accent);
 }
 
 .stat-trend {
