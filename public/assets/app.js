@@ -102,7 +102,10 @@ const exercisePageMeasurementFilter = document.querySelector('#exercise-page-mea
 const exercisePageSearch = document.querySelector('#exercise-page-search');
 const exercisePageList = document.querySelector('#exercise-page-list');
 const exerciseSummaryCards = document.querySelector('#exercise-summary-cards');
-const hudStreak = document.querySelector('#hud-streak');
+const hudStreakNum = document.querySelector('#hud-streak-num');
+const hudPlayerInfo = document.querySelector('#hud-player-info');
+const hudLevelRing = document.querySelector('#hud-level-ring');
+const hudLevelNum = document.querySelector('#hud-level-num');
 const dashboardJourneyDay = document.querySelector('#dashboard-journey-day');
 const dashboardJourneySeason = document.querySelector('#dashboard-journey-season');
 const dashboardJourneyText = document.querySelector('#dashboard-journey-text');
@@ -3283,7 +3286,25 @@ function renderDashboard() {
   const rank = getRankForLevel(level.level);
   const xpProgress = Math.min(100, Math.round((level.currentXp / level.nextLevelXp) * 100));
 
-  hudStreak.textContent = `${currentStreak} DAYS`;
+  if (hudStreakNum) {
+    hudStreakNum.textContent = currentStreak;
+  }
+  
+  if (hudPlayerInfo) {
+    hudPlayerInfo.innerHTML = `PLAYER: TAREN &nbsp;/&nbsp; TIER 1 &middot; CICLO ${journeyPosition.season.name.replace('Ciclo ', '') || '1'} &nbsp;/&nbsp; ACADEMY BUILD`;
+  }
+  
+  if (hudLevelNum) {
+    hudLevelNum.textContent = level.level;
+  }
+  
+  if (hudLevelRing) {
+    const lvlCirc = 163.4;
+    requestAnimationFrame(() => {
+      hudLevelRing.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
+      hudLevelRing.style.strokeDashoffset = lvlCirc * (1 - (xpProgress / 100));
+    });
+  }
   dashboardJourneyDay.textContent = journeyDay;
   dashboardJourneySeason.textContent = journeyPosition.label;
   dashboardJourneyText.textContent = `${journeyPosition.season.name} | semana ${journeyPosition.weekInSeason}/${academySeasonWeeks}`;

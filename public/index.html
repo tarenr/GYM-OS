@@ -53,21 +53,26 @@
       </aside>
 
       <main class="app-shell">
-      <header class="hud-header">
-        <div class="hud-logo">
-          <div class="hud-mark">&lt;/&gt;</div>
-          <div>
+      <header class="fighter-card">
+        <div class="fc-left">
+          <div class="fc-mark">GO</div>
+          <div class="fc-title">
             <h1>GYM<span>-OS</span></h1>
-            <p>Estrategia Nerd Academy | Projeto Anual 2026</p>
+            <p id="hud-player-info">PLAYER: TAREN &nbsp;/&nbsp; TIER 1 · CICLO 1 &nbsp;/&nbsp; ACADEMY BUILD</p>
           </div>
         </div>
-        <div class="hud-user">
-          <div class="streak-info">
-            <span>STREAK</span>
-            <strong id="hud-streak">0 DAYS</strong>
+        <div class="fc-right">
+          <div class="streak">
+            <div class="eyebrow">Streak</div>
+            <div class="num"><span id="hud-streak-num">0</span><small>DIA</small></div>
           </div>
-          <div class="avatar" aria-label="Avatar do usuario">
-            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=taren-gym-os" alt="" />
+          <div class="lvl-badge">
+            <svg viewBox="0 0 58 58">
+              <circle cx="29" cy="29" r="26" fill="none" stroke="var(--border)" stroke-width="3"/>
+              <circle id="hud-level-ring" cx="29" cy="29" r="26" fill="none" stroke="var(--phosphor)" stroke-width="3"
+                stroke-dasharray="163.4" stroke-dashoffset="163.4" stroke-linecap="round"/>
+            </svg>
+            <b id="hud-level-num">0</b><span>LV.</span>
           </div>
         </div>
       </header>
