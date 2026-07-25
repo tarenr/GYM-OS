@@ -257,6 +257,11 @@ const documentationDocs = {
     title: 'BODY_PROGRESS_SYSTEM.md',
     downloadUrl: '/BODY_PROGRESS_SYSTEM.md',
     downloadLabel: 'Baixar Evolucao'
+  },
+  projectStatus: {
+    title: 'PROJECT_STATUS.md',
+    downloadUrl: '/PROJECT_STATUS.md',
+    downloadLabel: 'Baixar Status'
   }
 };
 

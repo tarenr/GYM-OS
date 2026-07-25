@@ -1,6 +1,6 @@
 # Documentacao do App GYM-OS
 
-Ultima atualizacao: 2026-07-22
+Ultima atualizacao: 2026-07-24
 
 ## Identidade Do Produto
 
@@ -58,6 +58,12 @@ Sistema de evolucao corporal:
 BODY_PROGRESS_SYSTEM.md
 ```
 
+Status unificado do projeto:
+
+```text
+PROJECT_STATUS.md
+```
+
 Resumo da decisao:
 
 - **GYM-OS** e o nome oficial do produto/app;
@@ -85,7 +91,7 @@ O sistema registra:
 - XP, niveis, ranks e insignias planejadas;
 - imagens dos exercicios.
 
-Sistemas planejados:
+Sistemas planejados e parcialmente implementados:
 
 - missoes por objetivo;
 - evolucao corporal com peso e medidas.
@@ -188,6 +194,7 @@ GYM-OS/
 
   BODY_PROGRESS_SYSTEM.md
   MISSION_GOAL_SYSTEM.md
+  PROJECT_STATUS.md
   package.json
   env.example
   README.md
@@ -696,9 +703,10 @@ Documentacao
   - Progressao
   - Missoes por objetivo
   - Evolucao corporal
+  - Status unificado
 ```
 
-### Sistemas Planejados
+### Sistemas Planejados E Implementados Parcialmente
 
 Missoes por objetivo:
 
@@ -1215,6 +1223,14 @@ Interface:
 
 A documentacao completa abre dentro do proprio sistema pela aba `Documentacao`.
 
+O mapa principal de continuidade agora e:
+
+```text
+PROJECT_STATUS.md
+```
+
+Ele unifica o que ja foi feito, o que esta parcial e o que falta fazer.
+
 Tambem existe uma entrada amigavel:
 
 ```text
@@ -1243,9 +1259,10 @@ Roadmap - ROADMAP_ACADEMY.md
 Progressao - ACADEMY_PROGRESS_SYSTEM.md
 Missoes - MISSION_GOAL_SYSTEM.md
 Corporal - BODY_PROGRESS_SYSTEM.md
+Status - PROJECT_STATUS.md
 ```
 
-O menu lateral possui um grupo `Documentacao` com atalhos para `Manual`, `Roadmap`, `Progressao`, `Missoes` e `Corporal`.
+O menu lateral possui um grupo `Documentacao` com atalhos para `Manual`, `Roadmap`, `Progressao` e `Status`.
 
 Arquivos publicos:
 
@@ -1255,6 +1272,7 @@ GET /ROADMAP_ACADEMY.md
 GET /ACADEMY_PROGRESS_SYSTEM.md
 GET /MISSION_GOAL_SYSTEM.md
 GET /BODY_PROGRESS_SYSTEM.md
+GET /PROJECT_STATUS.md
 ```
 
 Consulta via API:
@@ -1265,6 +1283,7 @@ GET /api/documentation?doc=academy
 GET /api/documentation?doc=progressSystem
 GET /api/documentation?doc=missionGoal
 GET /api/documentation?doc=bodyProgress
+GET /api/documentation?doc=projectStatus
 ```
 
 ## Imagens dos Exercicios
