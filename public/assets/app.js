@@ -1569,22 +1569,38 @@ function renderDashboardVolumeChart() {
   const totalTrendVolume = trend.reduce((total, week) => total + week.volume, 0);
   const bestWeek = trend.reduce((best, week) => (week.volume > best.volume ? week : best), trend[0]);
   const lastWeek = trend.at(-1);
+  const previousWeek = trend.at(-2);
+  const activeWeeks = trend.filter((week) => week.volume > 0).length;
+  const emptyWeeks = trend.length - activeWeeks;
+  const averageVolume = activeWeeks ? Math.round(totalTrendVolume / activeWeeks) : 0;
+  const lastDelta = previousWeek ? lastWeek.volume - previousWeek.volume : 0;
+  const lastFourVolume = trend.slice(-4).reduce((total, week) => total + week.volume, 0);
+  const previousFourVolume = trend.slice(-8, -4).reduce((total, week) => total + week.volume, 0);
+  const trendStatus = lastFourVolume > previousFourVolume
+    ? 'subindo'
+    : lastFourVolume < previousFourVolume
+      ? 'caindo'
+      : 'estavel';
 
   if (totalTrendVolume <= 0) {
+    if (volumeTrendChart) {
+      volumeTrendChart.destroy();
+      volumeTrendChart = null;
+    }
+
     dashboardVolumeChart.innerHTML = '<p class="empty-state chart-empty">Registre treinos com carga para gerar o grafico de volume.</p>';
     dashboardVolumeSummary.innerHTML = `
-      <article>
+      <article class="volume-analysis-card">
         <span>Total 12 semanas</span>
         <strong>0 kg</strong>
+        <small>sem volume registrado</small>
       </article>
-      <article>
-        <span>Melhor semana</span>
-        <strong>sem dados</strong>
-      </article>
-      <article>
-        <span>Semana atual</span>
-        <strong>0 kg</strong>
-      </article>
+      <div class="volume-point-legend" aria-label="Legenda do grafico de volume">
+        <span><i class="legend-dot legend-volume"></i> volume</span>
+        <span><i class="legend-dot legend-best"></i> melhor</span>
+        <span><i class="legend-dot legend-current"></i> atual</span>
+        <span><i class="legend-dot legend-empty"></i> zerado</span>
+      </div>
     `;
     return;
   }
@@ -1592,19 +1608,55 @@ function renderDashboardVolumeChart() {
   dashboardVolumeChart.innerHTML = '<canvas aria-label="Volume das ultimas 12 semanas"></canvas>';
   renderVolumeTrendChart(chartData, bestWeek);
   dashboardVolumeSummary.innerHTML = `
-    <article>
+    <article class="volume-analysis-card">
       <span>Total 12 semanas</span>
       <strong>${escapeHtml(formatCompactNumber(totalTrendVolume))} kg</strong>
+      <small>${escapeHtml(activeWeeks)} semanas com volume</small>
     </article>
-    <article>
+    <article class="volume-analysis-card">
+      <span>Media ativa</span>
+      <strong>${escapeHtml(formatCompactNumber(averageVolume))} kg</strong>
+      <small>por semana treinada</small>
+    </article>
+    <article class="volume-analysis-card">
       <span>Melhor semana</span>
       <strong>${escapeHtml(bestWeek.label)} | ${escapeHtml(formatCompactNumber(bestWeek.volume))} kg</strong>
+      <small>ponto dourado</small>
     </article>
-    <article>
+    <article class="volume-analysis-card">
       <span>Semana atual</span>
       <strong>${escapeHtml(formatCompactNumber(lastWeek.volume))} kg</strong>
+      <small>${escapeHtml(lastDelta >= 0 ? '+' : '')}${escapeHtml(formatCompactNumber(lastDelta))} kg vs anterior</small>
     </article>
+    <article class="volume-analysis-card">
+      <span>Tendencia</span>
+      <strong>${escapeHtml(trendStatus)}</strong>
+      <small>ultimas 4 vs anteriores</small>
+    </article>
+    <article class="volume-analysis-card">
+      <span>Semanas zeradas</span>
+      <strong>${escapeHtml(String(emptyWeeks))}</strong>
+      <small>de ${escapeHtml(String(trend.length))} semanas</small>
+    </article>
+    <div class="volume-point-legend" aria-label="Legenda do grafico de volume">
+      <span><i class="legend-dot legend-volume"></i> volume</span>
+      <span><i class="legend-dot legend-best"></i> melhor</span>
+      <span><i class="legend-dot legend-current"></i> atual</span>
+      <span><i class="legend-dot legend-empty"></i> zerado</span>
+    </div>
   `;
+}
+
+function getVolumePointRole(item, index, chartData, bestWeek) {
+  if (item.label === bestWeek.label && item.volume === bestWeek.volume) {
+    return 'melhor semana';
+  }
+
+  if (index === chartData.length - 1) {
+    return 'semana atual';
+  }
+
+  return item.volume > 0 ? 'volume registrado' : 'sem volume';
 }
 
 function renderVolumeTrendChart(chartData, bestWeek) {
@@ -1645,12 +1697,13 @@ function renderVolumeTrendChart(chartData, bestWeek) {
         },
         pointBorderColor(context) {
           const item = chartData[context.dataIndex];
+          const role = getVolumePointRole(item, context.dataIndex, chartData, bestWeek);
 
-          if (item.label === bestWeek.label && item.volume === bestWeek.volume) {
+          if (role === 'melhor semana') {
             return '#d29922';
           }
 
-          if (context.dataIndex === chartData.length - 1) {
+          if (role === 'semana atual') {
             return '#58a6ff';
           }
 
@@ -1678,8 +1731,10 @@ function renderVolumeTrendChart(chartData, bestWeek) {
             },
             label(context) {
               const item = chartData[context.dataIndex];
+              const role = getVolumePointRole(item, context.dataIndex, chartData, bestWeek);
 
               return [
+                `Ponto: ${role}`,
                 `Volume: ${formatNumber(item.volume)} kg`,
                 `Treinos: ${item.workouts}`,
                 item.deltaLabel

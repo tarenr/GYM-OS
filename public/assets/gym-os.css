@@ -1331,7 +1331,7 @@ h4 {
   display: grid;
   flex: 1;
   gap: 16px;
-  grid-template-rows: auto auto;
+  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.85fr);
   padding: 18px 0 0;
 }
 
@@ -1361,17 +1361,20 @@ h4 {
 
 .chart-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: start;
   gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.chart-summary article {
+.chart-summary article,
+.volume-analysis-card {
   display: grid;
   gap: 4px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg);
-  padding: 12px;
+  min-height: 72px;
+  padding: 10px;
 }
 
 .chart-summary span,
@@ -1385,6 +1388,68 @@ h4 {
 .chart-summary strong {
   color: var(--green);
   font-size: 0.86rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.chart-summary small {
+  color: var(--muted-strong);
+  font-size: 0.6rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.volume-point-legend {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 8px 10px;
+  align-items: center;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.62);
+  padding: 9px 10px;
+}
+
+.volume-point-legend span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--muted-strong);
+  font-size: 0.58rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 999px;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.legend-volume {
+  color: var(--green);
+  background: var(--green);
+}
+
+.legend-best {
+  color: var(--gold);
+  background: var(--gold);
+}
+
+.legend-current {
+  color: var(--volt);
+  background: var(--volt);
+}
+
+.legend-empty {
+  color: var(--muted);
+  background: var(--muted);
 }
 
 .muscle-distribution {
@@ -4883,8 +4948,12 @@ textarea:focus {
     margin-top: 18px;
   }
 
-  .chart-summary {
+  .volume-chart-wrap {
     grid-template-columns: 1fr;
+  }
+
+  .chart-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .xp-trend-row,
@@ -5110,6 +5179,14 @@ textarea:focus {
   .heatmap-legend {
     gap: 7px;
     font-size: 0.66rem;
+  }
+
+  .volume-chart {
+    height: 200px;
+  }
+
+  .chart-summary {
+    grid-template-columns: 1fr;
   }
 
   .heatmap-legend span {
