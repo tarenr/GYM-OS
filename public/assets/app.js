@@ -516,7 +516,7 @@ function getWorkoutFormContext(template, dateValue = dateInput.value) {
   if (!template) {
     return {
       source: 'manual',
-      label: 'Origem',
+      label: 'Origin',
       detail: 'Select a template',
       assignment: null
     };
@@ -6936,7 +6936,7 @@ function renderWorkoutTypes() {
 
 function resetWorkoutTypeForm() {
   state.workoutTypeEditingId = null;
-  workoutTypeFormTitle.textContent = 'Novo tipo';
+  workoutTypeFormTitle.textContent = 'NEW_TYPE.exe';
   workoutTypeForm.reset();
   workoutTypeMeasurementInput.value = 'sets_reps_weight';
   setWorkoutTypeStatus('');
@@ -6954,7 +6954,7 @@ function getWorkoutTypePayload() {
 
 function fillWorkoutTypeForm(type) {
   state.workoutTypeEditingId = type._id;
-  workoutTypeFormTitle.textContent = 'Edit type';
+  workoutTypeFormTitle.textContent = 'EDIT_TYPE.exe';
   workoutTypeCodeInput.value = type.code;
   workoutTypeNameInput.value = type.name;
   workoutTypeMeasurementInput.value = type.measurementType;
@@ -7061,7 +7061,7 @@ function resetTemplateForm() {
     xpReward: 0,
     description: ''
   };
-  templateFormTitle.textContent = 'New template';
+  templateFormTitle.textContent = 'NEW_TEMPLATE.exe';
   templateForm.reset();
   templateWorkoutTypeInput.value = getStrengthWorkoutType()._id || '';
   renderSelectedTemplateExercises();
@@ -7089,7 +7089,7 @@ function getTemplatePayload() {
 
 function fillTemplateForm(template) {
   state.templateEditingId = template._id;
-  templateFormTitle.textContent = 'Edit template';
+  templateFormTitle.textContent = 'EDIT_TEMPLATE.exe';
   templateCodeInput.value = template.code;
   templateNameInput.value = template.name;
   templateWorkoutTypeInput.value = template.workoutTypeId || getStrengthWorkoutType()._id || '';
