@@ -121,7 +121,7 @@ button:disabled {
 
 .side-brand span {
   display: grid;
-  width: 48px;
+  width: 54px;
   height: 48px;
   flex-shrink: 0;
   clip-path: polygon(20% 0%, 100% 0%, 100% 80%, 80% 100%, 0% 100%, 0% 20%);
@@ -129,8 +129,9 @@ button:disabled {
   background: rgba(0, 255, 135, 0.08);
   color: var(--phosphor);
   font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
   place-items: center;
   box-shadow: none;
   outline: 1px solid var(--phosphor-dim);
@@ -260,7 +261,7 @@ button:disabled {
 }
 
 .fc-mark {
-  width: 56px;
+  width: 66px;
   height: 56px;
   border: 1px solid var(--phosphor-dim);
   clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%);
@@ -269,13 +270,16 @@ button:disabled {
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
   color: var(--phosphor);
   background: rgba(0, 255, 135, 0.06);
   flex-shrink: 0;
 }
 
 .fc-title h1 {
+  display: inline-flex;
+  align-items: baseline;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(1.6rem, 4vw, 2.4rem);
@@ -283,6 +287,14 @@ button:disabled {
   line-height: 1;
   margin: 0;
   text-transform: uppercase;
+}
+
+.fc-title h1::after {
+  content: "_";
+  display: inline-block;
+  margin-left: 7px;
+  color: var(--phosphor);
+  animation: blink 1s steps(2, start) infinite;
 }
 
 .fc-title h1 span {
@@ -335,8 +347,8 @@ button:disabled {
 
 .lvl-badge {
   position: relative;
-  width: 58px;
-  height: 58px;
+  width: 74px;
+  height: 74px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -347,19 +359,20 @@ button:disabled {
 
 .lvl-badge svg {
   position: absolute;
-  inset: -2px;
+  inset: -3px;
   transform: rotate(-90deg);
 }
 
 .lvl-badge b {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.55rem;
   color: var(--phosphor);
   line-height: 1;
 }
 
 .lvl-badge span {
-  font-size: 0.5rem;
+  margin-top: 2px;
+  font-size: 0.62rem;
   font-family: var(--font);
   color: var(--muted);
   letter-spacing: 0.05em;

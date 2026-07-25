@@ -3300,7 +3300,7 @@ function renderDashboard() {
   }
   
   if (hudLevelRing) {
-    const lvlCirc = 163.4;
+    const lvlCirc = 201.1;
     requestAnimationFrame(() => {
       hudLevelRing.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
       hudLevelRing.style.strokeDashoffset = lvlCirc * (1 - (xpProgress / 100));
