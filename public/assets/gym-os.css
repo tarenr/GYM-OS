@@ -804,15 +804,15 @@ h4 {
 
 .panel-badge {
   align-self: center;
-  border: 1px solid var(--border);
+  border: none;
   border-radius: 0;
-  background: var(--bg-panel-solid);
-  color: var(--phosphor);
-  padding: 3px 10px;
-  font-family: var(--font-display);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  background: var(--phosphor);
+  color: var(--void);
+  padding: 2px 8px;
+  font-family: var(--font);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
