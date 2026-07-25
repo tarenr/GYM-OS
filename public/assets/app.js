@@ -121,6 +121,7 @@ const dashboardWorkoutsTrend = document.querySelector('#dashboard-workouts-trend
 const dashboardVolumeTrend = document.querySelector('#dashboard-volume-trend');
 const dashboardHistory = document.querySelector('#dashboard-history');
 const dashboardWeeklySchedule = document.querySelector('#dashboard-weekly-schedule');
+const dashboardWeeklySummary = document.querySelector('#dashboard-weekly-summary');
 const dashboardPlayerBadge = document.querySelector('#dashboard-player-badge');
 const dashboardPlayerLevel = document.querySelector('#dashboard-player-level');
 const dashboardPlayerRank = document.querySelector('#dashboard-player-rank');
@@ -1429,7 +1430,7 @@ function renderDashboardWeeklySchedule(monday) {
         blocks: item.code === 'DESC' ? [{ workoutCode: 'DESC', workoutName: 'Recuperacao' }] : [{ type: 'strength', workoutCode: item.code, workoutName: workoutNames[item.code] }]
       }));
 
-  dashboardWeeklySchedule.innerHTML = source.map((mission, index) => {
+  const scheduleItems = source.map((mission, index) => {
     const date = new Date(monday);
     const dayOffset = mission.dayIndex === 0 ? 6 : mission.dayIndex - 1;
 
@@ -1446,15 +1447,53 @@ function renderDashboardWeeklySchedule(monday) {
     }).join(' + ');
     const dayLabel = mission.dayOfWeek || weeklySchedule[index]?.label || '';
 
-    return `
-      <article class="schedule-day ${stateClass}">
-        <span class="schedule-day-name">${escapeHtml(dayLabel.slice(0, 3))}</span>
-        <strong>${date.getDate()}</strong>
-        <div class="schedule-code">${escapeHtml(codes)}</div>
-        <small>${mission.restDay ? 'Descanso' : `${status.completed} de ${status.required} blocos`}</small>
+    return {
+      codes,
+      date,
+      dateKey,
+      dayLabel,
+      isToday,
+      mission,
+      stateClass,
+      status
+    };
+  });
+
+  dashboardWeeklySchedule.innerHTML = scheduleItems.map((item) => `
+      <article class="schedule-day ${item.stateClass}">
+        <span class="schedule-day-name">${escapeHtml(item.dayLabel.slice(0, 3))}</span>
+        <strong>${item.date.getDate()}</strong>
+        <div class="schedule-code">${escapeHtml(item.codes)}</div>
+        <small>${item.mission.restDay ? 'Descanso' : `${item.status.completed} de ${item.status.required} blocos`}</small>
+      </article>
+    `).join('');
+
+  if (dashboardWeeklySummary) {
+    const trainingItems = scheduleItems.filter((item) => !item.mission.restDay);
+    const completed = trainingItems.filter((item) => item.stateClass === 'done').length;
+    const partial = trainingItems.filter((item) => item.stateClass === 'partial').length;
+    const pending = trainingItems.filter((item) => ['pending', 'today'].includes(item.stateClass)).length;
+    const nextItem = trainingItems.find((item) => ['today', 'pending', 'partial'].includes(item.stateClass));
+    const weekPercent = trainingItems.length ? Math.round((completed / trainingItems.length) * 100) : 0;
+
+    dashboardWeeklySummary.innerHTML = `
+      <article class="weekly-summary-card">
+        <span>SEMANA</span>
+        <strong>${completed}/${trainingItems.length}</strong>
+        <p>${weekPercent}% da campanha semanal</p>
+      </article>
+      <article class="weekly-summary-card">
+        <span>PROXIMO</span>
+        <strong>${escapeHtml(nextItem?.codes || 'DESC')}</strong>
+        <p>${escapeHtml(nextItem ? `${nextItem.dayLabel} | ${formatDate(nextItem.dateKey)}` : 'sem blocos pendentes')}</p>
+      </article>
+      <article class="weekly-summary-card">
+        <span>STATUS</span>
+        <strong>${pending ? `${pending} abertos` : 'em dia'}</strong>
+        <p>${partial} parcial | domingo descanso</p>
       </article>
     `;
-  }).join('');
+  }
 }
 
 function getWeeklyVolumeTrend(workouts, weekCount = 12) {

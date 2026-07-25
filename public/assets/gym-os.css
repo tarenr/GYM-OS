@@ -750,6 +750,17 @@ h4 {
   margin-top: 36px;
 }
 
+.operations-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.operations-grid > .panel {
+  display: flex;
+  min-height: 466px;
+  flex-direction: column;
+}
+
 .dashboard-control-grid {
   grid-template-columns: minmax(0, 1.32fr) minmax(320px, 0.68fr);
 }
@@ -783,6 +794,17 @@ h4 {
   gap: 16px;
 }
 
+.hero-mission-panel .mission-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero-mission-panel .mission-body h3 {
+  margin-bottom: 2px;
+}
+
 .mission-body p {
   margin-bottom: 0;
   color: var(--muted-strong);
@@ -790,7 +812,7 @@ h4 {
 
 .mission-list {
   display: grid;
-  gap: 8px;
+  gap: 7px;
   margin: 0;
   padding: 0;
   color: var(--muted-strong);
@@ -802,7 +824,7 @@ h4 {
   border: 1px solid var(--border);
   border-radius: 7px;
   background: var(--bg);
-  padding: 10px 12px 10px 38px;
+  padding: 9px 12px 9px 38px;
   font-size: 0.82rem;
   font-weight: 800;
 }
@@ -846,7 +868,7 @@ h4 {
   border: 1px solid rgba(88, 166, 255, 0.28);
   border-radius: var(--radius);
   background: rgba(88, 166, 255, 0.08);
-  padding: 12px;
+  padding: 10px 12px;
 }
 
 .mission-reward span {
@@ -919,6 +941,11 @@ h4 {
   overflow: hidden;
 }
 
+.schedule-panel {
+  display: flex;
+  flex-direction: column;
+}
+
 .schedule-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -927,7 +954,7 @@ h4 {
 
 .schedule-day {
   display: grid;
-  min-height: 126px;
+  min-height: 112px;
   align-content: start;
   gap: 8px;
   border: 1px solid var(--border);
@@ -990,6 +1017,58 @@ h4 {
 
 .schedule-day.rest {
   opacity: 0.66;
+}
+
+.weekly-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.weekly-summary-card {
+  display: grid;
+  gap: 6px;
+  min-height: 96px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--phosphor);
+  border-radius: 8px;
+  background: rgba(0, 255, 65, 0.04);
+  padding: 12px;
+}
+
+.weekly-summary-card:nth-child(2) {
+  border-left-color: var(--gold);
+  background: rgba(210, 153, 34, 0.05);
+}
+
+.weekly-summary-card:nth-child(3) {
+  border-left-color: var(--volt);
+  background: rgba(88, 166, 255, 0.05);
+}
+
+.weekly-summary-card span {
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.weekly-summary-card strong {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.weekly-summary-card p {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .player-card {
@@ -3412,6 +3491,10 @@ textarea:focus {
   gap: 12px;
 }
 
+.hero-mission-panel .mission-action-grid {
+  margin-top: auto;
+}
+
 .mission-action-button {
   display: grid;
   gap: 5px;
@@ -4467,6 +4550,10 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
+  .operations-grid > .panel {
+    min-height: auto;
+  }
+
   .dashboard-control-grid {
     grid-template-columns: 1fr;
   }
@@ -4504,6 +4591,11 @@ textarea:focus {
 
   .schedule-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .weekly-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 18px;
   }
 
   .chart-summary {
@@ -4652,6 +4744,7 @@ textarea:focus {
   .journey-command-grid,
   .schedule-grid,
   .weekly-map,
+  .weekly-summary-grid,
   .stats-bar,
   .summary-grid,
   .progress-achievement-grid,
