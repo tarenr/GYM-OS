@@ -2088,6 +2088,7 @@ function getDashboardActivityEvents(workouts, limit = 8) {
 
     events.push({
       type: isExtra ? 'extra' : isSubstitution ? 'substitution' : 'workout',
+      badge: isExtra ? 'EXTRA' : isSubstitution ? 'SWAP' : 'MISSION',
       date: workout.date,
       title: isExtra
         ? 'Extra workout logged'
@@ -2116,8 +2117,9 @@ function getDashboardActivityEvents(workouts, limit = 8) {
         if (recordKeys.has(`${exercise.name}-${dateKey}-${weight}-${reps}`)) {
           events.push({
             type: 'pr',
+            badge: 'PR',
             date: workout.date,
-            title: 'PR detectado',
+            title: 'PR detected',
             detail: exercise.name,
             meta: `${formatLoadModeWeight(weight, getExerciseLoadMode(exercise))} x ${formatNumber(reps)} reps`
           });
@@ -2145,11 +2147,14 @@ function renderDashboardActivityFeed() {
 
   dashboardActivityFeed.innerHTML = events.map((event) => `
     <article class="feed-item ${escapeHtml(event.type)}">
-      <span class="feed-dot"></span>
+      <span class="feed-dot" aria-hidden="true"></span>
       <div>
         <div class="feed-head">
-          <h3>${escapeHtml(event.title)}</h3>
-          <time>${escapeHtml(formatDate(event.date))}</time>
+          <div>
+            <span class="feed-badge">${escapeHtml(event.badge || event.type.toUpperCase())}</span>
+            <h3>${escapeHtml(event.title)}</h3>
+          </div>
+          <time datetime="${escapeHtml(toDateKey(event.date))}">${escapeHtml(formatDate(event.date))}</time>
         </div>
         <p>${escapeHtml(event.detail)}</p>
         <small>${escapeHtml(event.meta)}</small>
@@ -3447,10 +3452,10 @@ function renderJourneyCommand({ journeyPosition, weeklyStatus, weeklyQuality, we
   const journeyTotalDays = academyJourneyWeeks * 7;
   const cycleXp = weeklyWorkouts.reduce((total, workout) => total + getWorkoutXpInfo(workout).total, 0);
   const healthLabel = weeklyStatus.overdue > 0
-    ? 'Atencao'
+    ? 'Attention'
     : weeklyQuality.average >= 80 || weeklyWorkouts.length > 0
-      ? 'No ritmo'
-      : 'Em aberto';
+      ? 'On pace'
+      : 'Open';
   const healthDetail = weeklyStatus.overdue > 0
     ? `${weeklyStatus.overdue} overdue blocks`
     : `${weeklyStatus.openToday} open blocks today`;
@@ -5781,14 +5786,49 @@ function renderWeeklyMissions(stats) {
 }
 
 function renderDashboardHistory() {
-  const recentWorkouts = state.allWorkouts.slice(0, 3);
+  const recentWorkouts = state.allWorkouts.slice(0, 4);
 
   if (!recentWorkouts.length) {
     dashboardHistory.innerHTML = '<p class="empty-state">No workouts logged yet.</p>';
     return;
   }
 
-  dashboardHistory.innerHTML = recentWorkouts.map(renderWorkoutCard).join('');
+  dashboardHistory.innerHTML = recentWorkouts.map(renderDashboardLogCard).join('');
+}
+
+function renderDashboardLogCard(workout) {
+  const origin = getWorkoutOriginInfo(workout);
+  const volume = calculateWorkoutVolume(workout);
+  const validSets = countValidSets(workout);
+  const validRounds = countValidRounds(workout);
+  const completedUnits = countCompletedUnits(workout);
+  const skippedCount = countSkippedExercises(workout);
+  const quality = getWorkoutExecutionQuality(workout);
+  const duration = Number(workout.durationMinutes || 0);
+  const primaryMetric = volume ? `${formatCompactNumber(volume)} kg` : `${validRounds} rounds`;
+  const secondaryMetric = duration ? `${duration} min` : `${completedUnits} logs`;
+
+  return `
+    <article class="dashboard-log-card">
+      <div class="dashboard-log-head">
+        <div>
+          <span class="feed-badge ${escapeHtml(origin.className)}">${escapeHtml(origin.label)}</span>
+          <h3>Workout ${escapeHtml(workout.workoutCode)}</h3>
+        </div>
+        <time datetime="${escapeHtml(toDateKey(workout.date))}">${escapeHtml(formatDate(workout.date))}</time>
+      </div>
+      <p>${escapeHtml(workout.workoutName)}</p>
+      <div class="dashboard-log-metrics">
+        <span>${escapeHtml(formatWorkoutQualitySummary(quality))}${skippedCount && !quality.skippedCount ? ` | ${skippedCount} skipped` : ''}</span>
+        <strong>${escapeHtml(primaryMetric)}</strong>
+        <small>${escapeHtml(secondaryMetric)} | ${escapeHtml(String(validSets))} sets</small>
+      </div>
+      <div class="history-actions">
+        <button class="button button-secondary" type="button" data-action="details" data-id="${workout._id}">VIEW</button>
+        <button class="button button-ghost" type="button" data-action="edit" data-id="${workout._id}">EDIT</button>
+      </div>
+    </article>
+  `;
 }
 
 function renderWorkoutCard(workout) {
