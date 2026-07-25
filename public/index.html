@@ -13,14 +13,14 @@
   <body>
     <div class="scanlines" aria-hidden="true"></div>
     <div class="app-layout">
-      <aside class="side-nav" aria-label="Menu principal">
+      <aside class="side-nav" aria-label="Main menu">
         <div class="side-brand">
           <span>&lt;GO&gt;</span>
           <div>
             <strong>GYM-OS</strong>
-            <small>ACADEMY // PROJETO ANUAL 2026</small>
+            <small>ACADEMY // ANNUAL PROJECT 2026</small>
           </div>
-          <button class="menu-toggle" type="button" aria-controls="side-menu" aria-expanded="false" aria-label="Abrir menu">
+          <button class="menu-toggle" type="button" aria-controls="side-menu" aria-expanded="false" aria-label="Open menu">
             <span></span>
             <span></span>
             <span></span>
@@ -29,29 +29,29 @@
 
         <nav class="side-menu" id="side-menu">
           <button class="nav-link active" type="button" data-tab="dashboard">Dashboard</button>
-          <button class="nav-link" type="button" data-tab="daily-missions">Missoes</button>
-          <button class="nav-link" type="button" data-tab="progress">Evolucao</button>
+          <button class="nav-link" type="button" data-tab="daily-missions">Missions</button>
+          <button class="nav-link" type="button" data-tab="progress">Evolution</button>
           <div class="nav-group">
-            <span>Treinos</span>
-            <button class="nav-link nav-subitem" type="button" data-tab="workout-create">Cadastro</button>
-            <button class="nav-link nav-subitem" type="button" data-tab="workout-list">Realizados</button>
+            <span>Workouts</span>
+            <button class="nav-link nav-subitem" type="button" data-tab="workout-create">Create</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="workout-list">Completed</button>
           </div>
           <div class="nav-group">
-            <span>Fichas</span>
-            <button class="nav-link nav-subitem" type="button" data-tab="template-create">Cadastro</button>
-            <button class="nav-link nav-subitem" type="button" data-tab="template-list">Listar</button>
+            <span>Templates</span>
+            <button class="nav-link nav-subitem" type="button" data-tab="template-create">Create</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="template-list">List</button>
           </div>
           <div class="nav-group">
-            <span>Tipos de treino</span>
-            <button class="nav-link nav-subitem" type="button" data-tab="type-create">Cadastro</button>
-            <button class="nav-link nav-subitem" type="button" data-tab="type-list">Listar</button>
+            <span>Workout Types</span>
+            <button class="nav-link nav-subitem" type="button" data-tab="type-create">Create</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="type-list">List</button>
           </div>
-          <button class="nav-link" type="button" data-tab="exercises">Exercicios</button>
+          <button class="nav-link" type="button" data-tab="exercises">Exercises</button>
           <div class="nav-group">
-            <span>Documentacao</span>
+            <span>Docs</span>
             <button class="nav-link nav-subitem" type="button" data-tab="documentation" data-documentation-shortcut="app">Manual</button>
             <button class="nav-link nav-subitem" type="button" data-tab="documentation" data-documentation-shortcut="academy">Roadmap</button>
-            <button class="nav-link nav-subitem" type="button" data-tab="documentation" data-documentation-shortcut="progressSystem">Progressao</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="documentation" data-documentation-shortcut="progressSystem">Progress</button>
             <button class="nav-link nav-subitem" type="button" data-tab="documentation" data-documentation-shortcut="projectStatus">Status</button>
           </div>
         </nav>
@@ -139,13 +139,13 @@
         <!-- Sub-Nav Buttons for Dashboard Sections -->
         <nav class="dashboard-subnav" aria-label="Sub-menu do Dashboard">
           <button class="dash-subnav-btn active" type="button" data-dash-tab="operations">
-            <span class="dash-subnav-icon">OP</span> Operacoes & Hoje
+            <span class="dash-subnav-icon">OP</span> Operations & Today
           </button>
           <button class="dash-subnav-btn" type="button" data-dash-tab="analytics">
-            <span class="dash-subnav-icon">AN</span> Desempenho & Metricas
+            <span class="dash-subnav-icon">AN</span> Performance & Metrics
           </button>
           <button class="dash-subnav-btn" type="button" data-dash-tab="evolution">
-            <span class="dash-subnav-icon">EV</span> Evolucao & Progresso
+            <span class="dash-subnav-icon">EV</span> Evolution & Progress
           </button>
           <button class="dash-subnav-btn" type="button" data-dash-tab="logs">
             <span class="dash-subnav-icon">LG</span> Activity Logs & Feed
@@ -206,7 +206,7 @@
                 <span class="panel-icon">OS</span>
                 <h2>JOURNEY_COMMAND.sys</h2>
               </div>
-              <span class="panel-badge" id="journey-command-badge">PROJETO ANUAL</span>
+              <span class="panel-badge" id="journey-command-badge">ANNUAL PROJECT</span>
             </div>
             <div class="journey-command-grid" id="journey-command-grid"></div>
           </section>
@@ -284,7 +284,7 @@
                   <span class="panel-icon">~</span>
                   <h2>VOLUME_TREND.chart</h2>
                 </div>
-                <span class="panel-badge">12 SEMANAS</span>
+                <span class="panel-badge">12 WEEKS</span>
               </div>
               <div class="volume-chart-wrap">
                 <div class="volume-chart" id="dashboard-volume-chart"></div>
@@ -298,7 +298,7 @@
                   <span class="panel-icon">%</span>
                   <h2>MUSCLE_DISTRIBUTION.data</h2>
                 </div>
-                <span class="panel-badge">POR VOLUME</span>
+                <span class="panel-badge">BY VOLUME</span>
               </div>
               <div class="muscle-distribution" id="dashboard-muscle-distribution"></div>
             </article>
@@ -328,7 +328,7 @@
               </div>
               <div class="panel-header-actions">
                 <span class="panel-badge" id="dash-safe-body-count">0 REG</span>
-                <button class="page-btn" type="button" data-tab-shortcut="progress">NOVA MEDICAO</button>
+                <button class="page-btn" type="button" data-tab-shortcut="progress">NEW MEASURE</button>
               </div>
             </div>
             <section class="summary-grid page-summary compact-summary" id="dash-safe-body-summary"></section>
@@ -413,7 +413,7 @@
                 <span class="panel-icon">!</span>
                 <h2>TODAY_CAMPAIGN.exe</h2>
               </div>
-              <span class="panel-badge" id="daily-mission-today-badge">HOJE</span>
+              <span class="panel-badge" id="daily-mission-today-badge">TODAY</span>
             </div>
             <div class="mission-body" id="daily-mission-today"></div>
           </article>
@@ -434,7 +434,7 @@
       <section class="tab-view" id="view-progress">
         <div class="page-header">
           <div class="breadcrumb">ACADEMY <span>&gt;</span> GYM.OS <span>&gt;</span> XP_PROGRESS.json</div>
-          <h2 class="page-title">Evolucao <span>Academy</span></h2>
+          <h2 class="page-title">Evolution <span>Academy</span></h2>
           <p class="page-subtitle" id="progress-subtitle">// xp oficial por treino, semana e campanha</p>
         </div>
 
@@ -530,8 +530,8 @@
               </label>
               <div class="form-actions">
                 <span class="status-message" id="body-progress-status" role="status"></span>
-                <button class="button button-ghost" type="button" id="body-measurement-reset">Limpar</button>
-                <button class="button button-primary" type="submit" id="body-measurement-submit">SALVAR_MEDICAO</button>
+                <button class="button button-ghost" type="button" id="body-measurement-reset">CLEAR</button>
+                <button class="button button-primary" type="submit" id="body-measurement-submit">SAVE_MEASURE</button>
               </div>
             </form>
             <div class="body-progress-history" id="body-progress-history"></div>
@@ -671,7 +671,7 @@
             </div>
             <div class="panel-actions">
               <span class="panel-badge">DRAFT</span>
-              <button class="button button-ghost" type="button" id="reset-form">Limpar</button>
+              <button class="button button-ghost" type="button" id="reset-form">CLEAR</button>
             </div>
           </div>
 
@@ -762,7 +762,7 @@
       <section class="tab-view" id="view-workout-list">
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> LOG_HISTORY.db</div>
-          <h2 class="page-title">Treinos <span>Realizados</span></h2>
+          <h2 class="page-title">Completed <span>Workouts</span></h2>
           <p class="page-subtitle" id="history-subtitle">// carregando sessoes registradas</p>
         </div>
 
@@ -812,7 +812,7 @@
                 <option value="asc">Mais antigos</option>
               </select>
             </label>
-            <button class="button button-secondary" type="button" id="export-history">Exportar CSV</button>
+            <button class="button button-secondary" type="button" id="export-history">EXPORT CSV</button>
           </div>
         </section>
 
@@ -835,7 +835,7 @@
       <section class="tab-view" id="view-template-create">
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> TEMPLATE_BUILDER.exe</div>
-          <h2 class="page-title">Cadastro de <span>Ficha</span></h2>
+          <h2 class="page-title">Template <span>Create</span></h2>
           <p class="page-subtitle">// escolha exercicios do catalogo e monte o protocolo ABC</p>
         </div>
 
@@ -846,7 +846,7 @@
                 <span class="panel-icon">+</span>
                 <h2 id="template-form-title">Nova ficha</h2>
               </div>
-              <button class="button button-ghost" type="button" id="reset-template-form">Limpar</button>
+              <button class="button button-ghost" type="button" id="reset-template-form">CLEAR</button>
             </div>
 
             <div class="form-grid">
@@ -922,7 +922,7 @@
       <section class="tab-view" id="view-template-list">
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> TEMPLATE_LIBRARY.db</div>
-          <h2 class="page-title">Fichas <span>Salvas</span></h2>
+          <h2 class="page-title">Saved <span>Templates</span></h2>
           <p class="page-subtitle" id="template-subtitle">// protocolos disponiveis para registrar treinos</p>
         </div>
 
@@ -966,7 +966,7 @@
       <section class="tab-view" id="view-type-create">
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> WORKOUT_TYPE.exe</div>
-          <h2 class="page-title">Cadastro de <span>Tipo</span></h2>
+          <h2 class="page-title">Type <span>Create</span></h2>
           <p class="page-subtitle">// define quais campos um treino usa</p>
         </div>
 
@@ -977,7 +977,7 @@
                 <span class="panel-icon">+</span>
                 <h2 id="workout-type-form-title">Novo tipo</h2>
               </div>
-              <button class="button button-ghost" type="button" id="reset-workout-type-form">Limpar</button>
+              <button class="button button-ghost" type="button" id="reset-workout-type-form">CLEAR</button>
             </div>
 
             <div class="form-grid">
@@ -1059,7 +1059,7 @@
       <section class="tab-view" id="view-exercises">
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> EXERCISE_CATALOG.db</div>
-          <h2 class="page-title">Catalogo de <span>Exercicios</span></h2>
+          <h2 class="page-title">Exercise <span>Catalog</span></h2>
           <p class="page-subtitle" id="exercise-subtitle">// biblioteca base para montar suas fichas</p>
         </div>
 
@@ -1104,7 +1104,7 @@
       <section class="tab-view" id="view-documentation">
         <div class="page-header">
           <div class="breadcrumb">ACADEMY <span>&gt;</span> GYM.OS <span>&gt;</span> DOCS</div>
-          <h2 class="page-title">Central de <span>Documentacao</span></h2>
+          <h2 class="page-title">Docs <span>Center</span></h2>
           <p class="page-subtitle">// manual tecnico e roadmap do produto separados</p>
         </div>
 
@@ -1119,11 +1119,11 @@
               <strong>ROADMAP_ACADEMY.md</strong>
             </button>
             <button class="documentation-menu-button" type="button" data-documentation-doc="progressSystem">
-              <span>Progressao</span>
+              <span>Progress</span>
               <strong>ACADEMY_PROGRESS_SYSTEM.md</strong>
             </button>
             <button class="documentation-menu-button" type="button" data-documentation-doc="missionGoal">
-              <span>Missoes</span>
+              <span>Missions</span>
               <strong>MISSION_GOAL_SYSTEM.md</strong>
             </button>
             <button class="documentation-menu-button" type="button" data-documentation-doc="bodyProgress">

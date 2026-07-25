@@ -256,17 +256,17 @@ const documentationDocs = {
   progressSystem: {
     title: 'ACADEMY_PROGRESS_SYSTEM.md',
     downloadUrl: '/ACADEMY_PROGRESS_SYSTEM.md',
-    downloadLabel: 'Baixar Progressao'
+    downloadLabel: 'Download Progress'
   },
   missionGoal: {
     title: 'MISSION_GOAL_SYSTEM.md',
     downloadUrl: '/MISSION_GOAL_SYSTEM.md',
-    downloadLabel: 'Baixar Missoes'
+    downloadLabel: 'Download Missions'
   },
   bodyProgress: {
     title: 'BODY_PROGRESS_SYSTEM.md',
     downloadUrl: '/BODY_PROGRESS_SYSTEM.md',
-    downloadLabel: 'Baixar Evolucao'
+    downloadLabel: 'Download Evolution'
   },
   projectStatus: {
     title: 'PROJECT_STATUS.md',
@@ -692,7 +692,7 @@ function renderMissionActionButtons(mission, dateKey) {
   if (!mission || mission.restDay) {
     missionActions.innerHTML = `
       <button class="mission-action-button rest" type="button" disabled>
-        <strong>Dia de descanso</strong>
+        <strong>REST DAY</strong>
         <span>recuperacao programada</span>
       </button>
     `;
@@ -706,7 +706,7 @@ function renderMissionActionButtons(mission, dateKey) {
   if (!actions.length) {
     missionActions.innerHTML = `
       <button class="mission-action-button rest" type="button" disabled>
-        <strong>Sem blocos ativos</strong>
+        <strong>NO ACTIVE BLOCKS</strong>
         <span>campanha sem treino obrigatorio</span>
       </button>
     `;
@@ -731,7 +731,7 @@ function renderMissionActionButtons(mission, dateKey) {
 function getWorkoutOriginInfo(workout) {
   if (workout.missionDate && workout.missionBlockType && workout.missionOriginalWorkoutCode) {
     return {
-      label: workout.missionSubstitution ? 'SUBSTITUI' : 'CAMPANHA',
+      label: workout.missionSubstitution ? 'SUBSTITUTES' : 'MISSION',
       className: workout.missionSubstitution ? 'substitution' : 'mission',
       originalWorkoutCode: workout.missionOriginalWorkoutCode,
       originalWorkoutName: workout.missionOriginalWorkoutName || ''
@@ -744,7 +744,7 @@ function getWorkoutOriginInfo(workout) {
     const isSubstitution = missionBlockEntry.block.workoutCode !== workout.workoutCode;
 
     return {
-      label: isSubstitution ? 'SUBSTITUI' : 'CAMPANHA',
+      label: isSubstitution ? 'SUBSTITUTES' : 'MISSION',
       className: isSubstitution ? 'substitution' : 'mission',
       originalWorkoutCode: missionBlockEntry.block.workoutCode,
       originalWorkoutName: missionBlockEntry.block.workoutName || ''
@@ -3320,16 +3320,16 @@ function renderDashboardMissionPanel(mission, dateKey) {
     ? `${formatDate(dateKey)} | Recuperacao programada. A sequencia da Academy continua preservada.`
     : `${blockSummary} | ${mission.intensity}`;
   missionBadge.textContent = mission.restDay
-    ? 'DESCANSO'
+    ? 'RECOVERY'
     : completedMission
-      ? 'CONCLUIDA'
+      ? 'DONE'
       : hasPartialProgress
-        ? 'PARCIAL'
+        ? 'PARTIAL'
         : isFuture
-          ? 'PLANEJADA'
+          ? 'PLANNED'
           : isPast
-            ? 'PENDENTE'
-            : 'CAMPANHA';
+            ? 'PENDING'
+            : 'CAMPAIGN';
   missionReward.textContent = mission.restDay
     ? '+0 XP'
     : completedMission
@@ -3338,14 +3338,14 @@ function renderDashboardMissionPanel(mission, dateKey) {
 
   startMissionButton.disabled = mission.restDay || !nextMissionBlock;
   startMissionButton.textContent = mission.restDay
-    ? 'Dia de descanso'
+    ? 'REST DAY'
     : isFuture
-      ? 'Campanha planejada'
+      ? 'PLANNED CAMPAIGN'
       : isPast && !completedMission
-        ? 'Dia passado'
+        ? 'PAST DAY'
         : nextMissionBlock
-          ? `Iniciar ${getBlockLabel(nextMissionBlock).toLowerCase()}`
-          : 'Campanha concluida';
+          ? `START ${getBlockLabel(nextMissionBlock).toUpperCase()}`
+          : 'CAMPAIGN DONE';
   renderMissionActionButtons(mission, dateKey);
 
   const primaryEntry = blockEntries[0];
@@ -3647,10 +3647,10 @@ function renderDashboard() {
     if (todayProtocol.code === 'DESC') {
       missionTitle.textContent = 'Recuperacao planejada';
       missionDescription.textContent = 'Domingo preserva a sequencia. Use o dia para recuperar e voltar forte.';
-      missionBadge.textContent = 'DESCANSO';
+      missionBadge.textContent = 'RECOVERY';
       missionReward.textContent = '+0 XP';
       startMissionButton.disabled = true;
-      startMissionButton.textContent = 'Dia de descanso';
+      startMissionButton.textContent = 'REST DAY';
       renderMissionActionButtons({ restDay: true, blocks: [] }, todayKey);
       updateMissionSteps({ hasTemplate: true, hasCompletedToday: true, isRest: true });
     } else {
@@ -3660,10 +3660,10 @@ function renderDashboard() {
         : todayTemplate
           ? `${todayTemplate.exercises.length} exercicios cadastrados para cumprir o bloco de hoje.`
           : 'Cadastre esta ficha para ativar a campanha do dia.';
-      missionBadge.textContent = completedToday ? 'CONCLUIDA' : 'CAMPANHA';
+      missionBadge.textContent = completedToday ? 'DONE' : 'CAMPAIGN';
       missionReward.textContent = completedToday ? '+75 XP OK' : '+75 XP';
       startMissionButton.disabled = !todayTemplate || completedToday;
-      startMissionButton.textContent = completedToday ? 'Campanha concluida' : 'Iniciar bloco de hoje';
+      startMissionButton.textContent = completedToday ? 'CAMPAIGN DONE' : 'START TODAY BLOCK';
       renderMissionActionButtons({
         restDay: false,
         blocks: [{
@@ -3958,15 +3958,15 @@ function renderDailyMissionBlocks(mission) {
     const actionMarkup = completedWorkout
       ? `
         <div class="mission-block-actions">
-          <button class="button button-secondary" type="button" data-action="details" data-id="${completedWorkout._id}">Ver</button>
-          <button class="button button-ghost" type="button" data-action="edit" data-id="${completedWorkout._id}">Editar</button>
+          <button class="button button-secondary" type="button" data-action="details" data-id="${completedWorkout._id}">VIEW</button>
+          <button class="button button-ghost" type="button" data-action="edit" data-id="${completedWorkout._id}">EDIT</button>
         </div>
       `
       : block.templateId
         ? `
           <div class="mission-block-actions">
-            <button class="button button-secondary" type="button" data-start-template="${block.templateId}">Iniciar</button>
-            <button class="button button-ghost" type="button" data-replace-block="${block.type}">Trocar</button>
+            <button class="button button-secondary" type="button" data-start-template="${block.templateId}">START</button>
+            <button class="button button-ghost" type="button" data-replace-block="${block.type}">SWAP</button>
           </div>
         `
         : `<strong>${Number(block.xpReward || 0)} XP</strong>`;
@@ -4135,7 +4135,7 @@ function renderDailyMissions() {
   const activeDays = state.dailyMissions.filter((mission) => !mission.restDay).length;
 
   dailyMissionSubtitle.textContent = `// ${activeDays} campanhas de treino + recuperacao programada`;
-  dailyMissionTodayBadge.textContent = todayMission.restDay ? 'RECOVERY' : 'HOJE';
+  dailyMissionTodayBadge.textContent = todayMission.restDay ? 'RECOVERY' : 'TODAY';
   renderDailyMissionStats(todayMission);
   dailyMissionToday.innerHTML = `
     <h3>${escapeHtml(todayMission.missionName)}</h3>
@@ -5379,7 +5379,7 @@ function resetBodyMeasurementForm() {
 
   bodyMeasurementForm.reset();
   bodyMeasuredAtInput.value = todayInputValue();
-  bodyMeasurementSubmit.textContent = 'SALVAR_MEDICAO';
+  bodyMeasurementSubmit.textContent = 'SAVE_MEASURE';
   setBodyProgressStatus('');
 }
 
@@ -5400,7 +5400,7 @@ function fillBodyMeasurementForm(measurement) {
   bodyRightCalfInput.value = values.rightCalf || '';
   bodyLeftCalfInput.value = values.leftCalf || '';
   bodyNotesInput.value = measurement.notes || '';
-  bodyMeasurementSubmit.textContent = 'ATUALIZAR_MEDICAO';
+  bodyMeasurementSubmit.textContent = 'UPDATE_MEASURE';
   setBodyProgressStatus('Editando medicao selecionada.');
   bodyMeasurementForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -5693,8 +5693,8 @@ function renderBodyProgress() {
           ${measurement.notes ? `<p>${escapeHtml(measurement.notes)}</p>` : ''}
         </div>
         <div class="history-actions">
-          <button class="button button-ghost" type="button" data-body-action="edit" data-id="${measurement._id}">Editar</button>
-          <button class="button button-ghost" type="button" data-body-action="delete" data-id="${measurement._id}">Excluir</button>
+          <button class="button button-ghost" type="button" data-body-action="edit" data-id="${measurement._id}">EDIT</button>
+          <button class="button button-ghost" type="button" data-body-action="delete" data-id="${measurement._id}">DELETE</button>
         </div>
       </article>
     `;
@@ -5830,9 +5830,9 @@ function renderWorkoutCard(workout) {
       </div>
       <p class="workout-note">${note}</p>
       <div class="history-actions">
-        <button class="button button-secondary" type="button" data-action="details" data-id="${workout._id}">Detalhes</button>
-        <button class="button button-ghost" type="button" data-action="edit" data-id="${workout._id}">Editar</button>
-        <button class="button button-ghost" type="button" data-action="delete" data-id="${workout._id}">Excluir</button>
+        <button class="button button-secondary" type="button" data-action="details" data-id="${workout._id}">VIEW</button>
+        <button class="button button-ghost" type="button" data-action="edit" data-id="${workout._id}">EDIT</button>
+        <button class="button button-ghost" type="button" data-action="delete" data-id="${workout._id}">DELETE</button>
       </div>
     </article>
   `;
@@ -5926,9 +5926,9 @@ function renderHistoryListRow(workout, index) {
       <div class="row-duration">${duration ? `${duration} min` : '-'}</div>
       <div class="row-sets">${completedUnits}</div>
       <div class="row-actions">
-        <button class="button button-secondary compact-action" type="button" data-action="details" data-id="${workout._id}">Ver</button>
-        <button class="button button-ghost compact-action" type="button" data-action="edit" data-id="${workout._id}">Editar</button>
-        <button class="button button-ghost compact-action danger-action" type="button" data-action="delete" data-id="${workout._id}">Excluir</button>
+        <button class="button button-secondary compact-action" type="button" data-action="details" data-id="${workout._id}">VIEW</button>
+        <button class="button button-ghost compact-action" type="button" data-action="edit" data-id="${workout._id}">EDIT</button>
+        <button class="button button-ghost compact-action danger-action" type="button" data-action="delete" data-id="${workout._id}">DELETE</button>
       </div>
     </article>
   `;
@@ -5976,9 +5976,9 @@ function renderHistoryCard(workout) {
       <footer>
         <span>${toDateKey(workout.date)}</span>
         <div class="history-actions">
-          <button class="button button-secondary" type="button" data-action="details" data-id="${workout._id}">Ver</button>
-          <button class="button button-ghost" type="button" data-action="edit" data-id="${workout._id}">Editar</button>
-          <button class="button button-ghost" type="button" data-action="delete" data-id="${workout._id}">Excluir</button>
+          <button class="button button-secondary" type="button" data-action="details" data-id="${workout._id}">VIEW</button>
+          <button class="button button-ghost" type="button" data-action="edit" data-id="${workout._id}">EDIT</button>
+          <button class="button button-ghost" type="button" data-action="delete" data-id="${workout._id}">DELETE</button>
         </div>
       </footer>
     </article>
@@ -6002,9 +6002,9 @@ function renderHistoryPagination(totalItems) {
   historyPagination.innerHTML = `
     <div class="pagination-info">Mostrando <span>${start}-${end}</span> de <span>${totalItems}</span> sessoes</div>
     <div class="pagination-controls">
-      <button class="page-btn" type="button" data-history-page="${state.historyPage - 1}" ${state.historyPage === 1 ? 'disabled' : ''}>Anterior</button>
+      <button class="page-btn" type="button" data-history-page="${state.historyPage - 1}" ${state.historyPage === 1 ? 'disabled' : ''}>PREV</button>
       ${pageButtons}
-      <button class="page-btn" type="button" data-history-page="${state.historyPage + 1}" ${state.historyPage === pageCount ? 'disabled' : ''}>Proxima</button>
+      <button class="page-btn" type="button" data-history-page="${state.historyPage + 1}" ${state.historyPage === pageCount ? 'disabled' : ''}>NEXT</button>
     </div>
   `;
 }
@@ -6745,9 +6745,9 @@ function renderTemplates() {
         ${template.exercises.slice(0, 4).map((exercise) => `<li>${escapeHtml(exercise.name)}</li>`).join('')}
       </ol>
       <div class="history-actions">
-        <button class="button button-secondary" type="button" data-template-action="view" data-id="${template._id}">Ver</button>
-        <button class="button button-ghost" type="button" data-template-action="edit" data-id="${template._id}">Editar</button>
-        <button class="button button-ghost" type="button" data-template-action="delete" data-id="${template._id}">Excluir</button>
+        <button class="button button-secondary" type="button" data-template-action="view" data-id="${template._id}">VIEW</button>
+        <button class="button button-ghost" type="button" data-template-action="edit" data-id="${template._id}">EDIT</button>
+        <button class="button button-ghost" type="button" data-template-action="delete" data-id="${template._id}">DELETE</button>
       </div>
     </article>
   `).join('');
@@ -6884,8 +6884,8 @@ function renderWorkoutTypes() {
         ${(type.fields || []).map((field) => `<span class="row-tag core">${escapeHtml(field)}</span>`).join('')}
       </div>
       <div class="history-actions">
-        <button class="button button-ghost" type="button" data-type-action="edit" data-id="${type._id}">Editar</button>
-        <button class="button button-ghost" type="button" data-type-action="delete" data-id="${type._id}">Excluir</button>
+        <button class="button button-ghost" type="button" data-type-action="edit" data-id="${type._id}">EDIT</button>
+        <button class="button button-ghost" type="button" data-type-action="delete" data-id="${type._id}">DELETE</button>
       </div>
     </article>
   `).join('');
