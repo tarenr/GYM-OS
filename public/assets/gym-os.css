@@ -1448,29 +1448,47 @@ h4 {
 .muscle-distribution {
   display: grid;
   flex: 1;
-  gap: 13px;
-  align-content: center;
+  gap: 14px;
+  align-content: start;
+  padding: 18px 20px 20px;
 }
 
-/* Radar Hexagonal SVG */
-.radar-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 20px 4px;
+.muscle-metric-summary {
+  display: grid;
+  gap: 5px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--phosphor);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(0, 255, 135, 0.07), rgba(88, 166, 255, 0.035)),
+    var(--bg);
+  padding: 12px;
 }
 
-.radar-svg {
-  width: 100%;
-  max-width: 220px;
-  height: auto;
-  display: block;
+.muscle-metric-summary span {
+  color: var(--phosphor);
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.muscle-metric-summary strong {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.muscle-metric-summary p {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 /* Muscle Bars */
 .radar-list {
   width: 100%;
-  padding: 0 20px 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;

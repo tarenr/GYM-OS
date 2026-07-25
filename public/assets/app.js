@@ -1662,77 +1662,6 @@ ${point.deltaLabel}`;
   `;
 }
 
-function buildRadarSvg(entries, totalVolume) {
-  const cx = 100;
-  const cy = 100;
-  const r = 76;
-  const count = 6;
-
-  // Fixed 6 muscle group slots matching real data via fuzzy match
-  const slots = [
-    { label: 'Peito', keys: ['peito', 'chest', 'peitoral'] },
-    { label: 'Costas', keys: ['costas', 'back', 'dorsal', 'latissimo', 'trapezio'] },
-    { label: 'Biceps', keys: ['biceps', 'bicep', 'braco'] },
-    { label: 'Triceps', keys: ['triceps', 'tricep'] },
-    { label: 'Ombros', keys: ['ombro', 'ombros', 'deltoides', 'shoulder'] },
-    { label: 'Pernas', keys: ['perna', 'pernas', 'quadriceps', 'gluteo', 'leg', 'panturrilha'] }
-  ];
-
-  // Map entry volumes to slots via keyword matching
-  const slotVolumes = slots.map((slot) => {
-    let vol = 0;
-
-    entries.forEach((entry) => {
-      const nameLower = entry.name.toLowerCase();
-      if (slot.keys.some((key) => nameLower.includes(key) || key.includes(nameLower))) {
-        vol += entry.volume;
-      }
-    });
-
-    return vol;
-  });
-
-  const maxVol = Math.max(...slotVolumes, 1);
-
-  // Helper: get polar point
-  function getPoint(index, scale) {
-    const angle = (Math.PI / 180) * (-90 + index * (360 / count));
-    return {
-      x: cx + r * scale * Math.cos(angle),
-      y: cy + r * scale * Math.sin(angle)
-    };
-  }
-
-  const outerPts = Array.from({ length: count }, (_, i) => getPoint(i, 1));
-  const midPts   = Array.from({ length: count }, (_, i) => getPoint(i, 0.5));
-  const innerPts = Array.from({ length: count }, (_, i) => getPoint(i, 0.25));
-
-  const poly = (pts) => pts.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
-
-  // Data polygon: minimum 5% so it is always visible.
-  const dataPts = slotVolumes.map((vol, i) => getPoint(i, Math.max(0.05, vol / maxVol)));
-  const dataCircles = dataPts.map((p) => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="var(--phosphor)"/>`).join('');
-
-  // Axis lines from center to outer vertex
-  const axes = outerPts.map((p) => `<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="#1d322a" stroke-width="1"/>`).join('');
-
-  return `
-    <svg viewBox="0 0 200 200" class="radar-svg" aria-label="Distribuicao muscular" role="img">
-      <polygon points="${poly(outerPts)}"  fill="none" stroke="#1d322a" stroke-width="1"/>
-      <polygon points="${poly(midPts)}"    fill="none" stroke="#1d322a" stroke-width="1"/>
-      <polygon points="${poly(innerPts)}"  fill="none" stroke="#1d322a" stroke-width="1"/>
-      ${axes}
-      <polygon points="${poly(dataPts)}"
-        fill="rgba(0,255,135,0.16)"
-        stroke="var(--phosphor)"
-        stroke-width="2"
-        stroke-linejoin="round"
-      />
-      ${dataCircles}
-    </svg>
-  `;
-}
-
 function renderDashboardMuscleDistribution() {
   if (!dashboardMuscleDistribution) {
     return;
@@ -1762,7 +1691,6 @@ function renderDashboardMuscleDistribution() {
     return;
   }
 
-  const radarSvg = buildRadarSvg(entries, totalVolume);
   const dominantVolume = Math.max(...entries.map((item) => item.volume));
   const lowestVolume = Math.min(...entries.map((item) => item.volume));
 
@@ -1800,7 +1728,11 @@ Status: ${statusLabel}`;
   }).join('');
 
   dashboardMuscleDistribution.innerHTML = `
-    <div class="radar-wrap">${radarSvg}</div>
+    <div class="muscle-metric-summary">
+      <span>METRICA</span>
+      <strong>Volume por grupo muscular</strong>
+      <p>Total analisado: ${escapeHtml(formatCompactNumber(totalVolume))} kg | ${entries.length} grupos com carga registrada | percentual = participacao no volume total</p>
+    </div>
     <div class="radar-list">${bars}</div>
   `;
 }
