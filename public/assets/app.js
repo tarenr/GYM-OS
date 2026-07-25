@@ -1693,6 +1693,7 @@ function renderDashboardMuscleDistribution() {
 
   const dominantVolume = Math.max(...entries.map((item) => item.volume));
   const lowestVolume = Math.min(...entries.map((item) => item.volume));
+  const radarSvg = buildMuscleRadarSvg(entries);
 
   const bars = entries.map((item) => {
     const percent = Math.round((item.volume / Math.max(1, totalVolume)) * 100);
@@ -1731,9 +1732,80 @@ Status: ${statusLabel}`;
     <div class="muscle-metric-summary">
       <span>METRICA</span>
       <strong>Volume por grupo muscular</strong>
-      <p>Total analisado: ${escapeHtml(formatCompactNumber(totalVolume))} kg | ${entries.length} grupos com carga registrada | percentual = participacao no volume total</p>
+      <p>Total analisado: ${escapeHtml(formatCompactNumber(totalVolume))} kg | radar: maior grupo = 100 | barras: participacao no volume total</p>
     </div>
+    <div class="muscle-radar-wrap">${radarSvg}</div>
     <div class="radar-list">${bars}</div>
+  `;
+}
+
+function buildMuscleRadarSvg(entries) {
+  const slots = [
+    { label: 'Peito', keys: ['peito', 'chest', 'peitoral'] },
+    { label: 'Costas', keys: ['costas', 'back', 'dorsal', 'latissimo', 'trapezio'] },
+    { label: 'Biceps', keys: ['biceps', 'bicep', 'braco'] },
+    { label: 'Triceps', keys: ['triceps', 'tricep'] },
+    { label: 'Ombros', keys: ['ombro', 'ombros', 'deltoides', 'shoulder'] },
+    { label: 'Pernas', keys: ['perna', 'pernas', 'quadriceps', 'gluteo', 'leg', 'panturrilha'] }
+  ];
+  const cx = 150;
+  const cy = 150;
+  const radius = 92;
+  const maxVolume = Math.max(1, ...entries.map((entry) => entry.volume));
+  const normalize = (value) => Math.max(0.05, value / maxVolume);
+  const pointAt = (index, scale, baseRadius = radius) => {
+    const angle = (Math.PI / 180) * (-90 + index * (360 / slots.length));
+
+    return {
+      x: cx + baseRadius * scale * Math.cos(angle),
+      y: cy + baseRadius * scale * Math.sin(angle)
+    };
+  };
+  const polygon = (points) => points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ');
+  const slotData = slots.map((slot, index) => {
+    const volume = entries.reduce((total, entry) => {
+      const normalizedName = entry.name.toLowerCase();
+      const matches = slot.keys.some((key) => normalizedName.includes(key) || key.includes(normalizedName));
+
+      return matches ? total + entry.volume : total;
+    }, 0);
+    const percent = Math.round((volume / maxVolume) * 100);
+
+    return {
+      ...slot,
+      index,
+      percent,
+      volume,
+      point: pointAt(index, normalize(volume)),
+      labelPoint: pointAt(index, 1.24)
+    };
+  });
+  const rings = [0.25, 0.5, 0.75, 1].map((scale) => Array.from({ length: slots.length }, (_, index) => pointAt(index, scale)));
+  const dataPoints = slotData.map((slot) => slot.point);
+
+  return `
+    <svg class="muscle-radar-svg" viewBox="0 0 300 300" role="img" aria-label="Radar de volume relativo por grupo muscular">
+      ${rings.map((ring, index) => `
+        <polygon class="muscle-radar-ring" points="${polygon(ring)}"></polygon>
+        <text class="muscle-radar-scale" x="${cx}" y="${pointAt(0, (index + 1) * 0.25).y + 5}" text-anchor="middle">${(index + 1) * 25}</text>
+      `).join('')}
+      ${slotData.map((slot) => {
+        const outer = pointAt(slot.index, 1);
+
+        return `<line class="muscle-radar-axis" x1="${cx}" y1="${cy}" x2="${outer.x.toFixed(1)}" y2="${outer.y.toFixed(1)}"></line>`;
+      }).join('')}
+      <polygon class="muscle-radar-area" points="${polygon(dataPoints)}"></polygon>
+      ${slotData.map((slot) => `
+        <g class="muscle-radar-point-group" tabindex="0" role="img" aria-label="${escapeHtml(`${slot.label}: ${formatNumber(slot.volume)} kg, ${slot.percent}% do grupo mais trabalhado`)}">
+          <circle class="muscle-radar-point" cx="${slot.point.x.toFixed(1)}" cy="${slot.point.y.toFixed(1)}" r="4">
+            <title>${escapeHtml(`${slot.label}: ${formatNumber(slot.volume)} kg | ${slot.percent}% do maior grupo`)}</title>
+          </circle>
+        </g>
+      `).join('')}
+      ${slotData.map((slot) => `
+        <text class="muscle-radar-label" x="${slot.labelPoint.x.toFixed(1)}" y="${slot.labelPoint.y.toFixed(1)}" text-anchor="middle">${escapeHtml(slot.label)}</text>
+      `).join('')}
+    </svg>
   `;
 }
 
