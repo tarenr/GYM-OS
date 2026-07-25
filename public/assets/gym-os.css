@@ -843,6 +843,17 @@ h4 {
   flex: 0 0 auto;
 }
 
+.activity-log-grid .activity-feed,
+.activity-log-grid .achievement-list,
+.activity-log-grid + .progress-grid .dashboard-history,
+.activity-log-grid + .progress-grid .weekly-mission-list {
+  display: grid;
+  flex: 1;
+  gap: 10px;
+  align-content: start;
+  padding: 20px;
+}
+
 .panel-title,
 .panel-actions,
 .history-tools {
