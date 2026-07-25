@@ -4723,31 +4723,60 @@ textarea:focus {
   }
 
   .side-nav {
-    position: static;
+    position: sticky;
+    top: 0;
+    z-index: 80;
     width: 100%;
     max-width: 100%;
     height: auto;
-    padding: 14px;
+    padding: 14px 14px 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
   }
 
   .side-brand {
+    align-items: center;
     padding-bottom: 14px;
   }
 
   .side-menu {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
   }
 
   .nav-group {
+    display: grid;
+    flex: 0 0 172px;
     gap: 4px;
+    min-width: 0;
+    border: 1px solid var(--border);
+    background: rgba(0, 255, 135, 0.025);
+    padding: 8px;
   }
 
   .nav-group > span {
-    padding: 0 8px;
+    padding: 0 4px 4px;
+    font-size: 0.66rem;
+  }
+
+  .side-menu > .nav-link {
+    flex: 0 0 150px;
+  }
+
+  .nav-link {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 0.78rem;
   }
 
   .nav-subitem {
-    padding-left: 12px;
+    padding-left: 10px;
   }
 
   .hud-header,
@@ -4822,8 +4851,34 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
-  .side-menu {
-    grid-template-columns: 1fr;
+  .side-brand {
+    gap: 10px;
+  }
+
+  .side-brand span {
+    width: 46px;
+    height: 40px;
+  }
+
+  .side-brand strong {
+    font-size: 0.9rem;
+  }
+
+  .side-brand small {
+    font-size: 0.58rem;
+  }
+
+  .side-menu > .nav-link {
+    flex-basis: 132px;
+  }
+
+  .nav-group {
+    flex-basis: 154px;
+  }
+
+  .nav-link {
+    min-height: 34px;
+    font-size: 0.72rem;
   }
 
   .toolbar-panel .search-box {
