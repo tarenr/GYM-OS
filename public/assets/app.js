@@ -130,6 +130,7 @@ const dashboardPlayerLevel = document.querySelector('#dashboard-player-level');
 const dashboardPlayerRank = document.querySelector('#dashboard-player-rank');
 const dashboardPlayerXpFill = document.querySelector('#dashboard-player-xp-fill');
 const dashboardPlayerXpText = document.querySelector('#dashboard-player-xp-text');
+const dashboardPlayerStatGrid = document.querySelector('#dashboard-player-stat-grid');
 const dashboardLevelRing = document.querySelector('#dashboard-level-ring');
 const journeyCommandBadge = document.querySelector('#journey-command-badge');
 const journeyCommandGrid = document.querySelector('#journey-command-grid');
@@ -3390,6 +3391,22 @@ function renderDashboard() {
   dashboardPlayerRank.textContent = rank.name;
   dashboardPlayerXpFill.style.width = `${xpProgress}%`;
   dashboardPlayerXpText.textContent = `${level.currentXp} / ${level.nextLevelXp} XP | ${xpProgress}% ate o proximo nivel`;
+  if (dashboardPlayerStatGrid) {
+    const playerStats = [
+      { label: 'Streak', value: `${currentStreak}d`, detail: 'sequencia atual' },
+      { label: 'Semana', value: `${weeklyWorkouts.length}/6`, detail: 'treinos validos' },
+      { label: 'Volume', value: `${formatCompactNumber(weeklyVolume)} kg`, detail: 'carga semanal' },
+      { label: 'XP Total', value: `${formatCompactNumber(totalXp)}`, detail: 'jornada anual' }
+    ];
+
+    dashboardPlayerStatGrid.innerHTML = playerStats.map((item) => `
+      <article class="player-stat-chip">
+        <span>${escapeHtml(item.label)}</span>
+        <strong>${escapeHtml(item.value)}</strong>
+        <p>${escapeHtml(item.detail)}</p>
+      </article>
+    `).join('');
+  }
   dashboardLevelRing.style.strokeDashoffset = `${245 - (245 * xpProgress) / 100}`;
   weeklyProgress.textContent = `${completedTrainingDays}/6`;
   renderJourneyCommand({
