@@ -851,7 +851,6 @@ h4 {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 8px;
-  padding: 20px;
 }
 
 .schedule-day {
@@ -1004,7 +1003,7 @@ h4 {
 .volume-chart-wrap {
   display: grid;
   gap: 16px;
-  padding: 18px 20px 20px;
+  padding: 18px 0 0;
 }
 
 .volume-chart {
@@ -1097,7 +1096,6 @@ h4 {
 .muscle-distribution {
   display: grid;
   gap: 13px;
-  padding: 20px;
 }
 
 /* ── Radar Hexagonal SVG ── */
@@ -2354,18 +2352,6 @@ h4 {
   background: var(--bg-panel);
   box-shadow: var(--shadow);
   backdrop-filter: blur(8px);
-}
-
-.workout-form,
-.history-panel,
-.detail-panel,
-.list-panel,
-.mission-panel,
-.journey-panel,
-.heatmap-panel,
-.log-preview-panel,
-.achievements-panel,
-.weekly-missions-panel {
   padding: 26px;
 }
 
