@@ -438,9 +438,29 @@
           <p class="page-subtitle" id="progress-subtitle">// official XP by workout, week and campaign</p>
         </div>
 
-        <section class="summary-grid page-summary" id="progress-summary-cards" aria-label="XP evolution summary"></section>
+        <nav class="dashboard-subnav progress-subnav" aria-label="Evolution sections">
+          <button class="dash-subnav-btn active" type="button" data-progress-tab="overview">
+            <span class="dash-subnav-icon">OV</span>
+            OVERVIEW
+          </button>
+          <button class="dash-subnav-btn" type="button" data-progress-tab="performance">
+            <span class="dash-subnav-icon">PF</span>
+            PERFORMANCE
+          </button>
+          <button class="dash-subnav-btn" type="button" data-progress-tab="body">
+            <span class="dash-subnav-icon">BD</span>
+            BODY
+          </button>
+          <button class="dash-subnav-btn" type="button" data-progress-tab="achievements">
+            <span class="dash-subnav-icon">AC</span>
+            ACHIEVEMENTS
+          </button>
+        </nav>
 
-        <section class="panel season-progress-panel">
+        <div class="progress-subtab active" id="progress-subtab-overview" data-progress-panel="overview">
+          <section class="summary-grid page-summary" id="progress-summary-cards" aria-label="XP evolution summary"></section>
+
+          <section class="panel season-progress-panel">
           <div class="panel-header">
             <div class="panel-title">
               <span class="panel-icon">S</span>
@@ -450,9 +470,11 @@
           </div>
           <section class="summary-grid page-summary compact-summary" id="season-progress-summary-cards" aria-label="Season and cycle summary"></section>
           <div class="season-progress-grid" id="season-progress-grid"></div>
-        </section>
+          </section>
+        </div>
 
-        <section class="panel body-progress-panel">
+        <div class="progress-subtab" id="progress-subtab-body" data-progress-panel="body">
+          <section class="panel body-progress-panel">
           <div class="panel-header">
             <div class="panel-title">
               <span class="panel-icon">KG</span>
@@ -536,9 +558,11 @@
             </form>
             <div class="body-progress-history" id="body-progress-history"></div>
           </section>
-        </section>
+          </section>
+        </div>
 
-        <section class="content-grid analytics-grid">
+        <div class="progress-subtab" id="progress-subtab-performance" data-progress-panel="performance">
+          <section class="content-grid analytics-grid">
           <article class="panel">
             <div class="panel-header">
               <div class="panel-title">
@@ -560,9 +584,72 @@
             </div>
             <div class="xp-split" id="progress-xp-split"></div>
           </article>
-        </section>
+          </section>
 
-        <section class="panel progress-achievement-panel">
+          <section class="panel progress-exercise-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">*</span>
+                <h2>EXERCISE_PROGRESS.db</h2>
+              </div>
+              <span class="panel-badge" id="progress-exercise-count">0 MOV</span>
+            </div>
+            <div class="toolbar-panel progress-exercise-toolbar">
+              <label>
+                Exercise
+                <select id="progress-exercise-select">
+                  <option value="">Select an exercise</option>
+                </select>
+              </label>
+              <label>
+                Period
+                <select id="progress-exercise-period-filter">
+                  <option value="all">All</option>
+                  <option value="week">This week</option>
+                  <option value="month">This month</option>
+                  <option value="quarter">Last 3 months</option>
+                  <option value="year">This year</option>
+                </select>
+              </label>
+            </div>
+            <section class="summary-grid page-summary compact-summary" id="progress-exercise-summary-cards" aria-label="Exercise evolution summary"></section>
+            <section class="progress-compare-panel">
+              <div class="panel-header compact-header">
+                <div class="panel-title">
+                  <span class="panel-icon">~</span>
+                  <h2>EXERCISE_COMPARE.chart</h2>
+                </div>
+                <span class="panel-badge" id="progress-compare-count">0 PTS</span>
+              </div>
+              <div class="progress-compare-grid" id="progress-exercise-compare"></div>
+            </section>
+            <section class="progress-pr-panel">
+              <div class="panel-header compact-header">
+                <div class="panel-title">
+                  <span class="panel-icon">*</span>
+                  <h2>PR_RECENT.log</h2>
+                </div>
+                <span class="panel-badge" id="progress-pr-count">0 PR</span>
+              </div>
+              <div class="progress-pr-list" id="progress-pr-list"></div>
+            </section>
+            <div class="progress-exercise-history" id="progress-exercise-history"></div>
+          </section>
+
+          <section class="panel progress-log-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">&gt;</span>
+                <h2>XP_LOG.db</h2>
+              </div>
+              <span class="panel-badge" id="progress-log-count">0 REG</span>
+            </div>
+            <div class="progress-xp-log" id="progress-xp-log"></div>
+          </section>
+        </div>
+
+        <div class="progress-subtab" id="progress-subtab-achievements" data-progress-panel="achievements">
+          <section class="panel progress-achievement-panel">
           <div class="panel-header">
             <div class="panel-title">
               <span class="panel-icon">KG</span>
@@ -575,21 +662,21 @@
               Category
               <select id="progress-achievement-category-filter">
                 <option value="all">All</option>
-                <option value="Entrada">Entrada</option>
-                <option value="Consistencia">Consistencia</option>
+                <option value="Entrada">Entry</option>
+                <option value="Consistencia">Consistency</option>
                 <option value="Performance">Performance</option>
                 <option value="Modality">Modality</option>
                 <option value="Campaign">Campaign</option>
                 <option value="Body">Body</option>
-                <option value="Nivel">Nivel</option>
+                <option value="Nivel">Level</option>
               </select>
             </label>
             <label>
               State
               <select id="progress-achievement-status-filter">
                 <option value="all">All</option>
-                <option value="unlocked">Desbloqueadas</option>
-                <option value="locked">Bloqueadas</option>
+                <option value="unlocked">Unlocked</option>
+                <option value="locked">Locked</option>
                 <option value="near">Closest</option>
               </select>
             </label>
@@ -597,68 +684,8 @@
           <section class="summary-grid page-summary compact-summary" id="progress-achievement-summary-cards" aria-label="Annual achievements summary"></section>
           <div class="progress-achievement-category-list" id="progress-achievement-category-list"></div>
           <div class="progress-achievement-grid" id="progress-achievement-list"></div>
-        </section>
-
-        <section class="panel progress-exercise-panel">
-          <div class="panel-header">
-            <div class="panel-title">
-              <span class="panel-icon">*</span>
-              <h2>EXERCISE_PROGRESS.db</h2>
-            </div>
-            <span class="panel-badge" id="progress-exercise-count">0 MOV</span>
-          </div>
-          <div class="toolbar-panel progress-exercise-toolbar">
-            <label>
-              Exercise
-              <select id="progress-exercise-select">
-                <option value="">Select an exercise</option>
-              </select>
-            </label>
-            <label>
-              Period
-              <select id="progress-exercise-period-filter">
-                <option value="all">All</option>
-                <option value="week">This week</option>
-                <option value="month">This month</option>
-                <option value="quarter">Last 3 months</option>
-                <option value="year">This year</option>
-              </select>
-            </label>
-          </div>
-          <section class="summary-grid page-summary compact-summary" id="progress-exercise-summary-cards" aria-label="Exercise evolution summary"></section>
-          <section class="progress-compare-panel">
-            <div class="panel-header compact-header">
-              <div class="panel-title">
-                <span class="panel-icon">~</span>
-                <h2>EXERCISE_COMPARE.chart</h2>
-              </div>
-              <span class="panel-badge" id="progress-compare-count">0 PTS</span>
-            </div>
-            <div class="progress-compare-grid" id="progress-exercise-compare"></div>
           </section>
-          <section class="progress-pr-panel">
-            <div class="panel-header compact-header">
-              <div class="panel-title">
-                <span class="panel-icon">*</span>
-                <h2>PR_RECENT.log</h2>
-              </div>
-              <span class="panel-badge" id="progress-pr-count">0 PR</span>
-            </div>
-            <div class="progress-pr-list" id="progress-pr-list"></div>
-          </section>
-          <div class="progress-exercise-history" id="progress-exercise-history"></div>
-        </section>
-
-        <section class="panel progress-log-panel">
-          <div class="panel-header">
-            <div class="panel-title">
-              <span class="panel-icon">&gt;</span>
-              <h2>XP_LOG.db</h2>
-            </div>
-            <span class="panel-badge" id="progress-log-count">0 REG</span>
-          </div>
-          <div class="progress-xp-log" id="progress-xp-log"></div>
-        </section>
+        </div>
       </section>
 
       <section class="tab-view" id="view-workout-create">

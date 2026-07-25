@@ -48,6 +48,7 @@ const state = {
   progressExercisePeriodFilter: 'all',
   achievementCategoryFilter: 'all',
   achievementStatusFilter: 'all',
+  progressSubtab: 'overview',
   selectedMissionDayIndex: new Date().getDay(),
   activeDocumentationDoc: 'app',
   documentationLoaded: {},
@@ -188,6 +189,8 @@ const dailyMissionSummaryCards = document.querySelector('#daily-mission-summary-
 const dailyMissionToday = document.querySelector('#daily-mission-today');
 const dailyMissionTodayBadge = document.querySelector('#daily-mission-today-badge');
 const dailyMissionList = document.querySelector('#daily-mission-list');
+const progressSubtabButtons = document.querySelectorAll('[data-progress-tab]');
+const progressSubtabPanels = document.querySelectorAll('[data-progress-panel]');
 const progressSubtitle = document.querySelector('#progress-subtitle');
 const progressSummaryCards = document.querySelector('#progress-summary-cards');
 const seasonProgressBadge = document.querySelector('#season-progress-badge');
@@ -7534,6 +7537,26 @@ function toggleMobileMenu() {
   setMobileMenuOpen(!sideNav?.classList.contains('menu-open'));
 }
 
+function activateProgressSubtab(tabName = 'overview') {
+  const targetTab = [...progressSubtabButtons].some((button) => button.dataset.progressTab === tabName)
+    ? tabName
+    : 'overview';
+
+  state.progressSubtab = targetTab;
+
+  progressSubtabButtons.forEach((button) => {
+    const isActive = button.dataset.progressTab === targetTab;
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-selected', String(isActive));
+  });
+
+  progressSubtabPanels.forEach((panel) => {
+    const isActive = panel.dataset.progressPanel === targetTab;
+    panel.classList.toggle('active', isActive);
+    panel.hidden = !isActive;
+  });
+}
+
 async function activateTab(tabName, options = {}) {
   const { updateUrl = true, scroll = true } = options;
   const targetView = document.querySelector(`#view-${tabName}`);
@@ -7557,6 +7580,7 @@ async function activateTab(tabName, options = {}) {
   }
 
   if (tabName === 'progress') {
+    activateProgressSubtab(state.progressSubtab);
     renderProgress();
   }
 
@@ -7610,6 +7634,12 @@ documentationMenuButtons.forEach((button) => {
 document.querySelectorAll('[data-tab-shortcut]').forEach((button) => {
   button.addEventListener('click', () => {
     activateTab(button.dataset.tabShortcut).catch((error) => setStatus(error.message, true));
+  });
+});
+
+progressSubtabButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    activateProgressSubtab(button.dataset.progressTab);
   });
 });
 
@@ -8116,10 +8146,10 @@ if (initialTab) {
   activateTab(initialTab, { updateUrl: false }).catch((error) => setStatus(error.message, true));
 }
 
-document.querySelectorAll('.dash-subnav-btn').forEach((button) => {
+document.querySelectorAll('[data-dash-tab]').forEach((button) => {
   button.addEventListener('click', () => {
     const targetTab = button.dataset.dashTab;
-    document.querySelectorAll('.dash-subnav-btn').forEach((item) => item.classList.remove('active'));
+    document.querySelectorAll('[data-dash-tab]').forEach((item) => item.classList.remove('active'));
     document.querySelectorAll('.dashboard-subtab').forEach((subtab) => subtab.classList.remove('active'));
     button.classList.add('active');
     const targetSubtab = document.getElementById(`dash-subtab-${targetTab}`);

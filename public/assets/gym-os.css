@@ -5589,3 +5589,21 @@ textarea:focus {
   display: block;
   animation: scaleIn 0.2s ease;
 }
+
+.progress-subnav {
+  margin-top: 0;
+}
+
+.progress-subtab {
+  display: none;
+}
+
+.progress-subtab.active {
+  display: block;
+  animation: scaleIn 0.2s ease;
+}
+
+.progress-subtab > .panel:first-child,
+.progress-subtab > .content-grid:first-child {
+  margin-top: 0;
+}
