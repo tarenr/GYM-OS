@@ -54,6 +54,7 @@ const state = {
   documentationCache: {}
 };
 
+let muscleRadarChart = null;
 const sideNav = document.querySelector('.side-nav');
 const menuToggle = document.querySelector('.menu-toggle');
 const form = document.querySelector('#workout-form');
@@ -1693,7 +1694,7 @@ function renderDashboardMuscleDistribution() {
 
   const dominantVolume = Math.max(...entries.map((item) => item.volume));
   const lowestVolume = Math.min(...entries.map((item) => item.volume));
-  const radarSvg = buildMuscleRadarSvg(entries);
+  const radarData = getMuscleRadarData(entries);
 
   const bars = entries.map((item) => {
     const percent = Math.round((item.volume / Math.max(1, totalVolume)) * 100);
@@ -1734,12 +1735,15 @@ Status: ${statusLabel}`;
       <strong>Volume por grupo muscular</strong>
       <p>Total analisado: ${escapeHtml(formatCompactNumber(totalVolume))} kg | radar: maior grupo = 100 | barras: participacao no volume total</p>
     </div>
-    <div class="muscle-radar-wrap">${radarSvg}</div>
+    <div class="muscle-radar-wrap">
+      <canvas aria-label="Radar de volume relativo por grupo muscular"></canvas>
+    </div>
     <div class="radar-list">${bars}</div>
   `;
+  renderMuscleRadarChart(radarData);
 }
 
-function buildMuscleRadarSvg(entries) {
+function getMuscleRadarData(entries) {
   const slots = [
     { label: 'Peito', keys: ['peito', 'chest', 'peitoral'] },
     { label: 'Costas', keys: ['costas', 'back', 'dorsal', 'latissimo', 'trapezio'] },
@@ -1748,65 +1752,106 @@ function buildMuscleRadarSvg(entries) {
     { label: 'Ombros', keys: ['ombro', 'ombros', 'deltoides', 'shoulder'] },
     { label: 'Pernas', keys: ['perna', 'pernas', 'quadriceps', 'gluteo', 'leg', 'panturrilha'] }
   ];
-  const cx = 150;
-  const cy = 150;
-  const radius = 92;
-  const maxVolume = Math.max(1, ...entries.map((entry) => entry.volume));
-  const normalize = (value) => Math.max(0.05, value / maxVolume);
-  const pointAt = (index, scale, baseRadius = radius) => {
-    const angle = (Math.PI / 180) * (-90 + index * (360 / slots.length));
-
-    return {
-      x: cx + baseRadius * scale * Math.cos(angle),
-      y: cy + baseRadius * scale * Math.sin(angle)
-    };
-  };
-  const polygon = (points) => points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ');
-  const slotData = slots.map((slot, index) => {
+  const values = slots.map((slot) => {
     const volume = entries.reduce((total, entry) => {
       const normalizedName = entry.name.toLowerCase();
       const matches = slot.keys.some((key) => normalizedName.includes(key) || key.includes(normalizedName));
 
       return matches ? total + entry.volume : total;
     }, 0);
-    const percent = Math.round((volume / maxVolume) * 100);
 
     return {
-      ...slot,
-      index,
-      percent,
-      volume,
-      point: pointAt(index, normalize(volume)),
-      labelPoint: pointAt(index, 1.24)
+      label: slot.label,
+      volume
     };
   });
-  const rings = [0.25, 0.5, 0.75, 1].map((scale) => Array.from({ length: slots.length }, (_, index) => pointAt(index, scale)));
-  const dataPoints = slotData.map((slot) => slot.point);
+  const maxVolume = Math.max(1, ...values.map((item) => item.volume));
 
-  return `
-    <svg class="muscle-radar-svg" viewBox="0 0 300 300" role="img" aria-label="Radar de volume relativo por grupo muscular">
-      ${rings.map((ring, index) => `
-        <polygon class="muscle-radar-ring" points="${polygon(ring)}"></polygon>
-        <text class="muscle-radar-scale" x="${cx}" y="${pointAt(0, (index + 1) * 0.25).y + 5}" text-anchor="middle">${(index + 1) * 25}</text>
-      `).join('')}
-      ${slotData.map((slot) => {
-        const outer = pointAt(slot.index, 1);
+  return {
+    labels: values.map((item) => item.label),
+    percentages: values.map((item) => Math.round((item.volume / maxVolume) * 100)),
+    values
+  };
+}
 
-        return `<line class="muscle-radar-axis" x1="${cx}" y1="${cy}" x2="${outer.x.toFixed(1)}" y2="${outer.y.toFixed(1)}"></line>`;
-      }).join('')}
-      <polygon class="muscle-radar-area" points="${polygon(dataPoints)}"></polygon>
-      ${slotData.map((slot) => `
-        <g class="muscle-radar-point-group" tabindex="0" role="img" aria-label="${escapeHtml(`${slot.label}: ${formatNumber(slot.volume)} kg, ${slot.percent}% do grupo mais trabalhado`)}">
-          <circle class="muscle-radar-point" cx="${slot.point.x.toFixed(1)}" cy="${slot.point.y.toFixed(1)}" r="4">
-            <title>${escapeHtml(`${slot.label}: ${formatNumber(slot.volume)} kg | ${slot.percent}% do maior grupo`)}</title>
-          </circle>
-        </g>
-      `).join('')}
-      ${slotData.map((slot) => `
-        <text class="muscle-radar-label" x="${slot.labelPoint.x.toFixed(1)}" y="${slot.labelPoint.y.toFixed(1)}" text-anchor="middle">${escapeHtml(slot.label)}</text>
-      `).join('')}
-    </svg>
-  `;
+function renderMuscleRadarChart(radarData) {
+  const canvas = dashboardMuscleDistribution?.querySelector('canvas');
+  const ChartCtor = window.Chart;
+
+  if (!canvas || !ChartCtor) {
+    return;
+  }
+
+  if (muscleRadarChart) {
+    muscleRadarChart.destroy();
+  }
+
+  muscleRadarChart = new ChartCtor(canvas, {
+    type: 'radar',
+    data: {
+      labels: radarData.labels,
+      datasets: [{
+        label: 'Volume relativo',
+        data: radarData.percentages,
+        borderColor: '#00ff87',
+        backgroundColor: 'rgba(0, 255, 135, 0.16)',
+        pointBackgroundColor: '#07110d',
+        pointBorderColor: '#00ff87',
+        pointHoverBackgroundColor: '#00ff87',
+        pointHoverBorderColor: '#07110d',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label(context) {
+              const item = radarData.values[context.dataIndex];
+
+              return `${item.label}: ${formatNumber(item.volume)} kg | ${context.raw}% do maior grupo`;
+            }
+          }
+        }
+      },
+      scales: {
+        r: {
+          angleLines: {
+            color: 'rgba(139, 148, 158, 0.24)'
+          },
+          grid: {
+            color: 'rgba(139, 148, 158, 0.22)'
+          },
+          max: 100,
+          min: 0,
+          pointLabels: {
+            color: '#f0f6fc',
+            font: {
+              family: 'Rajdhani, sans-serif',
+              size: 13,
+              weight: '700'
+            }
+          },
+          ticks: {
+            backdropColor: 'transparent',
+            color: '#7d8590',
+            font: {
+              family: 'JetBrains Mono, monospace',
+              size: 10,
+              weight: '700'
+            },
+            stepSize: 25
+          }
+        }
+      }
+    }
+  });
 }
 
 function getTopPersonalRecords(workouts, limit = 5) {
