@@ -701,7 +701,7 @@ h4 {
 .panel-icon {
   color: var(--phosphor);
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -807,11 +807,11 @@ h4 {
   border: none;
   border-radius: 0;
   background: var(--phosphor);
-  color: var(--void);
-  padding: 2px 8px;
-  font-family: var(--font);
-  font-size: 0.6rem;
-  font-weight: 700;
+  color: var(--bg);
+  padding: 3px 10px;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -2387,14 +2387,15 @@ h4 {
 
 .panel-header h2 {
   font-family: var(--font-display);
-  font-size: 0.88rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text);
   display: flex;
   align-items: center;
   gap: 8px;
+  margin: 0;
 }
 
 .panel-header.compact {
