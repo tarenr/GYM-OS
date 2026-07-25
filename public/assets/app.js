@@ -1617,7 +1617,7 @@ function buildRadarSvg(entries, totalVolume) {
 
   const poly = (pts) => pts.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
 
-  // Data polygon — minimum 5% so it's always visible
+  // Data polygon: minimum 5% so it is always visible.
   const dataPts = slotVolumes.map((vol, i) => getPoint(i, Math.max(0.05, vol / maxVol)));
   const dataCircles = dataPts.map((p) => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="var(--phosphor)"/>`).join('');
 
@@ -3292,7 +3292,7 @@ function renderDashboard() {
   
   if (hudPlayerInfo) {
     const playerRank = rank.shortName ? rank.shortName.toUpperCase() : 'NOOB';
-    hudPlayerInfo.innerHTML = `PLAYER: TAREN &nbsp;/&nbsp; ${playerRank} &middot; CICLO ${journeyPosition.season.name.replace('Ciclo ', '') || '1'} &nbsp;/&nbsp; ACADEMY BUILD`;
+    hudPlayerInfo.innerHTML = `PLAYER: TAREN &nbsp;/&nbsp; ${playerRank} | ${journeyPosition.label} &nbsp;/&nbsp; ACADEMY BUILD`;
   }
   
   if (hudLevelNum) {

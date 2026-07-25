@@ -1,26 +1,26 @@
 :root {
-  /* ── Core backgrounds ── */
+  /* Core backgrounds */
   --bg: #060908;
   --bg-soft: #0a0f0c;
   --bg-panel: rgba(15, 23, 19, 0.82);
   --bg-elevated: #0d1512;
   --bg-panel-solid: #0d1512;
 
-  /* ── Borders ── */
+  /* Borders */
   --border: #1d322a;
   --border-soft: #152420;
 
-  /* ── Text ── */
+  /* Text */
   --text: #e7f4ec;
   --muted: #5c7a6d;
   --muted-strong: #a8c4b8;
 
-  /* ── Brand colours (Matrix Green preserved) ── */
+  /* Brand colors */
   --green: #00ff41;
   --phosphor: #00ff87;
   --phosphor-dim: #1f8a5c;
 
-  /* ── Accent palette ── */
+  /* Accent palette */
   --ember: #ff5a36;
   --volt: #6fe3ff;
   --gold: #ffcf5c;
@@ -29,12 +29,12 @@
   --orange: #d29922;
   --success: #238636;
 
-  /* ── Typography ── */
+  /* Typography */
   --font: "JetBrains Mono", "Courier New", monospace;
   --font-display: "Chakra Petch", "JetBrains Mono", monospace;
   --font-ui: "Rajdhani", "JetBrains Mono", sans-serif;
 
-  /* ── Misc ── */
+  /* Misc */
   --shadow: 0 18px 44px rgba(0, 0, 0, 0.48);
   --radius: 0px;
   --radius-cut: 14px;
@@ -1098,7 +1098,7 @@ h4 {
   gap: 13px;
 }
 
-/* ── Radar Hexagonal SVG ── */
+/* Radar Hexagonal SVG */
 .radar-wrap {
   display: flex;
   flex-direction: column;
@@ -1113,7 +1113,7 @@ h4 {
   display: block;
 }
 
-/* ── Muscle Bars (mockup style) ── */
+/* Muscle Bars */
 .radar-list {
   width: 100%;
   padding: 0 20px 20px;
@@ -4630,92 +4630,7 @@ textarea:focus {
   }
 }
 
-/* ==========================================================================
-   Dashboard Sub-Navigation & Redesign Styles
-   ========================================================================== */
-
-.dashboard-subnav {
-  display: flex;
-  gap: 10px;
-  margin: 20px 0 16px;
-  padding: 6px;
-  background: rgba(22, 27, 34, 0.85);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  backdrop-filter: blur(12px);
-}
-
-.dash-subnav-btn {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  color: var(--muted-strong);
-  font-family: inherit;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dash-subnav-btn:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--border-soft);
-}
-
-.dash-subnav-btn.active {
-  color: var(--green);
-  background: rgba(0, 255, 135, 0.1);
-  border-color: rgba(0, 255, 135, 0.35);
-  box-shadow: 0 0 18px rgba(0, 255, 135, 0.12);
-}
-
-.dash-subnav-icon {
-  font-size: 0.95rem;
-}
-
-.dashboard-subtab {
-  display: none;
-}
-
-.dashboard-subtab.active {
-  display: grid;
-  gap: 20px;
-  animation: fadeInSubtab 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes fadeInSubtab {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 768px) {
-  .dashboard-subnav {
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .dash-subnav-btn {
-    justify-content: flex-start;
-    padding: 10px 14px;
-  }
-}
-
-/* ── Premium Animations (from mockup) ── */
+/* Premium Animations */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
@@ -4736,7 +4651,7 @@ textarea:focus {
   to   { opacity: 1; transform: scale(1); }
 }
 
-/* ── Dash Sub-Nav Premium Style (Chakra Petch) ── */
+/* Dash Sub-Nav Premium Style */
 .dashboard-subnav {
   display: flex;
   gap: 4px;

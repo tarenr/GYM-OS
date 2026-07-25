@@ -1,121 +1,108 @@
 #!/usr/bin/env node
 /**
- * GYM-OS — Validation Script
+ * GYM-OS validation script.
  *
- * Checks before every commit:
- *  1. JavaScript syntax (app.js)
- *  2. Duplicate HTML IDs (index.html)
- *  3. Undefined function references in app.js
- *  4. Broken getElementById references (app.js vs index.html)
- *  5. Original critical functions of view-progress are untouched
+ * Checks:
+ * 1. JavaScript syntax in public/assets/app.js
+ * 2. Duplicate HTML ids in public/index.html
+ * 3. Static id references used by app.js
+ * 4. Critical function definitions
+ * 5. Dashboard evolution subtab isolation from the main Progress view
  */
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
-
 const ROOT = path.resolve(__dirname);
 const APP_JS = path.join(ROOT, 'public', 'assets', 'app.js');
 const INDEX_HTML = path.join(ROOT, 'public', 'index.html');
 
-const BOLD   = '\x1b[1m';
-const GREEN  = '\x1b[32m';
-const RED    = '\x1b[31m';
+const BOLD = '\x1b[1m';
+const GREEN = '\x1b[32m';
+const RED = '\x1b[31m';
 const YELLOW = '\x1b[33m';
-const CYAN   = '\x1b[36m';
-const RESET  = '\x1b[0m';
+const CYAN = '\x1b[36m';
+const RESET = '\x1b[0m';
 
 let hasError = false;
 let hasWarn = false;
 
-function pass(msg) { console.log(`  ${GREEN}✓${RESET}  ${msg}`); }
-function fail(msg) { console.log(`  ${RED}✗${RESET}  ${msg}`); hasError = true; }
-function warn(msg) { console.log(`  ${YELLOW}⚠${RESET}  ${msg}`); hasWarn = true; }
-function section(msg) { console.log(`\n${BOLD}${CYAN}▶ ${msg}${RESET}`); }
+function pass(message) {
+  console.log(`  ${GREEN}OK${RESET}  ${message}`);
+}
 
-// ─────────────────────────────────────────────────────────
-// 1. JavaScript syntax check
-// ─────────────────────────────────────────────────────────
-section('CHECK 1 — JavaScript Syntax (app.js)');
+function fail(message) {
+  console.log(`  ${RED}FAIL${RESET}  ${message}`);
+  hasError = true;
+}
+
+function warn(message) {
+  console.log(`  ${YELLOW}WARN${RESET}  ${message}`);
+  hasWarn = true;
+}
+
+function section(message) {
+  console.log(`\n${BOLD}${CYAN}> ${message}${RESET}`);
+}
+
+section('CHECK 1 - JavaScript syntax');
 
 try {
-  execSync(`node --check "${APP_JS}"`, { stdio: 'pipe' });
+  const scriptWithoutImports = fs.readFileSync(APP_JS, 'utf8').replace(/^\s*import\s+[^;]+;\s*/, '');
+  new Function(scriptWithoutImports);
   pass('app.js has no syntax errors');
-} catch (err) {
-  fail(`app.js has SYNTAX ERRORS:\n${err.stderr.toString().trim()}`);
+} catch (error) {
+  fail(`app.js has syntax errors:\n${String(error?.message || error).trim()}`);
 }
 
-// ─────────────────────────────────────────────────────────
-// 2. Duplicate HTML IDs
-// ─────────────────────────────────────────────────────────
-section('CHECK 2 — Duplicate HTML IDs (index.html)');
+section('CHECK 2 - Duplicate HTML ids');
 
 const html = fs.readFileSync(INDEX_HTML, 'utf8');
-const idMatches = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
-const seen = {};
-const duplicates = [];
+const appJs = fs.readFileSync(APP_JS, 'utf8');
+const idMatches = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+const seenIds = new Set();
+const duplicateIds = [];
 
 for (const id of idMatches) {
-  if (seen[id]) {
-    if (!duplicates.includes(id)) duplicates.push(id);
+  if (seenIds.has(id) && !duplicateIds.includes(id)) {
+    duplicateIds.push(id);
   }
-  seen[id] = true;
+
+  seenIds.add(id);
 }
 
-if (duplicates.length === 0) {
-  pass(`No duplicate IDs found (${idMatches.length} total IDs)`);
+if (duplicateIds.length) {
+  fail(`Found ${duplicateIds.length} duplicate id(s): ${duplicateIds.join(', ')}`);
 } else {
-  fail(`Found ${duplicates.length} duplicate ID(s):`);
-  duplicates.forEach(id => console.log(`     ${RED}→ #${id}${RESET}`));
+  pass(`No duplicate ids found (${idMatches.length} total ids)`);
 }
 
-// ─────────────────────────────────────────────────────────
-// 3. getElementById references vs index.html IDs
-// ─────────────────────────────────────────────────────────
-section('CHECK 3 — getElementById references (app.js → index.html)');
+section('CHECK 3 - Static id references');
 
-const appJs = fs.readFileSync(APP_JS, 'utf8');
-const allHtmlIds = new Set(idMatches);
-
-// Collect every getElementById call in app.js
-const getByIdCalls = [...appJs.matchAll(/getElementById\(['"]([^'"]+)['"]\)/g)].map(m => m[1]);
-
-// Also collect querySelector calls with simple IDs
-const querySelectorCalls = [...appJs.matchAll(/querySelector\(['"]#([a-zA-Z0-9_-]+)['"]\)/g)].map(m => m[1]);
-
-const allReferencedIds = [...new Set([...getByIdCalls, ...querySelectorCalls])];
-
-// IDs known to be optional/dynamically generated — safe to exclude from warnings
+const htmlIds = new Set(idMatches);
+const getByIdCalls = [...appJs.matchAll(/getElementById\(['"]([^'"]+)['"]\)/g)].map((match) => match[1]);
+const querySelectorCalls = [...appJs.matchAll(/querySelector\(['"]#([a-zA-Z0-9_-]+)['"]\)/g)].map((match) => match[1]);
+const referencedIds = [...new Set([...getByIdCalls, ...querySelectorCalls])];
 const knownOptionalIds = new Set([
-  'metric-workouts',    // renderMetrics() — optional, guarded with if(el)
-  'metric-templates',   // renderMetrics() — optional, guarded with if(el)
+  'metric-workouts',
+  'metric-templates'
 ]);
+const missingIds = referencedIds.filter((id) => !htmlIds.has(id) && !knownOptionalIds.has(id));
 
-// Ids that are referenced in JS but not present in HTML
-// We exclude dynamically-created IDs (those assigned by innerHTML) by checking if they appear as id=" in HTML
-const missingIds = allReferencedIds.filter(id => !allHtmlIds.has(id) && !knownOptionalIds.has(id));
-
-if (missingIds.length === 0) {
-  pass(`All ${allReferencedIds.length} referenced IDs exist in index.html`);
+if (missingIds.length) {
+  warn(`${missingIds.length} id reference(s) were not found statically in index.html`);
+  missingIds.slice(0, 20).forEach((id) => console.log(`     #${id}`));
+  if (missingIds.length > 20) {
+    console.log(`     ... and ${missingIds.length - 20} more`);
+  }
 } else {
-  // These might be set dynamically via innerHTML — just warn, don't fail
-  warn(`${missingIds.length} ID(s) referenced in app.js not found statically in index.html:`);
-  warn('(These may be dynamically generated — verify manually if important)');
-  missingIds.slice(0, 20).forEach(id => console.log(`     ${YELLOW}→ #${id}${RESET}`));
-  if (missingIds.length > 20) console.log(`     ${YELLOW}... and ${missingIds.length - 20} more${RESET}`);
+  pass(`All ${referencedIds.length} referenced ids exist in index.html`);
 }
 
-// ─────────────────────────────────────────────────────────
-// 4. Function reference integrity
-// ─────────────────────────────────────────────────────────
-section('CHECK 4 — Function Definitions vs Calls (app.js)');
+section('CHECK 4 - Critical function definitions');
 
-// Extract all defined function names
 const definedFunctions = new Set(
-  [...appJs.matchAll(/function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g)].map(m => m[1])
+  [...appJs.matchAll(/function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g)].map((match) => match[1])
 );
-
-// Critical functions that MUST be defined (guards for regressions)
 const requiredFunctions = [
   'renderDashboard',
   'renderProgress',
@@ -136,71 +123,59 @@ const requiredFunctions = [
   'formatBodyDelta',
   'formatMeasurementValue',
   'escapeHtml',
-  'formatDate',
+  'formatDate'
 ];
+const missingFunctions = requiredFunctions.filter((name) => !definedFunctions.has(name));
 
-let allDefined = true;
-for (const fn of requiredFunctions) {
-  if (definedFunctions.has(fn)) {
-    pass(`function ${fn}()`);
-  } else {
-    fail(`MISSING function: ${fn}() — not found in app.js`);
-    allDefined = false;
-  }
-}
-
-if (allDefined) {
+if (missingFunctions.length) {
+  missingFunctions.forEach((name) => fail(`Missing function: ${name}()`));
+} else {
   pass(`All ${requiredFunctions.length} critical functions are defined`);
 }
 
-// ─────────────────────────────────────────────────────────
-// 5. Regression guard — view-progress functions are untouched
-// ─────────────────────────────────────────────────────────
-section('CHECK 5 — Regression Guard (renderProgress original flow)');
+section('CHECK 5 - Progress view regression guard');
 
-// Critical selectors that renderProgress() and its children must reference
 const criticalProgressSelectors = [
   'progress-achievement-list',
   'progress-achievement-count',
   'season-progress-grid',
   'progress-exercise-summary-cards',
   'progress-exercise-history',
-  'progress-log-count',
+  'progress-log-count'
 ];
 
 for (const selector of criticalProgressSelectors) {
   if (html.includes(`id="${selector}"`)) {
     pass(`HTML element #${selector} exists`);
   } else {
-    fail(`HTML element #${selector} is MISSING — renderProgress() may be broken`);
+    fail(`HTML element #${selector} is missing`);
   }
 }
 
-// Ensure renderDashboardEvolutionSubtab doesn't reference progress-* IDs
-const evolutionFnMatch = appJs.match(/function renderDashboardEvolutionSubtab\(\)[^]*?(?=\nfunction )/);
-if (evolutionFnMatch) {
-  const evolutionFnBody = evolutionFnMatch[0];
-  const forbidden = criticalProgressSelectors.filter(sel => evolutionFnBody.includes(sel));
-  if (forbidden.length === 0) {
-    pass('renderDashboardEvolutionSubtab() does not reference any view-progress elements');
+const evolutionFunction = appJs.match(/function renderDashboardEvolutionSubtab\(\)[^]*?(?=\nfunction )/);
+
+if (evolutionFunction) {
+  const forbiddenSelectors = criticalProgressSelectors.filter((selector) => evolutionFunction[0].includes(selector));
+
+  if (forbiddenSelectors.length) {
+    fail(`renderDashboardEvolutionSubtab() references Progress view selectors: ${forbiddenSelectors.join(', ')}`);
   } else {
-    fail(`renderDashboardEvolutionSubtab() references forbidden progress selectors: ${forbidden.join(', ')}`);
+    pass('renderDashboardEvolutionSubtab() is isolated from the Progress view selectors');
   }
 } else {
-  warn('Could not extract renderDashboardEvolutionSubtab() body for isolation check');
+  warn('Could not extract renderDashboardEvolutionSubtab() for isolation check');
 }
 
-// ─────────────────────────────────────────────────────────
-// Summary
-// ─────────────────────────────────────────────────────────
-console.log('\n' + '─'.repeat(60));
+console.log('\n' + '-'.repeat(60));
+
 if (hasError) {
-  console.log(`${BOLD}${RED}✗ VALIDATION FAILED — fix the errors above before committing${RESET}`);
+  console.log(`${BOLD}${RED}VALIDATION FAILED${RESET}`);
   process.exit(1);
-} else if (hasWarn) {
-  console.log(`${BOLD}${YELLOW}⚠ VALIDATION PASSED WITH WARNINGS — review the warnings above${RESET}`);
-  process.exit(0);
-} else {
-  console.log(`${BOLD}${GREEN}✓ ALL CHECKS PASSED — safe to commit!${RESET}`);
+}
+
+if (hasWarn) {
+  console.log(`${BOLD}${YELLOW}VALIDATION PASSED WITH WARNINGS${RESET}`);
   process.exit(0);
 }
+
+console.log(`${BOLD}${GREEN}ALL CHECKS PASSED${RESET}`);
