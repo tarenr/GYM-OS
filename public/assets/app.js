@@ -121,6 +121,7 @@ const dashboardWorkoutsTrend = document.querySelector('#dashboard-workouts-trend
 const dashboardVolumeTrend = document.querySelector('#dashboard-volume-trend');
 const dashboardHistory = document.querySelector('#dashboard-history');
 const dashboardWeeklySchedule = document.querySelector('#dashboard-weekly-schedule');
+const dashboardWeeklyFocus = document.querySelector('#dashboard-weekly-focus');
 const dashboardWeeklySummary = document.querySelector('#dashboard-weekly-summary');
 const dashboardPlayerBadge = document.querySelector('#dashboard-player-badge');
 const dashboardPlayerLevel = document.querySelector('#dashboard-player-level');
@@ -1468,14 +1469,36 @@ function renderDashboardWeeklySchedule(monday) {
       </article>
     `).join('');
 
-  if (dashboardWeeklySummary) {
-    const trainingItems = scheduleItems.filter((item) => !item.mission.restDay);
-    const completed = trainingItems.filter((item) => item.stateClass === 'done').length;
-    const partial = trainingItems.filter((item) => item.stateClass === 'partial').length;
-    const pending = trainingItems.filter((item) => ['pending', 'today'].includes(item.stateClass)).length;
-    const nextItem = trainingItems.find((item) => ['today', 'pending', 'partial'].includes(item.stateClass));
-    const weekPercent = trainingItems.length ? Math.round((completed / trainingItems.length) * 100) : 0;
+  const trainingItems = scheduleItems.filter((item) => !item.mission.restDay);
+  const completed = trainingItems.filter((item) => item.stateClass === 'done').length;
+  const partial = trainingItems.filter((item) => item.stateClass === 'partial').length;
+  const pending = trainingItems.filter((item) => ['pending', 'today'].includes(item.stateClass)).length;
+  const nextItem = trainingItems.find((item) => ['today', 'pending', 'partial'].includes(item.stateClass));
+  const weekPercent = trainingItems.length ? Math.round((completed / trainingItems.length) * 100) : 0;
 
+  if (dashboardWeeklyFocus) {
+    const focusStatus = pending
+      ? `${pending} blocos em aberto`
+      : partial
+        ? `${partial} blocos parciais`
+        : 'sem pendencias';
+    const nextLabel = nextItem
+      ? `${nextItem.codes} | ${nextItem.dayLabel} ${formatDate(nextItem.dateKey)}`
+      : 'sem proximo bloco ativo';
+
+    dashboardWeeklyFocus.innerHTML = `
+      <div>
+        <span>WEEK_OBJECTIVE</span>
+        <strong>${completed}/${trainingItems.length} treinos planejados</strong>
+        <p>${escapeHtml(focusStatus)} | proximo: ${escapeHtml(nextLabel)}</p>
+      </div>
+      <div class="weekly-focus-meter" aria-label="Progresso semanal">
+        <span style="width: ${weekPercent}%"></span>
+      </div>
+    `;
+  }
+
+  if (dashboardWeeklySummary) {
     dashboardWeeklySummary.innerHTML = `
       <article class="weekly-summary-card">
         <span>SEMANA</span>
