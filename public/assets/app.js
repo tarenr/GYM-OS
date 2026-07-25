@@ -3291,7 +3291,8 @@ function renderDashboard() {
   }
   
   if (hudPlayerInfo) {
-    hudPlayerInfo.innerHTML = `PLAYER: TAREN &nbsp;/&nbsp; TIER 1 &middot; CICLO ${journeyPosition.season.name.replace('Ciclo ', '') || '1'} &nbsp;/&nbsp; ACADEMY BUILD`;
+    const playerRank = rank.shortName ? rank.shortName.toUpperCase() : 'NOOB';
+    hudPlayerInfo.innerHTML = `PLAYER: TAREN &nbsp;/&nbsp; ${playerRank} &middot; CICLO ${journeyPosition.season.name.replace('Ciclo ', '') || '1'} &nbsp;/&nbsp; ACADEMY BUILD`;
   }
   
   if (hudLevelNum) {
