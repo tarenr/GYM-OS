@@ -4741,18 +4741,16 @@ textarea:focus {
   }
 
   .side-menu {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
     margin-top: 14px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 4px;
-    scrollbar-width: thin;
+    overflow: visible;
+    padding-bottom: 0;
   }
 
   .nav-group {
     display: grid;
-    flex: 0 0 172px;
     gap: 4px;
     min-width: 0;
     border: 1px solid var(--border);
@@ -4766,7 +4764,7 @@ textarea:focus {
   }
 
   .side-menu > .nav-link {
-    flex: 0 0 150px;
+    min-width: 0;
   }
 
   .nav-link {
@@ -4868,12 +4866,13 @@ textarea:focus {
     font-size: 0.58rem;
   }
 
-  .side-menu > .nav-link {
-    flex-basis: 132px;
+  .side-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .nav-group {
-    flex-basis: 154px;
+    padding: 6px;
   }
 
   .nav-link {
