@@ -1327,94 +1327,36 @@ h4 {
 }
 
 .volume-chart-wrap {
+  align-content: start;
   display: grid;
   flex: 1;
   gap: 16px;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
   padding: 18px 0 0;
 }
 
 .volume-chart {
   display: grid;
+  height: 230px;
+  min-height: 0;
   place-items: center;
-  min-height: 250px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background:
     linear-gradient(180deg, rgba(0, 255, 65, 0.035), transparent),
     var(--bg);
   padding: 8px;
+  position: relative;
 }
 
-.volume-chart .trend-svg {
-  align-self: stretch;
+.volume-chart canvas {
+  height: 100% !important;
+  width: 100% !important;
 }
 
 .chart-empty {
   margin: 0;
   text-align: center;
-}
-
-.trend-svg {
-  display: block;
-  width: 100%;
-  height: 260px;
-}
-
-.trend-grid-line {
-  stroke: var(--border);
-  stroke-dasharray: 4 5;
-  stroke-width: 1;
-}
-
-.trend-area {
-  fill: url("#volumeGradient");
-}
-
-.trend-line {
-  fill: none;
-  stroke: var(--green);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 3;
-  filter: drop-shadow(0 0 7px rgba(0, 255, 65, 0.34));
-}
-
-.trend-dot {
-  fill: var(--bg);
-  stroke: var(--green);
-  stroke-width: 2;
-  cursor: help;
-  outline: none;
-  transition: filter 0.15s ease, r 0.15s ease, stroke-width 0.15s ease;
-}
-
-.trend-dot:hover,
-.trend-dot:focus {
-  filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.55));
-  stroke-width: 3;
-}
-
-.trend-dot-best {
-  fill: rgba(210, 153, 34, 0.18);
-  stroke: var(--gold);
-}
-
-.trend-dot-current {
-  fill: rgba(88, 166, 255, 0.16);
-  stroke: var(--volt);
-}
-
-.trend-dot-empty {
-  opacity: 0.46;
-  stroke: var(--muted);
-}
-
-.trend-axis-text {
-  fill: var(--muted);
-  font-family: var(--font);
-  font-size: 0.64rem;
-  font-weight: 800;
 }
 
 .chart-summary {

@@ -55,6 +55,7 @@ const state = {
 };
 
 let muscleRadarChart = null;
+let volumeTrendChart = null;
 const sideNav = document.querySelector('.side-nav');
 const menuToggle = document.querySelector('.menu-toggle');
 const form = document.querySelector('#workout-form');
@@ -1553,25 +1554,17 @@ function renderDashboardVolumeChart() {
   }
 
   const trend = getWeeklyVolumeTrend(state.allWorkouts);
-  const maxVolume = Math.max(1, ...trend.map((week) => week.volume));
-  const width = 680;
-  const height = 260;
-  const left = 48;
-  const right = 24;
-  const top = 34;
-  const bottom = 42;
-  const chartWidth = width - left - right;
-  const chartHeight = height - top - bottom;
-  const points = trend.map((week, index) => {
-    const x = left + (chartWidth / Math.max(1, trend.length - 1)) * index;
-    const y = top + chartHeight - (week.volume / maxVolume) * chartHeight;
+  const chartData = trend.map((week, index) => {
     const previousVolume = trend[index - 1]?.volume ?? null;
     const delta = previousVolume === null ? 0 : week.volume - previousVolume;
-    const deltaLabel = previousVolume === null
-      ? 'primeira semana da serie'
-      : `${delta >= 0 ? '+' : ''}${formatCompactNumber(delta)} kg vs semana anterior`;
 
-    return { ...week, delta, deltaLabel, x, y };
+    return {
+      ...week,
+      delta,
+      deltaLabel: previousVolume === null
+        ? 'primeira semana da serie'
+        : `${delta >= 0 ? '+' : ''}${formatCompactNumber(delta)} kg vs semana anterior`
+    };
   });
   const totalTrendVolume = trend.reduce((total, week) => total + week.volume, 0);
   const bestWeek = trend.reduce((best, week) => (week.volume > best.volume ? week : best), trend[0]);
@@ -1596,57 +1589,8 @@ function renderDashboardVolumeChart() {
     return;
   }
 
-  const linePath = points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`).join(' ');
-  const areaPath = `${linePath} L ${points.at(-1).x.toFixed(2)} ${height - bottom} L ${points[0].x.toFixed(2)} ${height - bottom} Z`;
-
-  dashboardVolumeChart.innerHTML = `
-    <svg class="trend-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="Volume das ultimas 12 semanas">
-      <defs>
-        <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#00ff41" stop-opacity="0.32"></stop>
-          <stop offset="100%" stop-color="#00ff41" stop-opacity="0"></stop>
-        </linearGradient>
-      </defs>
-      ${[0.25, 0.5, 0.75, 1].map((ratio) => {
-        const y = top + chartHeight * ratio;
-        return `<line class="trend-grid-line" x1="${left}" y1="${y}" x2="${width - right}" y2="${y}"></line>`;
-      }).join('')}
-      <path class="trend-area" d="${areaPath}"></path>
-      <path class="trend-line" d="${linePath}"></path>
-      ${points.map((point, index) => {
-        const isBestPoint = point.label === bestWeek.label && point.volume === bestWeek.volume;
-        const isCurrentPoint = index === points.length - 1;
-        const pointRole = isBestPoint
-          ? 'melhor semana'
-          : isCurrentPoint
-            ? 'semana atual'
-            : point.volume > 0
-              ? 'semana com treino'
-              : 'sem volume registrado';
-        const tooltip = `${point.label} | ${pointRole}
-Volume: ${formatNumber(point.volume)} kg
-Treinos: ${point.workouts}
-${point.deltaLabel}`;
-        const dotClass = [
-          'trend-dot',
-          isBestPoint ? 'trend-dot-best' : '',
-          isCurrentPoint ? 'trend-dot-current' : '',
-          point.volume <= 0 ? 'trend-dot-empty' : ''
-        ].filter(Boolean).join(' ');
-
-        return `
-        <circle class="${dotClass}" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="${isBestPoint || isCurrentPoint ? 5 : 4}" tabindex="0" role="img" aria-label="${escapeHtml(tooltip)}">
-          <title>${escapeHtml(tooltip)}</title>
-        </circle>
-      `;
-      }).join('')}
-      ${points.filter((_, index) => index % 2 === 0 || index === points.length - 1).map((point) => `
-        <text class="trend-axis-text" x="${point.x.toFixed(2)}" y="${height - 14}" text-anchor="middle">${escapeHtml(point.label)}</text>
-      `).join('')}
-      <text class="trend-axis-text" x="${left - 8}" y="${top + 4}" text-anchor="end">${escapeHtml(formatCompactNumber(maxVolume))}</text>
-      <text class="trend-axis-text" x="${left - 8}" y="${height - bottom}" text-anchor="end">0</text>
-    </svg>
-  `;
+  dashboardVolumeChart.innerHTML = '<canvas aria-label="Volume das ultimas 12 semanas"></canvas>';
+  renderVolumeTrendChart(chartData, bestWeek);
   dashboardVolumeSummary.innerHTML = `
     <article>
       <span>Total 12 semanas</span>
@@ -1661,6 +1605,131 @@ ${point.deltaLabel}`;
       <strong>${escapeHtml(formatCompactNumber(lastWeek.volume))} kg</strong>
     </article>
   `;
+}
+
+function renderVolumeTrendChart(chartData, bestWeek) {
+  const canvas = dashboardVolumeChart?.querySelector('canvas');
+  const ChartCtor = window.Chart;
+
+  if (!canvas || !ChartCtor) {
+    return;
+  }
+
+  if (volumeTrendChart) {
+    volumeTrendChart.destroy();
+  }
+
+  volumeTrendChart = new ChartCtor(canvas, {
+    type: 'line',
+    data: {
+      labels: chartData.map((item) => item.label),
+      datasets: [{
+        label: 'Volume semanal',
+        data: chartData.map((item) => item.volume),
+        borderColor: '#00ff41',
+        backgroundColor: 'rgba(0, 255, 65, 0.16)',
+        fill: true,
+        tension: 0.28,
+        borderWidth: 3,
+        pointBackgroundColor: '#07110d',
+        pointBorderWidth: 2,
+        pointHoverBackgroundColor: '#00ff41',
+        pointHoverBorderColor: '#07110d',
+        pointHoverRadius: 6,
+        pointRadius(context) {
+          const item = chartData[context.dataIndex];
+          const isBest = item.label === bestWeek.label && item.volume === bestWeek.volume;
+          const isCurrent = context.dataIndex === chartData.length - 1;
+
+          return isBest || isCurrent ? 5 : 3.5;
+        },
+        pointBorderColor(context) {
+          const item = chartData[context.dataIndex];
+
+          if (item.label === bestWeek.label && item.volume === bestWeek.volume) {
+            return '#d29922';
+          }
+
+          if (context.dataIndex === chartData.length - 1) {
+            return '#58a6ff';
+          }
+
+          return item.volume > 0 ? '#00ff41' : '#7d8590';
+        }
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      interaction: {
+        intersect: true,
+        mode: 'nearest'
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            title(items) {
+              const item = chartData[items[0].dataIndex];
+
+              return `Semana ${item.label}`;
+            },
+            label(context) {
+              const item = chartData[context.dataIndex];
+
+              return [
+                `Volume: ${formatNumber(item.volume)} kg`,
+                `Treinos: ${item.workouts}`,
+                item.deltaLabel
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          border: {
+            color: 'rgba(139, 148, 158, 0.18)'
+          },
+          grid: {
+            color: 'rgba(139, 148, 158, 0.08)'
+          },
+          ticks: {
+            autoSkip: true,
+            color: '#7d8590',
+            maxRotation: 0,
+            font: {
+              family: 'JetBrains Mono, monospace',
+              size: 10,
+              weight: '700'
+            }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          border: {
+            color: 'rgba(139, 148, 158, 0.18)'
+          },
+          grid: {
+            color: 'rgba(139, 148, 158, 0.16)'
+          },
+          ticks: {
+            color: '#7d8590',
+            callback(value) {
+              return formatCompactNumber(value);
+            },
+            font: {
+              family: 'JetBrains Mono, monospace',
+              size: 10,
+              weight: '700'
+            }
+          }
+        }
+      }
+    }
+  });
 }
 
 function renderDashboardMuscleDistribution() {
