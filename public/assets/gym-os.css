@@ -1042,6 +1042,30 @@ h4 {
   padding: 20px;
 }
 
+/* ── Radar Hexagonal SVG ── */
+.radar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 20px 4px;
+}
+
+.radar-svg {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  display: block;
+}
+
+/* ── Muscle Bars (mockup style) ── */
+.radar-list {
+  width: 100%;
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .muscle-item {
   display: grid;
   gap: 7px;
@@ -1055,49 +1079,55 @@ h4 {
 }
 
 .muscle-row-head span {
-  color: var(--muted-strong);
-  font-size: 0.82rem;
-  font-weight: 900;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 0.84rem;
+  font-weight: 500;
 }
 
 .muscle-row-head strong {
-  color: var(--green);
-  font-size: 0.78rem;
+  color: var(--phosphor);
+  font-family: var(--font-display);
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 .muscle-bar-bg {
-  height: 10px;
+  height: 5px;
   overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--bg);
+  border: none;
+  border-radius: 0;
+  background: var(--border-soft);
+  position: relative;
 }
 
 .muscle-bar-fill {
   display: block;
   height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--green), #2ea043);
+  border-radius: 0;
+  background: linear-gradient(90deg, var(--phosphor-dim), var(--phosphor));
+  width: 0;
+  transition: width 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .muscle-bar-fill.back {
-  background: linear-gradient(90deg, var(--blue), #79c0ff);
+  background: linear-gradient(90deg, #1a6aaa, var(--volt));
 }
 
 .muscle-bar-fill.legs {
-  background: linear-gradient(90deg, var(--red), #ff7b72);
+  background: linear-gradient(90deg, #a02020, var(--ember));
 }
 
 .muscle-bar-fill.shoulders {
-  background: linear-gradient(90deg, var(--orange), #f0883e);
+  background: linear-gradient(90deg, #7a5800, var(--gold));
 }
 
 .muscle-bar-fill.arms {
-  background: linear-gradient(90deg, #a371f7, #bc8cff);
+  background: linear-gradient(90deg, #5c2fa0, #bc8cff);
 }
 
 .muscle-bar-fill.core {
-  background: linear-gradient(90deg, #39c5cf, #56d4dd);
+  background: linear-gradient(90deg, #1a6565, #56d4dd);
 }
 
 .pr-list,
