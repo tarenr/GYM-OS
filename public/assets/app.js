@@ -1763,16 +1763,35 @@ function renderDashboardMuscleDistribution() {
   }
 
   const radarSvg = buildRadarSvg(entries, totalVolume);
+  const dominantVolume = Math.max(...entries.map((item) => item.volume));
+  const lowestVolume = Math.min(...entries.map((item) => item.volume));
 
   const bars = entries.map((item) => {
     const percent = Math.round((item.volume / Math.max(1, totalVolume)) * 100);
+    const isDominant = item.volume === dominantVolume;
+    const isLowest = item.volume === lowestVolume && entries.length > 1;
+    const statusLabel = isDominant ? 'dominante' : isLowest ? 'baixo volume' : 'equilibrio';
+    const tooltip = `${item.name}
+Volume: ${formatNumber(item.volume)} kg
+Participacao: ${percent}%
+Status: ${statusLabel}`;
+    const className = [
+      'muscle-item',
+      isDominant ? 'dominant' : '',
+      isLowest ? 'low' : ''
+    ].filter(Boolean).join(' ');
 
     return `
-      <article class="muscle-item">
+      <article class="${className}" tabindex="0" title="${escapeHtml(tooltip)}" aria-label="${escapeHtml(tooltip)}">
         <div class="muscle-row-head">
           <span>${escapeHtml(item.name)}</span>
-          <strong>${percent}%</strong>
+          <div>
+            ${isDominant ? '<em>Dominante</em>' : ''}
+            ${isLowest ? '<em>Baixo volume</em>' : ''}
+            <strong>${percent}%</strong>
+          </div>
         </div>
+        <small>${escapeHtml(formatCompactNumber(item.volume))} kg de ${escapeHtml(formatCompactNumber(totalVolume))} kg</small>
         <div class="muscle-bar-bg">
           <span class="muscle-bar-fill ${getMuscleClass(item.name)}" style="width:${percent}%"></span>
         </div>
