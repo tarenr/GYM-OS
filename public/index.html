@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -102,7 +102,7 @@
             <span class="stat-label">XP LEVEL</span>
             <strong class="stat-value" id="dashboard-level">LV. 1</strong>
             <span class="rank-name" id="dashboard-rank">Noob Protocol</span>
-            <div class="xp-bar" aria-label="Progresso de XP">
+            <div class="xp-bar" aria-label="XP progress">
               <span id="dashboard-xp-fill"></span>
             </div>
             <span class="stat-note" id="dashboard-xp-text">0 / 100 XP</span>
@@ -110,16 +110,16 @@
           <article class="stat-card stat-green">
             <div class="stat-top">
               <span class="stat-icon">OK</span>
-              <span class="stat-trend trend-up" id="dashboard-workouts-trend">+0 semana</span>
+              <span class="stat-trend trend-up" id="dashboard-workouts-trend">+0 week</span>
             </div>
             <span class="stat-label">TOTAL WORKOUTS</span>
             <strong class="stat-value" id="dashboard-total-workouts">0</strong>
-            <span class="stat-note">protocolos concluidos</span>
+            <span class="stat-note">protocols completed</span>
           </article>
           <article class="stat-card stat-blue">
             <div class="stat-top">
               <span class="stat-icon">KG</span>
-              <span class="stat-trend trend-up" id="dashboard-volume-trend">+0 kg semana</span>
+              <span class="stat-trend trend-up" id="dashboard-volume-trend">+0 kg week</span>
             </div>
             <span class="stat-label">VOLUME TOTAL</span>
             <strong class="stat-value" id="dashboard-volume">0</strong>
@@ -128,7 +128,7 @@
           <article class="stat-card stat-red">
             <div class="stat-top">
               <span class="stat-icon">PR</span>
-              <span class="stat-trend trend-up">mes atual</span>
+              <span class="stat-trend trend-up">current month</span>
             </div>
             <span class="stat-label">PRS NO MES</span>
             <strong class="stat-value" id="dashboard-prs">0</strong>
@@ -137,7 +137,7 @@
         </section>
 
         <!-- Sub-Nav Buttons for Dashboard Sections -->
-        <nav class="dashboard-subnav" aria-label="Sub-menu do Dashboard">
+        <nav class="dashboard-subnav" aria-label="Dashboard submenu">
           <button class="dash-subnav-btn active" type="button" data-dash-tab="operations">
             <span class="dash-subnav-icon">OP</span> Operations & Today
           </button>
@@ -165,12 +165,12 @@
               </div>
 
               <div class="mission-body">
-                <h3 id="mission-title">Carregando ficha</h3>
-                <p id="mission-description">A campanha do dia aparece aqui com seus blocos de treino.</p>
+                <h3 id="mission-title">Loading template</h3>
+                <p id="mission-description">Today campaign appears here with its workout blocks.</p>
                 <ul class="mission-list">
-                  <li id="mission-step-template">Bloco de forca</li>
-                  <li id="mission-step-sets">Objetivo da fase</li>
-                  <li id="mission-step-save">Bonus da campanha</li>
+                  <li id="mission-step-template">Strength block</li>
+                  <li id="mission-step-sets">Phase objective</li>
+                  <li id="mission-step-save">Campaign bonus</li>
                 </ul>
                 <div class="mission-reward">
                   <span>REWARD</span>
@@ -182,7 +182,7 @@
                 </div>
                 <div class="weekly-map" id="weekly-map"></div>
                 <div class="mission-action-grid" id="mission-actions"></div>
-                <button class="button button-primary legacy-start-mission" type="button" id="start-mission" hidden>Iniciar bloco de hoje</button>
+                <button class="button button-primary legacy-start-mission" type="button" id="start-mission" hidden>START TODAY BLOCK</button>
               </div>
             </article>
 
@@ -223,12 +223,12 @@
               <div class="heatmap-grid" id="heatmap-grid"></div>
             </div>
             <div class="heatmap-legend">
-              <span><i class="heat-future"></i> Futuro</span>
-              <span><i class="heat-today"></i> Hoje</span>
-              <span><i class="heat-missed"></i> Perdido</span>
-              <span><i class="heat-partial"></i> Parcial</span>
+              <span><i class="heat-future"></i> Future</span>
+              <span><i class="heat-today"></i> Today</span>
+              <span><i class="heat-missed"></i> Missed</span>
+              <span><i class="heat-partial"></i> Partial</span>
               <span><i class="heat-complete"></i> OK</span>
-              <span><i class="heat-rest"></i> Descanso</span>
+              <span><i class="heat-rest"></i> Rest</span>
               <span><i class="heat-extra-sample"></i> Extra</span>
             </div>
           </section>
@@ -246,7 +246,7 @@
                 <span class="panel-badge" id="dashboard-player-badge">LV. 1</span>
               </div>
               <div class="player-card">
-                <div class="level-ring" aria-label="Progresso de XP">
+                <div class="level-ring" aria-label="XP progress">
                   <svg width="92" height="92" viewBox="0 0 92 92" aria-hidden="true">
                     <circle class="level-ring-bg" cx="46" cy="46" r="39"></circle>
                     <circle class="level-ring-progress" id="dashboard-level-ring" cx="46" cy="46" r="39"></circle>
@@ -400,11 +400,11 @@
       <section class="tab-view" id="view-daily-missions">
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> WEEKLY_CAMPAIGN.sys</div>
-          <h2 class="page-title">Campanha <span>Semanal</span></h2>
-          <p class="page-subtitle" id="daily-mission-subtitle">// campanha de forca A/B/C/A/B/C + descanso</p>
+          <h2 class="page-title">Weekly <span>Campaign</span></h2>
+          <p class="page-subtitle" id="daily-mission-subtitle">// strength campaign A/B/C/A/B/C + rest</p>
         </div>
 
-        <section class="summary-grid page-summary" id="daily-mission-summary-cards" aria-label="Resumo da jornada semanal"></section>
+        <section class="summary-grid page-summary" id="daily-mission-summary-cards" aria-label="Weekly journey summary"></section>
 
         <section class="content-grid">
           <article class="panel mission-panel">
@@ -435,10 +435,10 @@
         <div class="page-header">
           <div class="breadcrumb">ACADEMY <span>&gt;</span> GYM.OS <span>&gt;</span> XP_PROGRESS.json</div>
           <h2 class="page-title">Evolution <span>Academy</span></h2>
-          <p class="page-subtitle" id="progress-subtitle">// xp oficial por treino, semana e campanha</p>
+          <p class="page-subtitle" id="progress-subtitle">// official XP by workout, week and campaign</p>
         </div>
 
-        <section class="summary-grid page-summary" id="progress-summary-cards" aria-label="Resumo da evolucao de XP"></section>
+        <section class="summary-grid page-summary" id="progress-summary-cards" aria-label="XP evolution summary"></section>
 
         <section class="panel season-progress-panel">
           <div class="panel-header">
@@ -448,7 +448,7 @@
             </div>
             <span class="panel-badge" id="season-progress-badge">TEMP 1</span>
           </div>
-          <section class="summary-grid page-summary compact-summary" id="season-progress-summary-cards" aria-label="Resumo de temporada e ciclo"></section>
+          <section class="summary-grid page-summary compact-summary" id="season-progress-summary-cards" aria-label="Season and cycle summary"></section>
           <div class="season-progress-grid" id="season-progress-grid"></div>
         </section>
 
@@ -460,39 +460,39 @@
             </div>
             <span class="panel-badge" id="body-progress-count">0 REG</span>
           </div>
-          <section class="summary-grid page-summary compact-summary" id="body-progress-summary-cards" aria-label="Resumo da evolucao corporal"></section>
+          <section class="summary-grid page-summary compact-summary" id="body-progress-summary-cards" aria-label="Body evolution summary"></section>
           <section class="body-progress-insight-grid">
             <article class="body-progress-insight" id="body-progress-insight"></article>
             <article class="body-progress-cycle" id="body-progress-cycle"></article>
           </section>
-          <section class="body-progress-chart-grid" id="body-progress-chart-grid" aria-label="Graficos de evolucao corporal"></section>
+          <section class="body-progress-chart-grid" id="body-progress-chart-grid" aria-label="Body evolution charts"></section>
           <section class="content-grid body-progress-grid">
             <form class="body-progress-form" id="body-measurement-form">
               <div class="body-measurement-grid">
                 <label class="body-measurement-field">
-                  DATA
+                  DATE
                   <input id="body-measured-at" type="date" required />
                 </label>
                 <label class="body-measurement-field">
-                  PESO_KG
+                  WEIGHT_KG
                   <input id="body-weight-kg" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
                 <label class="body-measurement-field full">
-                  PEITO_CM
+                  CHEST_CM
                   <input id="body-chest" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
                 <div class="body-measurement-pair">
                   <label class="body-measurement-field">
-                    BRACO_DIR_CM
+                    RIGHT_ARM_CM
                     <input id="body-right-arm" type="number" min="0" step="0.1" placeholder="0.0" />
                   </label>
                   <label class="body-measurement-field">
-                    BRACO_ESQ_CM
+                    LEFT_ARM_CM
                     <input id="body-left-arm" type="number" min="0" step="0.1" placeholder="0.0" />
                   </label>
                 </div>
                 <label class="body-measurement-field full">
-                  CINTURA_CM
+                  WAIST_CM
                   <input id="body-waist" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
                 <label class="body-measurement-field full">
@@ -500,33 +500,33 @@
                   <input id="body-abdomen" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
                 <label class="body-measurement-field full">
-                  QUADRIL_CM
+                  HIPS_CM
                   <input id="body-hips" type="number" min="0" step="0.1" placeholder="0.0" />
                 </label>
                 <div class="body-measurement-pair">
                   <label class="body-measurement-field">
-                    COXA_DIR_CM
+                    RIGHT_THIGH_CM
                     <input id="body-right-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
                   </label>
                   <label class="body-measurement-field">
-                    COXA_ESQ_CM
+                    LEFT_THIGH_CM
                     <input id="body-left-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
                   </label>
                 </div>
                 <div class="body-measurement-pair">
                   <label class="body-measurement-field">
-                    PANTURRILHA_DIR_CM
+                    RIGHT_CALF_CM
                     <input id="body-right-calf" type="number" min="0" step="0.1" placeholder="0.0" />
                   </label>
                   <label class="body-measurement-field">
-                    PANTURRILHA_ESQ_CM
+                    LEFT_CALF_CM
                     <input id="body-left-calf" type="number" min="0" step="0.1" placeholder="0.0" />
                   </label>
                 </div>
               </div>
               <label>
-                OBSERVACOES
-                <textarea id="body-notes" rows="3" maxlength="500" placeholder="// contexto da medicao"></textarea>
+                NOTES
+                <textarea id="body-notes" rows="3" maxlength="500" placeholder="// measurement context"></textarea>
               </label>
               <div class="form-actions">
                 <span class="status-message" id="body-progress-status" role="status"></span>
@@ -545,7 +545,7 @@
                 <span class="panel-icon">~</span>
                 <h2>XP_TREND.chart</h2>
               </div>
-              <span class="panel-badge">POR DATA</span>
+              <span class="panel-badge">BY DATE</span>
             </div>
             <div class="xp-trend-list" id="progress-xp-trend"></div>
           </article>
@@ -572,29 +572,29 @@
           </div>
           <div class="toolbar-panel progress-achievement-toolbar">
             <label>
-              Categoria
+              Category
               <select id="progress-achievement-category-filter">
-                <option value="all">Todas</option>
+                <option value="all">All</option>
                 <option value="Entrada">Entrada</option>
                 <option value="Consistencia">Consistencia</option>
                 <option value="Performance">Performance</option>
-                <option value="Modalidade">Modalidade</option>
-                <option value="Campanha">Campanha</option>
-                <option value="Corporal">Corporal</option>
+                <option value="Modalidade">Modality</option>
+                <option value="Campanha">Campaign</option>
+                <option value="Corporal">Body</option>
                 <option value="Nivel">Nivel</option>
               </select>
             </label>
             <label>
-              Estado
+              State
               <select id="progress-achievement-status-filter">
-                <option value="all">Todas</option>
+                <option value="all">All</option>
                 <option value="unlocked">Desbloqueadas</option>
                 <option value="locked">Bloqueadas</option>
-                <option value="near">Mais proximas</option>
+                <option value="near">Closest</option>
               </select>
             </label>
           </div>
-          <section class="summary-grid page-summary compact-summary" id="progress-achievement-summary-cards" aria-label="Resumo das conquistas anuais"></section>
+          <section class="summary-grid page-summary compact-summary" id="progress-achievement-summary-cards" aria-label="Annual achievements summary"></section>
           <div class="progress-achievement-category-list" id="progress-achievement-category-list"></div>
           <div class="progress-achievement-grid" id="progress-achievement-list"></div>
         </section>
@@ -609,23 +609,23 @@
           </div>
           <div class="toolbar-panel progress-exercise-toolbar">
             <label>
-              Exercicio
+              Exercise
               <select id="progress-exercise-select">
-                <option value="">Selecione um exercicio</option>
+                <option value="">Select an exercise</option>
               </select>
             </label>
             <label>
-              Periodo
+              Period
               <select id="progress-exercise-period-filter">
-                <option value="all">Tudo</option>
-                <option value="week">Esta semana</option>
-                <option value="month">Este mes</option>
-                <option value="quarter">Ultimos 3 meses</option>
-                <option value="year">Este ano</option>
+                <option value="all">All</option>
+                <option value="week">This week</option>
+                <option value="month">This month</option>
+                <option value="quarter">Last 3 months</option>
+                <option value="year">This year</option>
               </select>
             </label>
           </div>
-          <section class="summary-grid page-summary compact-summary" id="progress-exercise-summary-cards" aria-label="Resumo da evolucao por exercicio"></section>
+          <section class="summary-grid page-summary compact-summary" id="progress-exercise-summary-cards" aria-label="Exercise evolution summary"></section>
           <section class="progress-compare-panel">
             <div class="panel-header compact-header">
               <div class="panel-title">
@@ -677,7 +677,7 @@
 
           <div class="workout-origin-panel" id="workout-origin-panel" hidden>
             <span id="workout-origin-label">Origem</span>
-            <strong id="workout-origin-detail">Selecione uma ficha</strong>
+            <strong id="workout-origin-detail">Select a template</strong>
           </div>
 
           <div class="form-grid">
@@ -689,7 +689,7 @@
             <label>
               WORKOUT_PROTOCOL
               <select id="workout-template" name="templateId" required>
-                <option value="">Selecione uma ficha</option>
+                <option value="">Select a template</option>
               </select>
             </label>
 
@@ -700,13 +700,13 @@
 
             <label>
               TARGET_MUSCLES
-              <input id="target-muscles" type="text" placeholder="Escolha uma ficha" readonly />
+              <input id="target-muscles" type="text" placeholder="Choose a template" readonly />
             </label>
           </div>
 
           <label>
             DEBUG_NOTES
-            <textarea id="notes" name="notes" rows="3" placeholder="// Como foi o treino hoje?"></textarea>
+            <textarea id="notes" name="notes" rows="3" placeholder="// How was today workout?"></textarea>
           </label>
 
           <div class="exercise-builder">
@@ -715,7 +715,7 @@
                 <span class="panel-icon">+</span>
                 <h3>EXERCISE_LOG</h3>
               </div>
-              <button class="button button-secondary" type="button" id="add-exercise" hidden>Adicionar exercicio</button>
+              <button class="button button-secondary" type="button" id="add-exercise" hidden>ADD EXERCISE</button>
             </div>
             <div class="exercise-list" id="exercise-list"></div>
             <section class="workout-exercise-picker" id="workout-exercise-picker" hidden>
@@ -728,22 +728,22 @@
               </div>
               <div class="form-grid">
                 <label>
-                  Categoria
+                  Category
                   <select id="workout-exercise-category-filter">
-                    <option value="all">Todas</option>
+                    <option value="all">All</option>
                   </select>
                 </label>
 
                 <label>
-                  Subcategoria
+                  Subcategory
                   <select id="workout-exercise-subcategory-filter">
-                    <option value="all">Todas</option>
+                    <option value="all">All</option>
                   </select>
                 </label>
 
                 <label>
-                  Buscar
-                  <input id="workout-exercise-search" type="search" placeholder="Nome do exercicio" />
+                  Search
+                  <input id="workout-exercise-search" type="search" placeholder="Exercise name" />
                 </label>
               </div>
               <div class="catalog-list workout-exercise-picker-list" id="workout-exercise-picker-list"></div>
@@ -763,53 +763,53 @@
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> LOG_HISTORY.db</div>
           <h2 class="page-title">Completed <span>Workouts</span></h2>
-          <p class="page-subtitle" id="history-subtitle">// carregando sessoes registradas</p>
+          <p class="page-subtitle" id="history-subtitle">// loading logged sessions</p>
         </div>
 
-        <section class="summary-grid page-summary" id="history-summary-cards" aria-label="Resumo dos treinos realizados"></section>
+        <section class="summary-grid page-summary" id="history-summary-cards" aria-label="Completed workouts summary"></section>
 
         <section class="toolbar-panel">
           <div class="toolbar-left">
             <label class="search-box">
-              <span>Buscar</span>
-              <input id="history-search" type="search" placeholder="Treino, exercicio ou observacao" />
+              <span>Search</span>
+              <input id="history-search" type="search" placeholder="Workout, exercise or note" />
             </label>
             <label>
-              Ficha
+              Template
               <select id="history-code-filter">
-                <option value="all">Todas</option>
-                <option value="A">Treino A</option>
-                <option value="B">Treino B</option>
-                <option value="C">Treino C</option>
+                <option value="all">All</option>
+                <option value="A">Workout A</option>
+                <option value="B">Workout B</option>
+                <option value="C">Workout C</option>
               </select>
             </label>
             <label>
-              Grupo
+              Group
               <select id="history-muscle-filter">
-                <option value="all">Todos</option>
+                <option value="all">All</option>
               </select>
             </label>
             <label>
-              Periodo
+              Period
               <select id="history-period-filter">
-                <option value="all">Tudo</option>
-                <option value="week">Esta semana</option>
-                <option value="month">Este mes</option>
-                <option value="quarter">Ultimos 3 meses</option>
-                <option value="year">Este ano</option>
+                <option value="all">All</option>
+                <option value="week">This week</option>
+                <option value="month">This month</option>
+                <option value="quarter">Last 3 months</option>
+                <option value="year">This year</option>
               </select>
             </label>
           </div>
           <div class="toolbar-right">
-            <div class="view-toggle" aria-label="Modo de visualizacao">
+            <div class="view-toggle" aria-label="View mode">
               <button class="view-button active" type="button" data-history-view="list">Lista</button>
               <button class="view-button" type="button" data-history-view="cards">Cards</button>
             </div>
             <label>
-              Ordenar
+              Sort
               <select id="history-sort">
-                <option value="desc">Mais recentes</option>
-                <option value="asc">Mais antigos</option>
+                <option value="desc">Newest first</option>
+                <option value="asc">Oldest first</option>
               </select>
             </label>
             <button class="button button-secondary" type="button" id="export-history">EXPORT CSV</button>
@@ -819,12 +819,12 @@
         <section class="history-surface">
           <div class="list-header" id="history-list-header">
             <span>ID</span>
-            <span>Sessao</span>
-            <span>Musculos</span>
+            <span>Session</span>
+            <span>Muscles</span>
             <span>Data</span>
             <span>Volume</span>
-            <span>Duracao</span>
-            <span>Series</span>
+            <span>Duration</span>
+            <span>Sets</span>
             <span></span>
           </div>
           <div class="history-list" id="history-list"></div>
@@ -836,7 +836,7 @@
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> TEMPLATE_BUILDER.exe</div>
           <h2 class="page-title">Template <span>Create</span></h2>
-          <p class="page-subtitle">// escolha exercicios do catalogo e monte o protocolo ABC</p>
+          <p class="page-subtitle">// choose exercises from the catalog and build the ABC protocol</p>
         </div>
 
         <section class="workspace single-column">
@@ -844,27 +844,27 @@
             <div class="panel-header">
               <div class="panel-title">
                 <span class="panel-icon">+</span>
-                <h2 id="template-form-title">Nova ficha</h2>
+                <h2 id="template-form-title">New template</h2>
               </div>
               <button class="button button-ghost" type="button" id="reset-template-form">CLEAR</button>
             </div>
 
             <div class="form-grid">
               <label>
-                Tipo de treino
+                Workout type
                 <select id="template-workout-type" required>
-                  <option value="">Selecione um tipo</option>
+                  <option value="">Select a type</option>
                 </select>
               </label>
 
               <label>
-                Codigo da ficha
+                Template code
                 <input id="template-code" type="text" placeholder="A" maxlength="12" required />
               </label>
 
               <label>
-                Nome da ficha
-                <input id="template-name" type="text" placeholder="Peito e triceps" required />
+                Template name
+                <input id="template-name" type="text" placeholder="Chest and triceps" required />
               </label>
             </div>
 
@@ -878,22 +878,22 @@
 
               <div class="form-grid">
                 <label>
-                  Categoria
+                  Category
                   <select id="catalog-category-filter">
-                    <option value="all">Todas</option>
+                    <option value="all">All</option>
                   </select>
                 </label>
 
                 <label>
-                  Subcategoria
+                  Subcategory
                   <select id="catalog-subcategory-filter">
-                    <option value="all">Todas</option>
+                    <option value="all">All</option>
                   </select>
                 </label>
 
                 <label>
-                  Buscar
-                  <input id="catalog-search" type="search" placeholder="Nome do exercicio" />
+                  Search
+                  <input id="catalog-search" type="search" placeholder="Exercise name" />
                 </label>
               </div>
 
@@ -913,7 +913,7 @@
 
             <div class="form-actions">
               <span class="status-message" id="template-status-message" role="status"></span>
-              <button class="button button-primary" type="submit">Salvar ficha</button>
+              <button class="button button-primary" type="submit">SAVE TEMPLATE</button>
             </div>
           </form>
         </section>
@@ -923,38 +923,38 @@
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> TEMPLATE_LIBRARY.db</div>
           <h2 class="page-title">Saved <span>Templates</span></h2>
-          <p class="page-subtitle" id="template-subtitle">// protocolos disponiveis para registrar treinos</p>
+          <p class="page-subtitle" id="template-subtitle">// protocols available for logging workouts</p>
         </div>
 
-        <section class="summary-grid page-summary" id="template-summary-cards" aria-label="Resumo das fichas cadastradas"></section>
+        <section class="summary-grid page-summary" id="template-summary-cards" aria-label="Registered templates summary"></section>
 
         <section class="toolbar-panel">
           <div class="toolbar-left">
             <label class="search-box">
-              <span>Buscar</span>
-              <input id="template-search" type="search" placeholder="Ficha, codigo ou exercicio" />
+              <span>Search</span>
+              <input id="template-search" type="search" placeholder="Template, code or exercise" />
             </label>
             <label>
-              Tipo
+              Type
               <select id="template-type-filter">
-                <option value="all">Todos</option>
+                <option value="all">All</option>
               </select>
             </label>
             <label>
-              Medicao
+              Measurement
               <select id="template-measurement-filter">
-                <option value="all">Todas</option>
+                <option value="all">All</option>
               </select>
             </label>
           </div>
           <div class="toolbar-right">
             <label>
-              Ordenar
+              Sort
               <select id="template-sort">
-                <option value="code">Codigo</option>
-                <option value="name">Nome</option>
-                <option value="exercises">Mais exercicios</option>
-                <option value="xp">Maior XP</option>
+                <option value="code">Code</option>
+                <option value="name">Name</option>
+                <option value="exercises">Most exercises</option>
+                <option value="xp">Highest XP</option>
               </select>
             </label>
           </div>
@@ -967,7 +967,7 @@
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> WORKOUT_TYPE.exe</div>
           <h2 class="page-title">Type <span>Create</span></h2>
-          <p class="page-subtitle">// define quais campos um treino usa</p>
+          <p class="page-subtitle">// define which fields a workout uses</p>
         </div>
 
         <section class="workspace single-column">
@@ -975,49 +975,49 @@
             <div class="panel-header">
               <div class="panel-title">
                 <span class="panel-icon">+</span>
-                <h2 id="workout-type-form-title">Novo tipo</h2>
+                <h2 id="workout-type-form-title">New type</h2>
               </div>
               <button class="button button-ghost" type="button" id="reset-workout-type-form">CLEAR</button>
             </div>
 
             <div class="form-grid">
               <label>
-                Codigo
+                Code
                 <input id="workout-type-code" type="text" placeholder="boxing" required />
               </label>
 
               <label>
-                Nome
+                Name
                 <input id="workout-type-name" type="text" placeholder="Boxe" required />
               </label>
 
               <label>
-                Tipo de medicao
+                Measurement type
                 <select id="workout-type-measurement" required>
-                  <option value="sets_reps_weight">Series + reps + carga</option>
-                  <option value="sets_reps">Series + reps</option>
-                  <option value="rounds_time">Rounds + tempo</option>
-                  <option value="rounds_time_reps">Rounds + tempo + reps</option>
-                  <option value="duration">Duracao</option>
-                  <option value="distance">Distancia</option>
-                  <option value="free">Livre</option>
+                  <option value="sets_reps_weight">Sets + reps + load</option>
+                  <option value="sets_reps">Sets + reps</option>
+                  <option value="rounds_time">Rounds + time</option>
+                  <option value="rounds_time_reps">Rounds + time + reps</option>
+                  <option value="duration">Duration</option>
+                  <option value="distance">Distance</option>
+                  <option value="free">Free</option>
                 </select>
               </label>
 
               <label>
-                Campos
+                Fields
                 <input id="workout-type-fields" type="text" placeholder="rounds, durationSeconds, restSeconds" />
               </label>
             </div>
 
             <label>
-              Descricao
-              <textarea id="workout-type-description" rows="3" placeholder="// Quando usar este tipo de treino?"></textarea>
+              Description
+              <textarea id="workout-type-description" rows="3" placeholder="// When should this workout type be used?"></textarea>
             </label>
 
             <div class="form-actions">
               <span class="status-message" id="workout-type-status-message" role="status"></span>
-              <button class="button button-primary" type="submit">Salvar tipo</button>
+              <button class="button button-primary" type="submit">SAVE TYPE</button>
             </div>
           </form>
         </section>
@@ -1026,28 +1026,28 @@
       <section class="tab-view" id="view-type-list">
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> WORKOUT_TYPES.db</div>
-          <h2 class="page-title">Tipos de <span>Treino</span></h2>
-          <p class="page-subtitle" id="workout-type-subtitle">// modalidades e campos disponiveis</p>
+          <h2 class="page-title">Workout <span>Types</span></h2>
+          <p class="page-subtitle" id="workout-type-subtitle">// available modalities and fields</p>
         </div>
 
-        <section class="summary-grid page-summary" id="workout-type-summary-cards" aria-label="Resumo dos tipos de treino"></section>
+        <section class="summary-grid page-summary" id="workout-type-summary-cards" aria-label="Workout types summary"></section>
 
         <section class="toolbar-panel">
           <div class="toolbar-left">
             <label class="search-box">
-              <span>Buscar</span>
+              <span>Search</span>
               <input id="workout-type-search" type="search" placeholder="Tipo, codigo ou descricao" />
             </label>
             <label>
-              Medicao
+              Measurement
               <select id="workout-type-measurement-filter">
-                <option value="all">Todas</option>
+                <option value="all">All</option>
               </select>
             </label>
             <label>
-              Campo
+              Field
               <select id="workout-type-field-filter">
-                <option value="all">Todos</option>
+                <option value="all">All</option>
               </select>
             </label>
           </div>
@@ -1060,40 +1060,40 @@
         <div class="page-header">
           <div class="breadcrumb">GYM.OS <span>&gt;</span> EXERCISE_CATALOG.db</div>
           <h2 class="page-title">Exercise <span>Catalog</span></h2>
-          <p class="page-subtitle" id="exercise-subtitle">// biblioteca base para montar suas fichas</p>
+          <p class="page-subtitle" id="exercise-subtitle">// base library for building your templates</p>
         </div>
 
-        <section class="summary-grid page-summary" id="exercise-summary-cards" aria-label="Resumo do catalogo de exercicios"></section>
+        <section class="summary-grid page-summary" id="exercise-summary-cards" aria-label="Exercise catalog summary"></section>
 
         <section class="toolbar-panel">
           <div class="toolbar-left">
             <label>
-              Modalidade
+              Modality
               <select id="exercise-page-modality-filter">
-                <option value="all">Todas</option>
+                <option value="all">All</option>
               </select>
             </label>
             <label>
-              Categoria
+              Category
               <select id="exercise-page-category-filter">
-                <option value="all">Todas</option>
+                <option value="all">All</option>
               </select>
             </label>
             <label>
-              Subcategoria
+              Subcategory
               <select id="exercise-page-subcategory-filter">
-                <option value="all">Todas</option>
+                <option value="all">All</option>
               </select>
             </label>
             <label>
-              Medicao
+              Measurement
               <select id="exercise-page-measurement-filter">
-                <option value="all">Todas</option>
+                <option value="all">All</option>
               </select>
             </label>
             <label class="search-box">
-              <span>Buscar</span>
-              <input id="exercise-page-search" type="search" placeholder="Nome do exercicio" />
+              <span>Search</span>
+              <input id="exercise-page-search" type="search" placeholder="Exercise name" />
             </label>
           </div>
         </section>
@@ -1105,11 +1105,11 @@
         <div class="page-header">
           <div class="breadcrumb">ACADEMY <span>&gt;</span> GYM.OS <span>&gt;</span> DOCS</div>
           <h2 class="page-title">Docs <span>Center</span></h2>
-          <p class="page-subtitle">// manual tecnico e roadmap do produto separados</p>
+          <p class="page-subtitle">// technical manual and product roadmap separated</p>
         </div>
 
         <section class="panel documentation-panel">
-          <div class="documentation-menu" aria-label="Menu de documentacao">
+          <div class="documentation-menu" aria-label="Documentation menu">
             <button class="documentation-menu-button active" type="button" data-documentation-doc="app">
               <span>Manual</span>
               <strong>DOCUMENTACAO_APP.md</strong>
@@ -1127,7 +1127,7 @@
               <strong>MISSION_GOAL_SYSTEM.md</strong>
             </button>
             <button class="documentation-menu-button" type="button" data-documentation-doc="bodyProgress">
-              <span>Corporal</span>
+              <span>Body</span>
               <strong>BODY_PROGRESS_SYSTEM.md</strong>
             </button>
             <button class="documentation-menu-button" type="button" data-documentation-doc="projectStatus">
@@ -1141,17 +1141,17 @@
               <h2 id="documentation-file-title">DOCUMENTACAO_APP.md</h2>
             </div>
             <div class="panel-actions">
-              <span class="status-message" id="documentation-status">Carregando...</span>
-              <a class="button button-secondary" id="documentation-download" href="/DOCUMENTACAO_APP.md" download>Baixar MD</a>
+              <span class="status-message" id="documentation-status">Loading...</span>
+              <a class="button button-secondary" id="documentation-download" href="/DOCUMENTACAO_APP.md" download>DOWNLOAD MD</a>
             </div>
           </div>
           <div class="documentation-layout">
-            <nav class="documentation-index" id="documentation-index" aria-label="Indice da documentacao">
+            <nav class="documentation-index" id="documentation-index" aria-label="Documentation index">
               <div class="documentation-index-title">INDEX.sys</div>
-              <p class="empty-state">Carregando indice...</p>
+              <p class="empty-state">Loading index...</p>
             </nav>
             <article class="documentation-content" id="documentation-content">
-              <p class="empty-state">Carregando documentacao...</p>
+              <p class="empty-state">Loading documentation...</p>
             </article>
           </div>
         </section>
@@ -1160,10 +1160,10 @@
       <section class="panel detail-panel" id="detail-panel" hidden>
         <div class="panel-header">
           <div>
-            <p class="section-kicker">Detalhe</p>
-            <h2 id="detail-title">Treino</h2>
+            <p class="section-kicker">Detail</p>
+            <h2 id="detail-title">Workout</h2>
           </div>
-          <button class="button button-ghost" type="button" id="close-detail">Fechar</button>
+          <button class="button button-ghost" type="button" id="close-detail">CLOSE</button>
         </div>
         <div id="detail-content"></div>
       </section>
@@ -1173,31 +1173,31 @@
     <template id="exercise-template">
       <article class="exercise-card">
         <div class="exercise-card-header">
-          <strong class="exercise-index">Exercicio</strong>
-          <button class="icon-button remove-exercise" type="button" aria-label="Remover exercicio">x</button>
+          <strong class="exercise-index">Exercise</strong>
+          <button class="icon-button remove-exercise" type="button" aria-label="Remove exercise">x</button>
         </div>
 
         <div class="form-grid">
           <label>
-            Nome do exercicio
-            <input class="exercise-name" type="text" placeholder="Supino reto com halteres" required />
+            Exercise name
+            <input class="exercise-name" type="text" placeholder="Flat dumbbell bench press" required />
           </label>
 
           <label>
-            Grupo muscular
-            <input class="exercise-muscle" type="text" placeholder="Peito" required />
+            Muscle group
+            <input class="exercise-muscle" type="text" placeholder="Chest" required />
           </label>
         </div>
 
         <div class="sets-list"></div>
 
         <div class="exercise-actions">
-          <button class="button button-secondary add-set" type="button">Adicionar serie</button>
+          <button class="button button-secondary add-set" type="button">ADD SET</button>
         </div>
 
         <label>
-          Observacoes do exercicio
-          <textarea class="exercise-notes" rows="2" placeholder="Opcional"></textarea>
+          Exercise notes
+          <textarea class="exercise-notes" rows="2" placeholder="Optional"></textarea>
         </label>
       </article>
     </template>

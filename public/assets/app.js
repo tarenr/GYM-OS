@@ -1,9 +1,9 @@
 import { calculateLevel, calculateWorkoutXp, calculateWorkoutXpBreakdown } from './xpCalculator.js';
 
 const workoutNames = {
-  A: 'Peito e triceps',
-  B: 'Costas e biceps',
-  C: 'Pernas e ombros'
+  A: 'Chest and triceps',
+  B: 'Back and biceps',
+  C: 'Legs and shoulders'
 };
 
 const state = {
@@ -246,7 +246,7 @@ const documentationDocs = {
   app: {
     title: 'DOCUMENTACAO_APP.md',
     downloadUrl: '/DOCUMENTACAO_APP.md',
-    downloadLabel: 'Baixar Manual'
+    downloadLabel: 'Download Manual'
   },
   academy: {
     title: 'ROADMAP_ACADEMY.md',
@@ -276,22 +276,22 @@ const documentationDocs = {
 };
 
 const weeklySchedule = [
-  { day: 1, label: 'SEG', code: 'A' },
-  { day: 2, label: 'TER', code: 'B' },
-  { day: 3, label: 'QUA', code: 'C' },
-  { day: 4, label: 'QUI', code: 'A' },
-  { day: 5, label: 'SEX', code: 'B' },
-  { day: 6, label: 'SAB', code: 'C' },
-  { day: 0, label: 'DOM', code: 'DESC' }
+  { day: 1, label: 'MON', code: 'A' },
+  { day: 2, label: 'TUE', code: 'B' },
+  { day: 3, label: 'WED', code: 'C' },
+  { day: 4, label: 'THU', code: 'A' },
+  { day: 5, label: 'FRI', code: 'B' },
+  { day: 6, label: 'SAT', code: 'C' },
+  { day: 0, label: 'SUN', code: 'DESC' }
 ];
 const heatmapStartDate = '2026-07-22';
 const academyJourneyStartDate = '2026-07-22';
 const heatmapWeekCount = 16;
 const academyJourneySeasons = [
-  { id: 1, name: 'Fundacao', focus: 'Consistencia > intensidade' },
-  { id: 2, name: 'Intensificacao', focus: 'Volume + tecnica' },
-  { id: 3, name: 'Especializacao', focus: 'Progresso especifico' },
-  { id: 4, name: 'Consolidacao', focus: 'Consistencia anual + revisao' }
+  { id: 1, name: 'Foundation', focus: 'Consistency > intensity' },
+  { id: 2, name: 'Intensification', focus: 'Volume + technique' },
+  { id: 3, name: 'Specialization', focus: 'Specific progress' },
+  { id: 4, name: 'Consolidation', focus: 'Annual consistency + review' }
 ];
 const academySeasonWeeks = 12;
 const academyCycleWeeks = 4;
@@ -299,21 +299,21 @@ const academyJourneyWeeks = academyJourneySeasons.length * academySeasonWeeks;
 
 const rankTiers = [
   { minLevel: 1, name: 'Noob Protocol', shortName: 'Noob' },
-  { minLevel: 4, name: 'Aprendiz de Ferro', shortName: 'Aprendiz' },
+  { minLevel: 4, name: 'Iron Apprentice', shortName: 'Apprentice' },
   { minLevel: 8, name: 'Maromba Jr', shortName: 'Maromba Jr' },
-  { minLevel: 13, name: 'Operador de Supino', shortName: 'Operador' },
-  { minLevel: 19, name: 'Cacador de PR', shortName: 'Cacador' },
-  { minLevel: 26, name: 'Maquina de Volume', shortName: 'Maquina' },
-  { minLevel: 36, name: 'Boss de Academia', shortName: 'Boss' },
-  { minLevel: 51, name: 'Lenda do Protocolo', shortName: 'Lenda' }
+  { minLevel: 13, name: 'Bench Operator', shortName: 'Operator' },
+  { minLevel: 19, name: 'PR Hunter', shortName: 'Hunter' },
+  { minLevel: 26, name: 'Volume Machine', shortName: 'Machine' },
+  { minLevel: 36, name: 'Gym Boss', shortName: 'Boss' },
+  { minLevel: 51, name: 'Protocol Legend', shortName: 'Legend' }
 ];
 
 function formatDate(dateValue) {
-  return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(dateValue));
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC' }).format(new Date(dateValue));
 }
 
 function formatWeekday(dateValue) {
-  return new Intl.DateTimeFormat('pt-BR', { weekday: 'long', timeZone: 'UTC' }).format(new Date(dateValue));
+  return new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: 'UTC' }).format(new Date(dateValue));
 }
 
 function escapeHtml(value = '') {
@@ -426,7 +426,7 @@ function getMissionTotalXp(mission) {
 function getBlockLabel(block) {
   if (block.type === 'strength') return 'Forca';
   if (block.type === 'combat') return block.modality === 'boxing' ? 'Boxe' : 'Kickboxing';
-  return 'Recuperacao';
+  return 'Recovery';
 }
 
 function getTemplateBlockType(template) {
@@ -504,8 +504,8 @@ function getWorkoutFormContext(template, dateValue = dateInput.value) {
   if (state.editingId) {
     return {
       source: 'editing',
-      label: 'Editando treino',
-      detail: 'Alterando sessao ja registrada',
+      label: 'Editing workout',
+      detail: 'Changing logged session',
       assignment: state.workoutFormContext.assignment || null
     };
   }
@@ -514,7 +514,7 @@ function getWorkoutFormContext(template, dateValue = dateInput.value) {
     return {
       source: 'manual',
       label: 'Origem',
-      detail: 'Selecione uma ficha',
+      detail: 'Select a template',
       assignment: null
     };
   }
@@ -524,7 +524,7 @@ function getWorkoutFormContext(template, dateValue = dateInput.value) {
   if (missionContext && !missionContext.mission.restDay) {
     return {
       source: 'mission',
-      label: 'Origem: campanha do dia',
+      label: 'Origin: today campaign',
       detail: `${getBlockLabel(missionContext.block)} - ${missionContext.block.workoutCode} | ${formatDate(dateValue)}`,
       assignment: getMissionAssignment(missionContext.mission, missionContext.block, template, dateValue)
     };
@@ -535,7 +535,7 @@ function getWorkoutFormContext(template, dateValue = dateInput.value) {
   if (replacementContext) {
     return {
       source: 'substitution',
-      label: 'Origem: substitui bloco da campanha',
+      label: 'Origin: replaces campaign block',
       detail: `${replacementContext.block.workoutCode} -> ${template.code} | ${getBlockLabel(replacementContext.block)} | ${formatDate(dateValue)}`,
       assignment: getMissionAssignment(replacementContext.mission, replacementContext.block, template, dateValue)
     };
@@ -543,8 +543,8 @@ function getWorkoutFormContext(template, dateValue = dateInput.value) {
 
   return {
     source: 'extra',
-    label: 'Origem: treino extra',
-    detail: `${template.code} - ${template.name} | nao substitui a campanha do dia`,
+    label: 'Origin: extra workout',
+    detail: `${template.code} - ${template.name} | does not replace today campaign`,
     assignment: null
   };
 }
@@ -621,8 +621,8 @@ function getDashboardBlockAction(block, dateKey) {
     return {
       block,
       stateInfo,
-      label: 'Descanso',
-      meta: 'recuperacao programada',
+      label: 'Rest',
+      meta: 'scheduled recovery',
       disabled: true,
       action: '',
       workoutId: '',
@@ -638,7 +638,7 @@ function getDashboardBlockAction(block, dateKey) {
       block,
       stateInfo,
       label: `${blockLabel} OK`,
-      meta: `${formatMissionBlockCompletion(block, stateInfo.workout)} concluido`,
+      meta: `${formatMissionBlockCompletion(block, stateInfo.workout)} completed`,
       disabled: false,
       action: 'details',
       workoutId: stateInfo.workout?._id || '',
@@ -650,8 +650,8 @@ function getDashboardBlockAction(block, dateKey) {
     return {
       block,
       stateInfo,
-      label: `Editar ${blockLabel}`,
-      meta: `${formatMissionBlockCompletion(block, stateInfo.attemptedWorkout)} parcial`,
+      label: `EDIT ${blockLabel}`,
+      meta: `${formatMissionBlockCompletion(block, stateInfo.attemptedWorkout)} partial`,
       disabled: false,
       action: 'edit',
       workoutId: stateInfo.attemptedWorkout?._id || '',
@@ -664,7 +664,7 @@ function getDashboardBlockAction(block, dateKey) {
       block,
       stateInfo,
       label: `Iniciar ${blockLabel}`,
-      meta: `${blockCode} pendente`,
+      meta: `${blockCode} pending`,
       disabled: false,
       action: 'start',
       workoutId: '',
@@ -675,8 +675,8 @@ function getDashboardBlockAction(block, dateKey) {
   return {
     block,
     stateInfo,
-    label: dateKey > todayKey ? `${blockLabel} planejada` : `${blockLabel} pendente`,
-    meta: `${blockCode} ${dateKey > todayKey ? 'futuro' : 'nao iniciado'}`,
+    label: dateKey > todayKey ? `${blockLabel} planned` : `${blockLabel} pending`,
+    meta: `${blockCode} ${dateKey > todayKey ? 'future' : 'not started'}`,
     disabled: true,
     action: '',
     workoutId: '',
@@ -693,7 +693,7 @@ function renderMissionActionButtons(mission, dateKey) {
     missionActions.innerHTML = `
       <button class="mission-action-button rest" type="button" disabled>
         <strong>REST DAY</strong>
-        <span>recuperacao programada</span>
+        <span>scheduled recovery</span>
       </button>
     `;
     return;
@@ -707,7 +707,7 @@ function renderMissionActionButtons(mission, dateKey) {
     missionActions.innerHTML = `
       <button class="mission-action-button rest" type="button" disabled>
         <strong>NO ACTIVE BLOCKS</strong>
-        <span>campanha sem treino obrigatorio</span>
+        <span>campaign has no required workout</span>
       </button>
     `;
     return;
@@ -927,7 +927,7 @@ function getWorkoutExecutionQuality(workout) {
       percent: 0,
       label: 'So extra',
       className: 'extra',
-      detail: `${extraCount} exercicios extras`
+      detail: `${extraCount} extra exercises`
     };
   }
 
@@ -940,7 +940,7 @@ function getWorkoutExecutionQuality(workout) {
       percent,
       label: 'Completo',
       className: 'complete',
-      detail: `${executedCount}/${plannedCount} exercicios planejados`
+      detail: `${executedCount}/${plannedCount} planned exercises`
     };
   }
 
@@ -953,7 +953,7 @@ function getWorkoutExecutionQuality(workout) {
       percent,
       label: 'OK',
       className: 'ok',
-      detail: `${executedCount}/${plannedCount} exercicios planejados`
+      detail: `${executedCount}/${plannedCount} planned exercises`
     };
   }
 
@@ -963,9 +963,9 @@ function getWorkoutExecutionQuality(workout) {
     skippedCount,
     extraCount,
     percent,
-    label: 'Parcial',
+    label: 'Partial',
     className: 'partial',
-    detail: plannedCount ? `${executedCount}/${plannedCount} exercicios planejados` : 'sem ficha planejada'
+    detail: plannedCount ? `${executedCount}/${plannedCount} planned exercises` : 'no planned template'
   };
 }
 
@@ -974,7 +974,7 @@ function renderWorkoutQualityTag(quality) {
 }
 
 function formatWorkoutQualitySummary(quality) {
-  const skipped = quality.skippedCount ? ` | ${quality.skippedCount} pulados` : '';
+  const skipped = quality.skippedCount ? ` | ${quality.skippedCount} skipped` : '';
   const extras = quality.extraCount ? ` | ${quality.extraCount} extras` : '';
 
   if (!quality.plannedCount) {
@@ -1228,7 +1228,7 @@ function calculateCampaignXpBreakdown() {
           type: 'mission-bonus',
           dateKey,
           workoutId: lastWorkout?._id || '',
-          label: `Bonus da campanha - ${mission.missionName}`,
+          label: `Campaign bonus - ${mission.missionName}`,
           xp: Number(mission.bonusXp || 0)
         });
       }
@@ -1320,7 +1320,7 @@ function renderHistoryMuscleOptions() {
   )))].sort();
 
   historyMuscleFilter.innerHTML = [
-    '<option value="all">Todos</option>',
+    '<option value="all">All</option>',
     ...muscles.map((muscle) => `<option value="${escapeHtml(muscle)}">${escapeHtml(muscle)}</option>`)
   ].join('');
   historyMuscleFilter.value = muscles.includes(currentValue) ? currentValue : 'all';
@@ -1332,8 +1332,8 @@ function renderHistoryCodeOptions() {
   const codes = [...new Set(state.allWorkouts.map((workout) => workout.workoutCode).filter(Boolean))].sort();
 
   historyCodeFilter.innerHTML = [
-    '<option value="all">Todas</option>',
-    ...codes.map((code) => `<option value="${escapeHtml(code)}">Treino ${escapeHtml(code)}</option>`)
+    '<option value="all">All</option>',
+    ...codes.map((code) => `<option value="${escapeHtml(code)}">Workout ${escapeHtml(code)}</option>`)
   ].join('');
   historyCodeFilter.value = codes.includes(currentValue) ? currentValue : 'all';
   state.historyCodeFilter = historyCodeFilter.value;
@@ -1373,34 +1373,34 @@ function getWeeklyMissions(stats) {
 
   return [
     {
-      title: 'Completar Treino A',
-      description: 'Peito e triceps com pelo menos 1 serie valida',
+      title: 'Complete Workout A',
+      description: 'Chest and triceps with at least 1 valid set',
       reward: 40,
       done: completedCodes.has('A')
     },
     {
-      title: 'Completar Treino B',
-      description: 'Costas e biceps com pelo menos 1 serie valida',
+      title: 'Complete Workout B',
+      description: 'Back and biceps with at least 1 valid set',
       reward: 40,
       done: completedCodes.has('B')
     },
     {
-      title: 'Completar Treino C',
-      description: 'Pernas e ombros com pelo menos 1 serie valida',
+      title: 'Complete Workout C',
+      description: 'Legs and shoulders with at least 1 valid set',
       reward: 40,
       done: completedCodes.has('C')
     },
     {
-      title: '3 Treinos na Semana',
-      description: 'Concluir qualquer 3 treinos validos',
+      title: '3 Workouts This Week',
+      description: 'Complete any 3 valid workouts',
       reward: 60,
       done: stats.completedTrainingDays >= 3,
       progress: Math.min(stats.completedTrainingDays, 3),
       target: 3
     },
     {
-      title: 'Semana Full Protocol',
-      description: 'Concluir os 6 treinos da rotina semanal',
+      title: 'Full Protocol Week',
+      description: 'Complete all 6 workouts in the weekly routine',
       reward: 150,
       done: stats.completedTrainingDays >= 6,
       progress: Math.min(stats.completedTrainingDays, 6),
@@ -1433,7 +1433,7 @@ function renderDashboardWeeklySchedule(monday) {
         dayIndex: item.day,
         dayOfWeek: item.label,
         restDay: item.code === 'DESC',
-        blocks: item.code === 'DESC' ? [{ workoutCode: 'DESC', workoutName: 'Recuperacao' }] : [{ type: 'strength', workoutCode: item.code, workoutName: workoutNames[item.code] }]
+        blocks: item.code === 'DESC' ? [{ workoutCode: 'DESC', workoutName: 'Recovery' }] : [{ type: 'strength', workoutCode: item.code, workoutName: workoutNames[item.code] }]
       }));
 
   const scheduleItems = source.map((mission, index) => {
@@ -1470,7 +1470,7 @@ function renderDashboardWeeklySchedule(monday) {
         <span class="schedule-day-name">${escapeHtml(item.dayLabel.slice(0, 3))}</span>
         <strong>${item.date.getDate()}</strong>
         <div class="schedule-code">${escapeHtml(item.codes)}</div>
-        <small>${item.mission.restDay ? 'Descanso' : `${item.status.completed} de ${item.status.required} blocos`}</small>
+        <small>${item.mission.restDay ? 'Rest' : `${item.status.completed} of ${item.status.required} blocks`}</small>
       </article>
     `).join('');
 
@@ -1483,21 +1483,21 @@ function renderDashboardWeeklySchedule(monday) {
 
   if (dashboardWeeklyFocus) {
     const focusStatus = pending
-      ? `${pending} blocos em aberto`
+      ? `${pending} open blocks`
       : partial
-        ? `${partial} blocos parciais`
-        : 'sem pendencias';
+        ? `${partial} partial blocks`
+        : 'no pending items';
     const nextLabel = nextItem
       ? `${nextItem.codes} | ${nextItem.dayLabel} ${formatDate(nextItem.dateKey)}`
-      : 'sem proximo bloco ativo';
+      : 'no next active block';
 
     dashboardWeeklyFocus.innerHTML = `
       <div>
         <span>WEEK_OBJECTIVE</span>
-        <strong>${completed}/${trainingItems.length} treinos planejados</strong>
-        <p>${escapeHtml(focusStatus)} | proximo: ${escapeHtml(nextLabel)}</p>
+        <strong>${completed}/${trainingItems.length} planned workouts</strong>
+        <p>${escapeHtml(focusStatus)} | next: ${escapeHtml(nextLabel)}</p>
       </div>
-      <div class="weekly-focus-meter" aria-label="Progresso semanal">
+      <div class="weekly-focus-meter" aria-label="Weekly progress">
         <span style="width: ${weekPercent}%"></span>
       </div>
     `;
@@ -1508,17 +1508,17 @@ function renderDashboardWeeklySchedule(monday) {
       <article class="weekly-summary-card">
         <span>SEMANA</span>
         <strong>${completed}/${trainingItems.length}</strong>
-        <p>${weekPercent}% da campanha semanal</p>
+        <p>${weekPercent}% of weekly campaign</p>
       </article>
       <article class="weekly-summary-card">
         <span>PROXIMO</span>
         <strong>${escapeHtml(nextItem?.codes || 'DESC')}</strong>
-        <p>${escapeHtml(nextItem ? `${nextItem.dayLabel} | ${formatDate(nextItem.dateKey)}` : 'sem blocos pendentes')}</p>
+        <p>${escapeHtml(nextItem ? `${nextItem.dayLabel} | ${formatDate(nextItem.dateKey)}` : 'no pending blocks')}</p>
       </article>
       <article class="weekly-summary-card">
         <span>STATUS</span>
-        <strong>${pending ? `${pending} abertos` : 'em dia'}</strong>
-        <p>${partial} parcial | domingo descanso</p>
+        <strong>${pending ? `${pending} open` : 'on track'}</strong>
+        <p>${partial} partial | Sunday rest</p>
       </article>
     `;
   }
@@ -1562,8 +1562,8 @@ function renderDashboardVolumeChart() {
       ...week,
       delta,
       deltaLabel: previousVolume === null
-        ? 'primeira semana da serie'
-        : `${delta >= 0 ? '+' : ''}${formatCompactNumber(delta)} kg vs semana anterior`
+        ? 'first week in series'
+        : `${delta >= 0 ? '+' : ''}${formatCompactNumber(delta)} kg vs previous week`
     };
   });
   const totalTrendVolume = trend.reduce((total, week) => total + week.volume, 0);
@@ -1577,10 +1577,10 @@ function renderDashboardVolumeChart() {
   const lastFourVolume = trend.slice(-4).reduce((total, week) => total + week.volume, 0);
   const previousFourVolume = trend.slice(-8, -4).reduce((total, week) => total + week.volume, 0);
   const trendStatus = lastFourVolume > previousFourVolume
-    ? 'subindo'
+    ? 'rising'
     : lastFourVolume < previousFourVolume
-      ? 'caindo'
-      : 'estavel';
+      ? 'falling'
+      : 'stable';
 
   if (totalTrendVolume <= 0) {
     if (volumeTrendChart) {
@@ -1588,75 +1588,75 @@ function renderDashboardVolumeChart() {
       volumeTrendChart = null;
     }
 
-    dashboardVolumeChart.innerHTML = '<p class="empty-state chart-empty">Registre treinos com carga para gerar o grafico de volume.</p>';
+    dashboardVolumeChart.innerHTML = '<p class="empty-state chart-empty">Log workouts with load to generate the volume chart.</p>';
     dashboardVolumeSummary.innerHTML = `
       <article class="volume-analysis-card">
-        <span>Total 12 semanas</span>
+        <span>Total 12 weeks</span>
         <strong>0 kg</strong>
-        <small>sem volume registrado</small>
+        <small>no volume logged</small>
       </article>
-      <div class="volume-point-legend" aria-label="Legenda do grafico de volume">
+      <div class="volume-point-legend" aria-label="Volume chart legend">
         <span><i class="legend-dot legend-volume"></i> volume</span>
-        <span><i class="legend-dot legend-best"></i> melhor</span>
-        <span><i class="legend-dot legend-current"></i> atual</span>
-        <span><i class="legend-dot legend-empty"></i> zerado</span>
+        <span><i class="legend-dot legend-best"></i> best</span>
+        <span><i class="legend-dot legend-current"></i> current</span>
+        <span><i class="legend-dot legend-empty"></i> zero</span>
       </div>
     `;
     return;
   }
 
-  dashboardVolumeChart.innerHTML = '<canvas aria-label="Volume das ultimas 12 semanas"></canvas>';
+  dashboardVolumeChart.innerHTML = '<canvas aria-label="Volume from last 12 weeks"></canvas>';
   renderVolumeTrendChart(chartData, bestWeek);
   dashboardVolumeSummary.innerHTML = `
     <article class="volume-analysis-card">
-      <span>Total 12 semanas</span>
+      <span>Total 12 weeks</span>
       <strong>${escapeHtml(formatCompactNumber(totalTrendVolume))} kg</strong>
-      <small>${escapeHtml(activeWeeks)} semanas com volume</small>
+      <small>${escapeHtml(activeWeeks)} weeks with volume</small>
     </article>
     <article class="volume-analysis-card">
-      <span>Media ativa</span>
+      <span>Active average</span>
       <strong>${escapeHtml(formatCompactNumber(averageVolume))} kg</strong>
-      <small>por semana treinada</small>
+      <small>per trained week</small>
     </article>
     <article class="volume-analysis-card">
-      <span>Melhor semana</span>
+      <span>Best week</span>
       <strong>${escapeHtml(bestWeek.label)} | ${escapeHtml(formatCompactNumber(bestWeek.volume))} kg</strong>
-      <small>ponto dourado</small>
+      <small>gold point</small>
     </article>
     <article class="volume-analysis-card">
-      <span>Semana atual</span>
+      <span>Current week</span>
       <strong>${escapeHtml(formatCompactNumber(lastWeek.volume))} kg</strong>
-      <small>${escapeHtml(lastDelta >= 0 ? '+' : '')}${escapeHtml(formatCompactNumber(lastDelta))} kg vs anterior</small>
+      <small>${escapeHtml(lastDelta >= 0 ? '+' : '')}${escapeHtml(formatCompactNumber(lastDelta))} kg vs previous</small>
     </article>
     <article class="volume-analysis-card">
-      <span>Tendencia</span>
+      <span>Trend</span>
       <strong>${escapeHtml(trendStatus)}</strong>
-      <small>ultimas 4 vs anteriores</small>
+      <small>last 4 vs previous 4</small>
     </article>
     <article class="volume-analysis-card">
-      <span>Semanas zeradas</span>
+      <span>Zero weeks</span>
       <strong>${escapeHtml(String(emptyWeeks))}</strong>
-      <small>de ${escapeHtml(String(trend.length))} semanas</small>
+      <small>of ${escapeHtml(String(trend.length))} weeks</small>
     </article>
-    <div class="volume-point-legend" aria-label="Legenda do grafico de volume">
+    <div class="volume-point-legend" aria-label="Volume chart legend">
       <span><i class="legend-dot legend-volume"></i> volume</span>
-      <span><i class="legend-dot legend-best"></i> melhor</span>
-      <span><i class="legend-dot legend-current"></i> atual</span>
-      <span><i class="legend-dot legend-empty"></i> zerado</span>
+      <span><i class="legend-dot legend-best"></i> best</span>
+      <span><i class="legend-dot legend-current"></i> current</span>
+      <span><i class="legend-dot legend-empty"></i> zero</span>
     </div>
   `;
 }
 
 function getVolumePointRole(item, index, chartData, bestWeek) {
   if (item.label === bestWeek.label && item.volume === bestWeek.volume) {
-    return 'melhor semana';
+    return 'best week';
   }
 
   if (index === chartData.length - 1) {
-    return 'semana atual';
+    return 'current week';
   }
 
-  return item.volume > 0 ? 'volume registrado' : 'sem volume';
+  return item.volume > 0 ? 'volume logged' : 'no volume';
 }
 
 function renderVolumeTrendChart(chartData, bestWeek) {
@@ -1676,7 +1676,7 @@ function renderVolumeTrendChart(chartData, bestWeek) {
     data: {
       labels: chartData.map((item) => item.label),
       datasets: [{
-        label: 'Volume semanal',
+        label: 'Weekly volume',
         data: chartData.map((item) => item.volume),
         borderColor: '#00ff41',
         backgroundColor: 'rgba(0, 255, 65, 0.16)',
@@ -1699,11 +1699,11 @@ function renderVolumeTrendChart(chartData, bestWeek) {
           const item = chartData[context.dataIndex];
           const role = getVolumePointRole(item, context.dataIndex, chartData, bestWeek);
 
-          if (role === 'melhor semana') {
+          if (role === 'best week') {
             return '#d29922';
           }
 
-          if (role === 'semana atual') {
+          if (role === 'current week') {
             return '#58a6ff';
           }
 
@@ -1727,7 +1727,7 @@ function renderVolumeTrendChart(chartData, bestWeek) {
             title(items) {
               const item = chartData[items[0].dataIndex];
 
-              return `Semana ${item.label}`;
+              return `Week ${item.label}`;
             },
             label(context) {
               const item = chartData[context.dataIndex];
@@ -1736,7 +1736,7 @@ function renderVolumeTrendChart(chartData, bestWeek) {
               return [
                 `Ponto: ${role}`,
                 `Volume: ${formatNumber(item.volume)} kg`,
-                `Treinos: ${item.workouts}`,
+                `Workouts: ${item.workouts}`,
                 item.deltaLabel
               ];
             }
@@ -1812,7 +1812,7 @@ function renderDashboardMuscleDistribution() {
   const totalVolume = entries.reduce((total, item) => total + item.volume, 0);
 
   if (!entries.length) {
-    dashboardMuscleDistribution.innerHTML = '<p class="empty-state">Registre treinos com carga para gerar distribuicao muscular.</p>';
+    dashboardMuscleDistribution.innerHTML = '<p class="empty-state">Log workouts with load to generate muscle distribution.</p>';
     return;
   }
 
@@ -1840,12 +1840,12 @@ Status: ${statusLabel}`;
         <div class="muscle-row-head">
           <span>${escapeHtml(item.name)}</span>
           <div>
-            ${isDominant ? '<em>Dominante</em>' : ''}
-            ${isLowest ? '<em>Baixo volume</em>' : ''}
+            ${isDominant ? '<em>Dominant</em>' : ''}
+            ${isLowest ? '<em>Low volume</em>' : ''}
             <strong>${percent}%</strong>
           </div>
         </div>
-        <small>${escapeHtml(formatCompactNumber(item.volume))} kg de ${escapeHtml(formatCompactNumber(totalVolume))} kg</small>
+        <small>${escapeHtml(formatCompactNumber(item.volume))} kg of ${escapeHtml(formatCompactNumber(totalVolume))} kg</small>
         <div class="muscle-bar-bg">
           <span class="muscle-bar-fill ${getMuscleClass(item.name)}" style="width:${percent}%"></span>
         </div>
@@ -1855,12 +1855,12 @@ Status: ${statusLabel}`;
 
   dashboardMuscleDistribution.innerHTML = `
     <div class="muscle-metric-summary">
-      <span>METRICA</span>
-      <strong>Volume por grupo muscular</strong>
-      <p>Total analisado: ${escapeHtml(formatCompactNumber(totalVolume))} kg | radar: maior grupo = 100 | barras: participacao no volume total</p>
+      <span>METRIC</span>
+      <strong>Volume by muscle group</strong>
+      <p>Total analyzed: ${escapeHtml(formatCompactNumber(totalVolume))} kg | radar: top group = 100 | bars: share of total volume</p>
     </div>
     <div class="muscle-radar-wrap">
-      <canvas aria-label="Radar de volume relativo por grupo muscular"></canvas>
+      <canvas aria-label="Relative volume radar by muscle group"></canvas>
     </div>
     <div class="radar-list">${bars}</div>
   `;
@@ -1869,12 +1869,12 @@ Status: ${statusLabel}`;
 
 function getMuscleRadarData(entries) {
   const slots = [
-    { label: 'Peito', keys: ['peito', 'chest', 'peitoral'] },
-    { label: 'Costas', keys: ['costas', 'back', 'dorsal', 'latissimo', 'trapezio'] },
+    { label: 'Chest', keys: ['peito', 'chest', 'peitoral'] },
+    { label: 'Back', keys: ['costas', 'back', 'dorsal', 'latissimo', 'trapezio'] },
     { label: 'Biceps', keys: ['biceps', 'bicep', 'braco'] },
     { label: 'Triceps', keys: ['triceps', 'tricep'] },
-    { label: 'Ombros', keys: ['ombro', 'ombros', 'deltoides', 'shoulder'] },
-    { label: 'Pernas', keys: ['perna', 'pernas', 'quadriceps', 'gluteo', 'leg', 'panturrilha'] }
+    { label: 'Shoulders', keys: ['ombro', 'ombros', 'deltoides', 'shoulder'] },
+    { label: 'Legs', keys: ['perna', 'pernas', 'quadriceps', 'gluteo', 'leg', 'panturrilha'] }
   ];
   const values = slots.map((slot) => {
     const volume = entries.reduce((total, entry) => {
@@ -1939,7 +1939,7 @@ function renderMuscleRadarChart(radarData) {
             label(context) {
               const item = radarData.values[context.dataIndex];
 
-              return `${item.label}: ${formatNumber(item.volume)} kg | ${context.raw}% do maior grupo`;
+              return `${item.label}: ${formatNumber(item.volume)} kg | ${context.raw}% of top group`;
             }
           }
         }
@@ -2047,7 +2047,7 @@ function renderDashboardPrList() {
   const records = getTopPersonalRecords(state.allWorkouts);
 
   if (!records.length) {
-    dashboardPrList.innerHTML = '<p class="empty-state">Registre series com carga para mapear seus PRs.</p>';
+    dashboardPrList.innerHTML = '<p class="empty-state">Log sets with load to map your PRs.</p>';
     return;
   }
 
@@ -2056,7 +2056,7 @@ function renderDashboardPrList() {
       <span class="pr-rank">#${index + 1}</span>
       <div class="pr-main">
         <h3>${escapeHtml(record.exerciseName)}</h3>
-        <p>${escapeHtml(record.muscleGroup)} | Treino ${escapeHtml(record.workoutCode)} | ${escapeHtml(formatDate(record.date))}</p>
+        <p>${escapeHtml(record.muscleGroup)} | Workout ${escapeHtml(record.workoutCode)} | ${escapeHtml(formatDate(record.date))}</p>
       </div>
       <div class="pr-value">
         <strong>${escapeHtml(formatLoadModeWeight(record.weight, record.loadMode))}</strong>
@@ -2090,14 +2090,14 @@ function getDashboardActivityEvents(workouts, limit = 8) {
       type: isExtra ? 'extra' : isSubstitution ? 'substitution' : 'workout',
       date: workout.date,
       title: isExtra
-        ? 'Treino extra registrado'
+        ? 'Extra workout logged'
         : isSubstitution
-          ? 'Treino substituiu missao'
-          : 'Missao concluida',
+          ? 'Workout replaced mission'
+          : 'Mission completed',
       detail: isSubstitution
         ? `${origin.originalWorkoutCode} -> ${workout.workoutCode} | ${workout.workoutName}`
-        : `Treino ${workout.workoutCode} - ${workout.workoutName}`,
-      meta: `${quality.label} ${quality.plannedCount ? `${quality.percent}%` : ''} | ${validSets} series | ${formatCompactNumber(volume)} kg`
+        : `Workout ${workout.workoutCode} - ${workout.workoutName}`,
+      meta: `${quality.label} ${quality.plannedCount ? `${quality.percent}%` : ''} | ${validSets} sets | ${formatCompactNumber(volume)} kg`
     });
 
     (workout.exercises || []).forEach((exercise) => {
@@ -2139,7 +2139,7 @@ function renderDashboardActivityFeed() {
   const events = getDashboardActivityEvents(state.allWorkouts);
 
   if (!events.length) {
-    dashboardActivityFeed.innerHTML = '<p class="empty-state">Registre um treino para gerar o feed de atividade.</p>';
+    dashboardActivityFeed.innerHTML = '<p class="empty-state">Log a workout to generate the activity feed.</p>';
     return;
   }
 
@@ -2219,14 +2219,14 @@ function getWorkoutTypeName(code) {
 
 function getMeasurementLabel(measurementType) {
   const labels = {
-    sets_reps_weight: 'Series + carga + reps',
-    sets_reps: 'Series + reps',
-    rounds_time: 'Rounds + tempo',
-    rounds_time_reps: 'Rounds + golpes',
-    duration: 'Duracao'
+    sets_reps_weight: 'Sets + load + reps',
+    sets_reps: 'Sets + reps',
+    rounds_time: 'Rounds + time',
+    rounds_time_reps: 'Rounds + strikes',
+    duration: 'Duration'
   };
 
-  return labels[measurementType] || measurementType || 'Series + carga + reps';
+  return labels[measurementType] || measurementType || 'Sets + load + reps';
 }
 
 function inferExerciseLoadMode(exercise = {}) {
@@ -2241,7 +2241,7 @@ function inferExerciseLoadMode(exercise = {}) {
 
   if (text.includes('barra')) return 'bar_total';
   if (text.includes('maquina') || text.includes('polia')) return 'machine_stack';
-  if (text.includes('peso corporal') || text.includes('prancha') || text.includes('abdominal') || text.includes('elevacao de pernas')) return 'bodyweight';
+  if (text.includes('bodyweight') || text.includes('prancha') || text.includes('abdominal') || text.includes('leg raise')) return 'bodyweight';
 
   return 'dumbbell_each';
 }
@@ -2259,34 +2259,34 @@ function getExerciseLoadMode(exercise = {}) {
 function getLoadModeMeta(loadMode = 'dumbbell_each') {
   const modes = {
     dumbbell_each: {
-      label: 'Halteres',
-      fieldLabel: 'Peso por halter',
-      unit: 'kg cada',
-      hint: 'registre o peso de um halter; o app calcula o volume considerando reps x peso informado.'
+      label: 'Dumbbells',
+      fieldLabel: 'Dumbbell weight',
+      unit: 'kg each',
+      hint: 'log one dumbbell weight; the app calculates volume using reps x entered weight.'
     },
     bar_total: {
-      label: 'Barra',
-      fieldLabel: 'Peso total',
+      label: 'Barbell',
+      fieldLabel: 'Total weight',
       unit: 'kg total',
-      hint: 'registre barra + anilhas como carga total montada.'
+      hint: 'log bar + plates as the assembled total load.'
     },
     machine_stack: {
-      label: 'Maquina',
-      fieldLabel: 'Carga da maquina',
-      unit: 'kg maquina',
-      hint: 'registre o numero exibido no equipamento.'
+      label: 'Machine',
+      fieldLabel: 'Machine load',
+      unit: 'kg machine',
+      hint: 'log the number shown on the equipment.'
     },
     bodyweight: {
-      label: 'Peso corporal',
-      fieldLabel: 'Carga extra',
+      label: 'Bodyweight',
+      fieldLabel: 'Extra load',
       unit: 'kg extra',
-      hint: 'registre 0 quando for apenas peso corporal; use carga somente se houver peso adicional.'
+      hint: 'log 0 for bodyweight only; use load only when extra weight is added.'
     },
     non_weight: {
-      label: 'Sem carga',
-      fieldLabel: 'Carga',
+      label: 'No load',
+      fieldLabel: 'Load',
       unit: 'kg',
-      hint: 'este exercicio nao usa peso para progresso principal.'
+      hint: 'this exercise does not use weight for primary progress.'
     }
   };
 
@@ -2295,11 +2295,11 @@ function getLoadModeMeta(loadMode = 'dumbbell_each') {
 
 function getLoadModeOptionsMarkup(currentValue = 'dumbbell_each') {
   const options = [
-    ['dumbbell_each', 'Halteres'],
-    ['bar_total', 'Barra'],
-    ['machine_stack', 'Maquina'],
-    ['bodyweight', 'Peso corporal'],
-    ['non_weight', 'Sem carga']
+    ['dumbbell_each', 'Dumbbells'],
+    ['bar_total', 'Barbell'],
+    ['machine_stack', 'Machine'],
+    ['bodyweight', 'Bodyweight'],
+    ['non_weight', 'No load']
   ];
 
   return options.map(([value, label]) => (
@@ -2349,7 +2349,7 @@ function formatExercisePrescription(exercise) {
     const rounds = Number(exercise.plannedRounds ?? exercise.defaultRounds ?? 0);
     const duration = Number(exercise.plannedDurationSeconds ?? exercise.defaultDurationSeconds ?? 0);
     const rest = Number(exercise.plannedRestSeconds ?? exercise.defaultRestSeconds ?? 0);
-    const suffix = measurementType === 'rounds_time_reps' ? ' + golpes' : '';
+    const suffix = measurementType === 'rounds_time_reps' ? ' + strikes' : '';
 
     return `${rounds} rounds | ${formatSeconds(duration)} | desc. ${formatSeconds(rest)}${suffix}`;
   }
@@ -2375,11 +2375,11 @@ function getExerciseImageMarkup(exercise = {}, size = 'compact') {
       class="exercise-media-frame ${size} has-preview"
       role="button"
       tabindex="0"
-      aria-label="Ampliar imagem de ${escapeHtml(exercise.name || 'exercicio')}"
+      aria-label="Expand image of ${escapeHtml(exercise.name || 'exercise')}"
       data-preview-image="${escapeHtml(exercise.imageUrl)}"
-      data-preview-alt="${escapeHtml(exercise.imageAlt || `Execucao de ${exercise.name || 'exercicio'}`)}"
+      data-preview-alt="${escapeHtml(exercise.imageAlt || `Execution of ${exercise.name || 'exercise'}`)}"
     >
-      <img src="${escapeHtml(exercise.imageUrl)}" alt="${escapeHtml(exercise.imageAlt || `Execucao de ${exercise.name || 'exercicio'}`)}" loading="lazy" />
+      <img src="${escapeHtml(exercise.imageUrl)}" alt="${escapeHtml(exercise.imageAlt || `Execution of ${exercise.name || 'exercise'}`)}" loading="lazy" />
       <figcaption>${escapeHtml(exercise.mediaProvider || 'media')}</figcaption>
     </figure>
   `;
@@ -2417,8 +2417,8 @@ function ensureMediaLightbox() {
   mediaLightbox.hidden = true;
   mediaLightbox.innerHTML = `
     <div class="exercise-media-lightbox-backdrop" data-close-media-lightbox></div>
-    <section class="exercise-media-lightbox-panel" role="dialog" aria-modal="true" aria-label="Imagem ampliada do exercicio">
-      <button class="icon-button neutral exercise-media-lightbox-close" type="button" aria-label="Fechar imagem ampliada" data-close-media-lightbox>x</button>
+    <section class="exercise-media-lightbox-panel" role="dialog" aria-modal="true" aria-label="Expanded exercise image">
+      <button class="icon-button neutral exercise-media-lightbox-close" type="button" aria-label="Close enlarged image" data-close-media-lightbox>x</button>
       <img alt="" />
     </section>
   `;
@@ -2507,11 +2507,11 @@ function createSetRow(set = {}, loadMode = 'dumbbell_each') {
   row.innerHTML = `
     <span class="set-number">S</span>
     <div class="set-field">
-      <input class="set-weight" type="number" min="0" step="0.5" value="${set.weight ?? ''}" placeholder="${escapeHtml(loadMeta.fieldLabel)}" aria-label="${escapeHtml(loadMeta.fieldLabel)} em kg" required />
+      <input class="set-weight" type="number" min="0" step="0.5" value="${set.weight ?? ''}" placeholder="${escapeHtml(loadMeta.fieldLabel)}" aria-label="${escapeHtml(loadMeta.fieldLabel)} in kg" required />
       <small>${escapeHtml(loadMeta.unit)}</small>
     </div>
     <div class="set-field">
-      <input class="set-reps" type="number" min="0" step="1" value="${set.reps ?? ''}" placeholder="Reps" aria-label="Repeticoes" required />
+      <input class="set-reps" type="number" min="0" step="1" value="${set.reps ?? ''}" placeholder="Reps" aria-label="Reps" required />
       <small>reps</small>
     </div>
     <button class="icon-button remove-set" type="button" aria-label="Remover serie">x</button>
@@ -2538,7 +2538,7 @@ function updateSetRowLoadMode(row, loadMode = 'dumbbell_each') {
 
   if (weightInput) {
     weightInput.placeholder = loadMeta.fieldLabel;
-    weightInput.setAttribute('aria-label', `${loadMeta.fieldLabel} em kg`);
+    weightInput.setAttribute('aria-label', `${loadMeta.fieldLabel} in kg`);
   }
 
   if (unitLabel) {
@@ -2553,19 +2553,19 @@ function createRoundRow(round = {}) {
   row.innerHTML = `
     <span class="set-number">R</span>
     <div class="set-field">
-      <input class="round-duration" type="number" min="0" step="1" value="${round.durationSeconds ?? ''}" placeholder="Tempo" aria-label="Duracao do round em segundos" required />
+      <input class="round-duration" type="number" min="0" step="1" value="${round.durationSeconds ?? ''}" placeholder="Tempo" aria-label="Round duration in seconds" required />
       <small>seg</small>
     </div>
     <div class="set-field">
-      <input class="round-rest" type="number" min="0" step="1" value="${round.restSeconds ?? ''}" placeholder="Desc." aria-label="Descanso em segundos" required />
+      <input class="round-rest" type="number" min="0" step="1" value="${round.restSeconds ?? ''}" placeholder="Desc." aria-label="Rest in seconds" required />
       <small>desc</small>
     </div>
     <div class="set-field">
       <input class="round-reps" type="number" min="0" step="1" value="${round.reps ?? 0}" placeholder="Golpes" aria-label="Golpes ou repeticoes" />
-      <small>golpes</small>
+      <small>strikes</small>
     </div>
     <div class="set-field">
-      <input class="round-intensity" type="number" min="0" max="10" step="1" value="${round.intensity ?? 7}" placeholder="Int." aria-label="Intensidade de 0 a 10" />
+      <input class="round-intensity" type="number" min="0" max="10" step="1" value="${round.intensity ?? 7}" placeholder="Int." aria-label="Intensity from 0 to 10" />
       <small>0-10</small>
     </div>
     <button class="icon-button remove-set" type="button" aria-label="Remover round">x</button>
@@ -2591,7 +2591,7 @@ function refreshSetNumbers(setsList) {
 
 function refreshExerciseNumbers() {
   [...exerciseList.children].forEach((card, index) => {
-    card.querySelector('.exercise-index').textContent = `Exercicio ${index + 1}`;
+    card.querySelector('.exercise-index').textContent = `Exercise ${index + 1}`;
   });
 }
 
@@ -2694,14 +2694,14 @@ function addExercise(exercise = {}) {
 
     const meta = document.createElement('p');
     meta.className = 'planned-meta';
-    meta.textContent = `${card.dataset.source === 'extra' ? 'Adicionado no treino' : 'Planejado'}: ${formatExercisePrescription(exercise)}`;
+    meta.textContent = `${card.dataset.source === 'extra' ? 'Added to workout' : 'Planned'}: ${formatExercisePrescription(exercise)}`;
     card.querySelector('.form-grid').after(meta);
 
     if (!isRoundBased) {
       const loadControl = document.createElement('label');
       loadControl.className = 'load-mode-control';
       loadControl.innerHTML = `
-        Modo de carga
+        Load mode
         <select class="exercise-load-mode">
           ${getLoadModeOptionsMarkup(loadMode)}
         </select>
@@ -2724,7 +2724,7 @@ function addExercise(exercise = {}) {
     skipControl.innerHTML = `
       <label>
         <input class="exercise-skipped" type="checkbox" ${exercise.skipped ? 'checked' : ''} />
-        <span>Nao vou fazer este exercicio hoje</span>
+        <span>I will not do this exercise today</span>
       </label>
       <input class="exercise-skip-reason" type="text" placeholder="Motivo opcional" value="${escapeHtml(exercise.skipReason || '')}" ${exercise.skipped ? '' : 'hidden disabled'} />
     `;
@@ -2760,7 +2760,7 @@ function addExercise(exercise = {}) {
     }) : createSetRow({}, card.dataset.loadMode || loadMode));
     refreshSetNumbers(setsList);
   });
-  card.querySelector('.add-set').textContent = isRoundBased ? 'Adicionar round' : 'Adicionar serie';
+  card.querySelector('.add-set').textContent = isRoundBased ? 'Add round' : 'Add serie';
   updateExerciseSkippedState(card);
 
   card.querySelector('.remove-exercise').addEventListener('click', () => {
@@ -2873,7 +2873,7 @@ function refreshWorkoutExercisePickerOptions() {
   const categories = [...new Set(getWorkoutPickerExercises().map((exercise) => exercise.category).filter(Boolean))].sort();
 
   workoutExerciseCategoryFilter.innerHTML = [
-    '<option value="all">Todas</option>',
+    '<option value="all">All</option>',
     ...categories.map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
   ].join('');
   workoutExerciseCategoryFilter.value = [...workoutExerciseCategoryFilter.options].some((option) => option.value === currentCategory) ? currentCategory : 'all';
@@ -2919,7 +2919,7 @@ function renderWorkoutExercisePicker() {
   });
 
   if (!filteredExercises.length) {
-    workoutExercisePickerList.innerHTML = `<p class="empty-state">Nenhum exercicio de ${escapeHtml(getWorkoutTypeName(modality))} encontrado.</p>`;
+    workoutExercisePickerList.innerHTML = `<p class="empty-state">No exercise found for ${escapeHtml(getWorkoutTypeName(modality))}.</p>`;
     return;
   }
 
@@ -2936,7 +2936,7 @@ function renderWorkoutExercisePicker() {
           <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(formatExercisePrescription(exercise))}${isRoundBased ? '' : ` | ${escapeHtml(loadMeta.label)}`}</div>
         </div>
         <button class="button ${isSelected ? 'button-ghost' : 'button-secondary'}" type="button" data-workout-exercise-id="${exercise._id}" ${isSelected ? 'disabled' : ''}>
-          ${isSelected ? 'No treino' : 'Adicionar'}
+          ${isSelected ? 'In workout' : 'Add'}
         </button>
       </article>
     `;
@@ -2961,7 +2961,7 @@ function populateWorkoutFromTemplate(templateId) {
   resetWorkoutExercisePicker();
 
   if (!template) {
-    exerciseList.innerHTML = '<p class="empty-state">Escolha uma ficha para carregar os exercicios.</p>';
+    exerciseList.innerHTML = '<p class="empty-state">Choose a template to load exercises.</p>';
     addExerciseButton.hidden = true;
     renderWorkoutOrigin();
     return;
@@ -3061,7 +3061,7 @@ function resetForm() {
   durationInput.value = '';
   targetMusclesInput.value = '';
   exerciseList.innerHTML = '';
-  exerciseList.innerHTML = '<p class="empty-state">Escolha uma ficha para carregar os exercicios.</p>';
+  exerciseList.innerHTML = '<p class="empty-state">Choose a template to load exercises.</p>';
   renderWorkoutOrigin();
   setStatus('');
 }
@@ -3074,7 +3074,7 @@ async function requestJson(url, options = {}) {
 
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.message || 'Nao foi possivel concluir a operacao.');
+    throw new Error(payload.message || 'Could not complete the operation.');
   }
 
   if (response.status === 204) {
@@ -3170,7 +3170,7 @@ function buildDocumentationIndex() {
   if (!headings.length) {
     documentationIndex.innerHTML = `
       <div class="documentation-index-title">INDEX.sys</div>
-      <p class="empty-state">Nenhuma secao encontrada.</p>
+      <p class="empty-state">No section found.</p>
     `;
     return;
   }
@@ -3229,12 +3229,12 @@ async function loadDocumentation(docKey = state.activeDocumentationDoc, force = 
     return;
   }
 
-  documentationStatus.textContent = 'Carregando...';
-  documentationContent.innerHTML = '<p class="empty-state">Carregando documentacao...</p>';
+  documentationStatus.textContent = 'Loading...';
+  documentationContent.innerHTML = '<p class="empty-state">Loading documentation...</p>';
   if (documentationIndex) {
     documentationIndex.innerHTML = `
       <div class="documentation-index-title">INDEX.sys</div>
-      <p class="empty-state">Carregando indice...</p>
+      <p class="empty-state">Loading index...</p>
     `;
   }
 
@@ -3277,7 +3277,7 @@ function getMissionRequiredBlocks(mission) {
 }
 
 function formatMissionBlockStatus(block, workout) {
-  const status = workout ? 'OK' : 'pendente';
+  const status = workout ? 'OK' : 'pending';
 
   return `${getBlockLabel(block)} ${formatMissionBlockCompletion(block, workout)} ${status}`;
 }
@@ -3289,16 +3289,16 @@ function renderDashboardMissionPanel(mission, dateKey) {
   const isFuture = dateKey > todayKey;
 
   if (!mission) {
-    missionTitle.textContent = 'Campanha nao configurada';
-    missionDescription.textContent = `${formatDate(dateKey)} | nenhum protocolo cadastrado para este dia.`;
+    missionTitle.textContent = 'Campaign not configured';
+    missionDescription.textContent = `${formatDate(dateKey)} | no protocol registered for this day.`;
     missionBadge.textContent = 'OFFLINE';
     missionReward.textContent = '+0 XP';
     startMissionButton.disabled = true;
-    startMissionButton.textContent = 'Sem campanha';
+    startMissionButton.textContent = 'No campaign';
     renderMissionActionButtons(null, dateKey);
-    setMissionStep(missionStepTemplate, 'Forca: nao configurado', 'idle');
-    setMissionStep(missionStepSets, 'Objetivo: nao configurado', 'idle');
-    setMissionStep(missionStepSave, 'Bonus da campanha: +0 XP', 'idle');
+    setMissionStep(missionStepTemplate, 'Strength: not configured', 'idle');
+    setMissionStep(missionStepSets, 'Objective: not configured', 'idle');
+    setMissionStep(missionStepSave, 'Campaign bonus: +0 XP', 'idle');
     return;
   }
 
@@ -3313,11 +3313,11 @@ function renderDashboardMissionPanel(mission, dateKey) {
   const possibleXp = getMissionTotalXp(mission);
   const blockSummary = blockEntries.length
     ? blockEntries.map((entry) => formatMissionBlockStatus(entry.block, entry.workout)).join(' | ')
-    : 'Sem blocos obrigatorios';
+    : 'No required blocks';
 
   missionTitle.textContent = mission.missionName;
   missionDescription.textContent = mission.restDay
-    ? `${formatDate(dateKey)} | Recuperacao programada. A sequencia da Academy continua preservada.`
+    ? `${formatDate(dateKey)} | Recovery scheduled. The Academy sequence stays preserved.`
     : `${blockSummary} | ${mission.intensity}`;
   missionBadge.textContent = mission.restDay
     ? 'RECOVERY'
@@ -3354,24 +3354,24 @@ function renderDashboardMissionPanel(mission, dateKey) {
   setMissionStep(
     missionStepTemplate,
     mission.restDay
-      ? 'Recuperacao programada'
+      ? 'Recovery scheduled'
       : primaryEntry
         ? `${getBlockLabel(primaryEntry.block)}: ${formatMissionBlockCompletion(primaryEntry.block, primaryEntry.workout)}`
-        : 'Sem bloco obrigatorio',
+        : 'No required block',
     mission.restDay ? 'idle' : primaryEntry?.workout ? 'done' : primaryEntry ? 'pending' : 'idle'
   );
   setMissionStep(
     missionStepSets,
     mission.restDay
-      ? 'Sem bloco obrigatorio'
+      ? 'No required block'
       : secondaryEntry
         ? `${getBlockLabel(secondaryEntry.block)}: ${formatMissionBlockCompletion(secondaryEntry.block, secondaryEntry.workout)}`
-        : 'Luta pausada nesta fase',
+        : 'Combat paused in this phase',
     mission.restDay ? 'idle' : secondaryEntry?.workout ? 'done' : secondaryEntry ? 'pending' : 'idle'
   );
   setMissionStep(
     missionStepSave,
-    mission.restDay ? 'Sequencia preservada' : `Bonus da campanha: +${mission.bonusXp || 0} XP`,
+    mission.restDay ? 'Sequence preserved' : `Campaign bonus: +${mission.bonusXp || 0} XP`,
     mission.restDay ? 'idle' : completedMission ? 'done' : 'pending'
   );
 }
@@ -3427,7 +3427,7 @@ function getWeeklyExecutionCommand(weeklyWorkouts = []) {
     average,
     skipped,
     extras,
-    bestLabel: best ? `${best.label} ${best.percent}%` : 'sem ficha'
+    bestLabel: best ? `${best.label} ${best.percent}%` : 'no template'
   };
 }
 
@@ -3452,54 +3452,54 @@ function renderJourneyCommand({ journeyPosition, weeklyStatus, weeklyQuality, we
       ? 'No ritmo'
       : 'Em aberto';
   const healthDetail = weeklyStatus.overdue > 0
-    ? `${weeklyStatus.overdue} blocos atrasados`
-    : `${weeklyStatus.openToday} blocos em aberto hoje`;
+    ? `${weeklyStatus.overdue} overdue blocks`
+    : `${weeklyStatus.openToday} open blocks today`;
   const latestBodyMeasurement = getLatestBodyMeasurement();
   const latestBodyValues = latestBodyMeasurement?.measurementsCm || {};
 
   const cards = [
     {
       code: 'YEAR',
-      label: 'Jornada anual',
+      label: 'Annual journey',
       value: `Dia ${journeyPosition.day}/${journeyTotalDays}`,
-      detail: `Semana ${journeyPosition.week}/${academyJourneyWeeks} | ${journeyPosition.annualPercent}% do ano`,
+      detail: `Week ${journeyPosition.week}/${academyJourneyWeeks} | ${journeyPosition.annualPercent}% of year`,
       tone: 'green'
     },
     {
       code: 'WEEK',
-      label: 'Semana',
+      label: 'Week',
       value: `${weeklyStatus.complete}/${weeklyStatus.required || 0}`,
-      detail: `Hoje aberto: ${weeklyStatus.openToday} | Atrasados: ${weeklyStatus.overdue}`,
+      detail: `Open today: ${weeklyStatus.openToday} | Overdue: ${weeklyStatus.overdue}`,
       tone: weeklyStatus.overdue > 0 ? 'red' : 'blue'
     },
     {
       code: 'QUAL',
       label: 'Execucao',
       value: `${weeklyQuality.average}%`,
-      detail: `${weeklyQuality.bestLabel} | ${weeklyQuality.skipped} pulados | ${weeklyQuality.extras} extras`,
+      detail: `${weeklyQuality.bestLabel} | ${weeklyQuality.skipped} skipped | ${weeklyQuality.extras} extras`,
       tone: weeklyQuality.average >= 80 ? 'green' : weeklyQuality.average >= 60 ? 'orange' : 'red'
     },
     {
       code: 'CYCLE',
-      label: 'Ciclo atual',
+      label: 'Current cycle',
       value: `C${journeyPosition.cycleInSeason} S${journeyPosition.weekInCycle}/${academyCycleWeeks}`,
-      detail: `${formatCompactNumber(weeklyVolume)} kg semana | ${cycleXp} XP semana`,
+      detail: `${formatCompactNumber(weeklyVolume)} kg week | ${cycleXp} XP week`,
       tone: 'purple'
     },
     {
       code: 'MODE',
-      label: 'Saude da jornada',
+      label: 'Journey health',
       value: healthLabel,
       detail: `${healthDetail} | XP total ${formatCompactNumber(totalXp)}`,
       tone: weeklyStatus.overdue > 0 ? 'red' : 'green'
     },
     {
       code: 'BODY',
-      label: 'Evolucao corporal',
+      label: 'Body evolution',
       value: latestBodyMeasurement ? formatMeasurementValue(latestBodyMeasurement.weightKg, ' kg') : '-',
       detail: latestBodyMeasurement
-        ? `Cintura ${formatMeasurementValue(latestBodyValues.waist, ' cm')} | ${formatDate(getBodyMeasurementDateKey(latestBodyMeasurement))}`
-        : 'registre a primeira medicao',
+        ? `Waist ${formatMeasurementValue(latestBodyValues.waist, ' cm')} | ${formatDate(getBodyMeasurementDateKey(latestBodyMeasurement))}`
+        : 'log the first measurement',
       tone: 'orange'
     }
   ];
@@ -3592,7 +3592,7 @@ function renderDashboard() {
   }
   dashboardJourneyDay.textContent = journeyDay;
   dashboardJourneySeason.textContent = journeyPosition.label;
-  dashboardJourneyText.textContent = `${journeyPosition.season.name} | semana ${journeyPosition.weekInSeason}/${academySeasonWeeks}`;
+  dashboardJourneyText.textContent = `${journeyPosition.season.name} | week ${journeyPosition.weekInSeason}/${academySeasonWeeks}`;
   dashboardTotalWorkouts.textContent = state.allWorkouts.length;
   dashboardVolume.textContent = formatCompactNumber(totalVolume);
   dashboardPrs.textContent = countMonthlyPrs(state.allWorkouts);
@@ -3601,21 +3601,21 @@ function renderDashboard() {
   dashboardRank.textContent = rank.name;
   dashboardXpFill.style.width = `${xpProgress}%`;
   dashboardXpText.textContent = hasCompleteSnapshotXp
-    ? `${level.currentXp} / ${level.nextLevelXp} XP | snapshot oficial`
-    : `${level.currentXp} / ${level.nextLevelXp} XP | +${campaignXp.total} XP campanha`;
-  dashboardWorkoutsTrend.textContent = `+${weeklyWorkouts.length} semana`;
-  dashboardVolumeTrend.textContent = `+${formatCompactNumber(weeklyVolume)} kg semana`;
+    ? `${level.currentXp} / ${level.nextLevelXp} XP | official snapshot`
+    : `${level.currentXp} / ${level.nextLevelXp} XP | +${campaignXp.total} XP campaign`;
+  dashboardWorkoutsTrend.textContent = `+${weeklyWorkouts.length} week`;
+  dashboardVolumeTrend.textContent = `+${formatCompactNumber(weeklyVolume)} kg week`;
   dashboardPlayerBadge.textContent = `LV. ${level.level}`;
   dashboardPlayerLevel.textContent = level.level;
   dashboardPlayerRank.textContent = rank.name;
   dashboardPlayerXpFill.style.width = `${xpProgress}%`;
-  dashboardPlayerXpText.textContent = `${level.currentXp} / ${level.nextLevelXp} XP | ${xpProgress}% ate o proximo nivel`;
+  dashboardPlayerXpText.textContent = `${level.currentXp} / ${level.nextLevelXp} XP | ${xpProgress}% until next level`;
   if (dashboardPlayerStatGrid) {
     const playerStats = [
-      { label: 'Streak', value: `${currentStreak}d`, detail: 'sequencia atual' },
-      { label: 'Semana', value: `${weeklyWorkouts.length}/6`, detail: 'treinos validos' },
-      { label: 'Volume', value: `${formatCompactNumber(weeklyVolume)} kg`, detail: 'carga semanal' },
-      { label: 'XP Total', value: `${formatCompactNumber(totalXp)}`, detail: 'jornada anual' }
+      { label: 'Streak', value: `${currentStreak}d`, detail: 'current streak' },
+      { label: 'Week', value: `${weeklyWorkouts.length}/6`, detail: 'valid workouts' },
+      { label: 'Volume', value: `${formatCompactNumber(weeklyVolume)} kg`, detail: 'weekly load' },
+      { label: 'XP Total', value: `${formatCompactNumber(totalXp)}`, detail: 'annual journey' }
     ];
 
     dashboardPlayerStatGrid.innerHTML = playerStats.map((item) => `
@@ -3645,8 +3645,8 @@ function renderDashboard() {
     const completedToday = todayProtocol.code !== 'DESC' && Boolean(getWorkoutByDateAndCode(todayKey, todayProtocol.code));
 
     if (todayProtocol.code === 'DESC') {
-      missionTitle.textContent = 'Recuperacao planejada';
-      missionDescription.textContent = 'Domingo preserva a sequencia. Use o dia para recuperar e voltar forte.';
+      missionTitle.textContent = 'Recovery planned';
+      missionDescription.textContent = 'Sunday preserves the sequence. Use the day to recover and come back strong.';
       missionBadge.textContent = 'RECOVERY';
       missionReward.textContent = '+0 XP';
       startMissionButton.disabled = true;
@@ -3654,12 +3654,12 @@ function renderDashboard() {
       renderMissionActionButtons({ restDay: true, blocks: [] }, todayKey);
       updateMissionSteps({ hasTemplate: true, hasCompletedToday: true, isRest: true });
     } else {
-      missionTitle.textContent = `Treino ${todayProtocol.code} - ${workoutNames[todayProtocol.code]}`;
+      missionTitle.textContent = `Workout ${todayProtocol.code} - ${workoutNames[todayProtocol.code]}`;
       missionDescription.textContent = completedToday
-        ? 'Campanha do dia concluida com series validas. XP contabilizado no protocolo.'
+        ? 'Today campaign completed with valid sets. XP logged in protocol.'
         : todayTemplate
-          ? `${todayTemplate.exercises.length} exercicios cadastrados para cumprir o bloco de hoje.`
-          : 'Cadastre esta ficha para ativar a campanha do dia.';
+          ? `${todayTemplate.exercises.length} exercises registered to complete today block.`
+          : 'Register this template to activate today campaign.';
       missionBadge.textContent = completedToday ? 'DONE' : 'CAMPAIGN';
       missionReward.textContent = completedToday ? '+75 XP OK' : '+75 XP';
       startMissionButton.disabled = !todayTemplate || completedToday;
@@ -3689,12 +3689,12 @@ function renderDashboard() {
     const status = mission?.restDay || item.code === 'DESC'
       ? 'descanso'
       : missionStatus?.complete
-        ? 'feito'
+        ? 'done'
         : missionStatus?.completed > 0 || missionStatus?.attempted > 0
-          ? 'parcial'
+          ? 'partial'
           : isToday
             ? 'hoje'
-            : 'pendente';
+            : 'pending';
     const title = mission
       ? `${mission.missionName} | ${formatDate(dateKey)}`
       : `${item.label} | ${formatDate(dateKey)}`;
@@ -3748,28 +3748,28 @@ function renderDashboardEvolutionSubtab() {
       icon: 'XP',
       label: 'XP Total',
       value: String(totalXp),
-      detail: `${executionXp} execucao + ${campaignXp} campanha`,
+      detail: `${executionXp} execution + ${campaignXp} campaign`,
       tone: 'green'
     },
     {
       icon: 'WK',
-      label: 'XP Semana',
+      label: 'XP Week',
       value: String(weeklyXp),
-      detail: `${weeklyItems.length} treinos nesta semana`,
+      detail: `${weeklyItems.length} workouts this week`,
       tone: 'blue'
     },
     {
       icon: 'AVG',
-      label: 'Media por Treino',
+      label: 'Avg per Workout',
       value: String(averageXp),
-      detail: 'xp medio por treino valido',
+      detail: 'avg XP per valid workout',
       tone: 'orange'
     },
     {
       icon: 'TOP',
-      label: 'Melhor Treino',
+      label: 'Best Workout',
       value: best ? String(best.xp.total) : '0',
-      detail: best ? `${best.workout.workoutCode} em ${formatDate(best.workout.date)}` : 'sem treinos ainda',
+      detail: best ? `${best.workout.workoutCode} on ${formatDate(best.workout.date)}` : 'no workouts yet',
       tone: 'purple'
     }
   ]);
@@ -3786,9 +3786,9 @@ function renderDashboardEvolutionSubtab() {
   if (dashSeasonGrid) {
     const progressItems = [
       {
-        label: 'Jornada anual',
+        label: 'Annual journey',
         value: `${position.annualPercent}%`,
-        detail: `Semana ${position.week}/${academyJourneyWeeks}`,
+        detail: `Week ${position.week}/${academyJourneyWeeks}`,
         percent: position.annualPercent,
         className: 'annual'
       },
@@ -3800,9 +3800,9 @@ function renderDashboardEvolutionSubtab() {
         className: 'season'
       },
       {
-        label: `Ciclo ${position.cycleInSeason}`,
+        label: `Cycle ${position.cycleInSeason}`,
         value: `${position.cyclePercent}%`,
-        detail: `Semana ${position.weekInCycle}/${academyCycleWeeks} do ciclo atual`,
+        detail: `Week ${position.weekInCycle}/${academyCycleWeeks} of current cycle`,
         percent: position.cyclePercent,
         className: 'cycle'
       }
@@ -3844,30 +3844,30 @@ function renderDashboardEvolutionSubtab() {
     renderSummaryCards(dashBodySummary, [
       {
         icon: 'KG',
-        label: 'Peso Atual',
+        label: 'Current Weight',
         value: formatMeasurementValue(latest?.weightKg, ' kg'),
-        detail: first && latest ? `${formatBodyDelta(Number(latest.weightKg || 0) - Number(first.weightKg || 0), ' kg')} desde o inicio` : 'aguardando primeira medicao',
+        detail: first && latest ? `${formatBodyDelta(Number(latest.weightKg || 0) - Number(first.weightKg || 0), ' kg')} since start` : 'waiting for first measurement',
         tone: 'green'
       },
       {
         icon: 'CIN',
-        label: 'Cintura',
+        label: 'Waist',
         value: formatMeasurementValue(latestValues.waist, ' cm'),
-        detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} desde o inicio` : 'medida principal',
+        detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} since start` : 'medida principal',
         tone: 'blue'
       },
       {
         icon: 'ABD',
         label: 'Abdomen',
         value: formatMeasurementValue(latestValues.abdomen, ' cm'),
-        detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} desde o inicio` : 'acompanhe a tendencia',
+        detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} since start` : 'acompanhe a tendencia',
         tone: 'orange'
       },
       {
         icon: 'DAY',
-        label: 'Ultima Medicao',
+        label: 'Last Measurement',
         value: latest ? formatDate(getBodyMeasurementDateKey(latest)) : '-',
-        detail: latest ? `${daysSinceLast} dias atras` : 'sem registros',
+        detail: latest ? `${daysSinceLast} days ago` : 'no records',
         tone: 'purple'
       }
     ]);
@@ -3887,18 +3887,18 @@ function renderDashboardEvolutionSubtab() {
     const cycle = getBodyCycleSummary(measurements);
     dashBodyCycle.innerHTML = `
       <span>CICLO ATUAL</span>
-      <h3>${escapeHtml(cycle.label)} | ${cycle.count} medicao${cycle.count === 1 ? '' : 'es'}</h3>
-      <p>Desde ${escapeHtml(formatDate(cycle.startDate))}: peso ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | cintura ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
+      <h3>${escapeHtml(cycle.label)} | ${cycle.count} measurement${cycle.count === 1 ? '' : 's'}</h3>
+      <p>Desde ${escapeHtml(formatDate(cycle.startDate))}: peso ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | waist ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
     `;
   }
 
   if (dashBodyChartGrid) {
     if (measurements.length < 2) {
-      dashBodyChartGrid.innerHTML = '<p class="empty-state">Registre pelo menos duas medicoes para gerar graficos corporais.</p>';
+      dashBodyChartGrid.innerHTML = '<p class="empty-state">Log at least two measurements to generate body charts.</p>';
     } else {
       const chartConfigs = [
-        { key: 'weightKg', label: 'Peso', suffix: ' kg', tone: 'green' },
-        { key: 'waist', label: 'Cintura', suffix: ' cm', tone: 'blue' },
+        { key: 'weightKg', label: 'Weight', suffix: ' kg', tone: 'green' },
+        { key: 'waist', label: 'Waist', suffix: ' cm', tone: 'blue' },
         { key: 'abdomen', label: 'Abdomen', suffix: ' cm', tone: 'orange' }
       ];
 
@@ -3916,7 +3916,7 @@ function renderDashboardEvolutionSubtab() {
           return `
             <article class="body-progress-chart ${escapeHtml(config.tone)}">
               <header><span>${escapeHtml(config.label)}</span><strong>-</strong></header>
-              <p>sem dados suficientes</p>
+              <p>not enough data</p>
             </article>
           `;
         }
@@ -3953,7 +3953,7 @@ function renderDailyMissionBlocks(mission) {
     const completedWorkout = getWorkoutForMissionBlock(todayKey, block);
     const isRecovery = block.type === 'recovery' || mission.restDay;
     const isCompleted = Boolean(completedWorkout);
-    const statusLabel = isRecovery ? 'descanso planejado' : isCompleted ? 'concluido' : 'pendente';
+    const statusLabel = isRecovery ? 'planned rest' : isCompleted ? 'completed' : 'pending';
     const blockCodeLabel = formatMissionBlockCompletion(block, completedWorkout);
     const actionMarkup = completedWorkout
       ? `
@@ -3976,7 +3976,7 @@ function renderDailyMissionBlocks(mission) {
         <div>
           <p class="catalog-title">${escapeHtml(getBlockLabel(block))} - ${escapeHtml(blockCodeLabel)}</p>
           <div class="history-meta">
-            ${escapeHtml(block.workoutName || 'Recuperacao')}
+            ${escapeHtml(block.workoutName || 'Recovery')}
             | ${escapeHtml(block.intensity || mission.intensity || '')}
             | ${statusLabel}
           </div>
@@ -4040,37 +4040,37 @@ function renderDailyMissionStats(todayMission) {
   renderSummaryCards(dailyMissionSummaryCards, [
     {
       icon: 'XP',
-      label: 'Hoje',
+      label: 'Today',
       value: String(todayXp),
-      detail: todayMission?.restDay ? 'descanso planejado' : 'xp possivel hoje',
+      detail: todayMission?.restDay ? 'planned rest' : 'possible XP today',
       tone: 'green'
     },
     {
       icon: '2X',
-      label: 'Blocos hoje',
+      label: 'Blocks today',
       value: String(todayStatus.required),
-      detail: `${todayStatus.completed} feitos / ${todayStatus.attempted} tentados / ${todayStatus.pending} pendentes`,
+      detail: `${todayStatus.completed} done / ${todayStatus.attempted} attempted / ${todayStatus.pending} pending`,
       tone: 'blue'
     },
     {
       icon: 'WK',
-      label: 'Campanha',
+      label: 'Campaign',
       value: `${completedThisWeek}/${activeMissions.length}`,
-      detail: 'campanhas completas no ciclo',
+      detail: 'completed campaigns in cycle',
       tone: 'orange'
     },
     {
       icon: 'OK',
-      label: 'XP semana',
+      label: 'XP week',
       value: String(weeklyPossibleXp),
-      detail: 'xp possivel no ciclo completo',
+      detail: 'possible XP in full cycle',
       tone: 'purple'
     },
     {
       icon: '!',
       label: 'Pendencias',
       value: String(pendingThisWeek),
-      detail: 'blocos vencidos ou em aberto',
+      detail: 'overdue or open blocks',
       tone: 'red'
     }
   ]);
@@ -4078,16 +4078,16 @@ function renderDailyMissionStats(todayMission) {
 
 function getMissionStatusLabel(mission, dateKey) {
   if (mission.restDay) {
-    return 'Recuperacao';
+    return 'Recovery';
   }
 
   const todayKey = todayInputValue();
   const status = getMissionCompletionForDate(mission, dateKey);
 
-  if (status.complete) return 'Concluida';
-  if (status.completed > 0 || status.attempted > 0) return 'Parcial';
+  if (status.complete) return 'Complete';
+  if (status.completed > 0 || status.attempted > 0) return 'Partial';
   if (dateKey > todayKey) return 'Planejada';
-  if (dateKey === todayKey) return 'Hoje';
+  if (dateKey === todayKey) return 'Today';
 
   return 'Pendente';
 }
@@ -4106,14 +4106,14 @@ function renderMissionBlockPreview(mission, dateKey) {
   return (mission.blocks || []).map((block) => {
     const completedWorkout = getWorkoutForMissionBlock(dateKey, block);
     const status = block.type === 'recovery'
-      ? 'recuperacao'
+      ? 'recovery'
       : completedWorkout
         ? isWorkoutSubstitutionForBlock(completedWorkout, block)
-          ? `substituido por ${completedWorkout.workoutCode}`
-          : 'concluido'
-        : 'pendente';
+          ? `replaced by ${completedWorkout.workoutCode}`
+          : 'completed'
+        : 'pending';
 
-    return `<li>${escapeHtml(getBlockLabel(block))}: ${escapeHtml(block.workoutName || 'Recuperacao')} | ${escapeHtml(status)}</li>`;
+    return `<li>${escapeHtml(getBlockLabel(block))}: ${escapeHtml(block.workoutName || 'Recovery')} | ${escapeHtml(status)}</li>`;
   }).join('');
 }
 
@@ -4123,9 +4123,9 @@ function renderDailyMissions() {
   }
 
   if (!state.dailyMissions.length) {
-    dailyMissionSubtitle.textContent = '// nenhuma campanha diaria cadastrada';
-    dailyMissionToday.innerHTML = '<p class="empty-state">Campanha diaria ainda nao carregada.</p>';
-    dailyMissionList.innerHTML = '<p class="empty-state">Nenhuma campanha semanal cadastrada.</p>';
+    dailyMissionSubtitle.textContent = '// no daily campaign registered';
+    dailyMissionToday.innerHTML = '<p class="empty-state">Daily campaign not loaded yet.</p>';
+    dailyMissionList.innerHTML = '<p class="empty-state">No weekly campaign registered.</p>';
     renderDailyMissionStats(null);
     return;
   }
@@ -4134,7 +4134,7 @@ function renderDailyMissions() {
   const todayXp = getMissionTotalXp(todayMission);
   const activeDays = state.dailyMissions.filter((mission) => !mission.restDay).length;
 
-  dailyMissionSubtitle.textContent = `// ${activeDays} campanhas de treino + recuperacao programada`;
+  dailyMissionSubtitle.textContent = `// ${activeDays} workout campaigns + scheduled recovery`;
   dailyMissionTodayBadge.textContent = todayMission.restDay ? 'RECOVERY' : 'TODAY';
   renderDailyMissionStats(todayMission);
   dailyMissionToday.innerHTML = `
@@ -4202,7 +4202,7 @@ function getExerciseProgressEntries() {
 
       return {
         key: (exercise.name || '').trim().toLowerCase(),
-        name: exercise.name || 'Exercicio sem nome',
+        name: exercise.name || 'Unnamed exercise',
         workout,
         exercise,
         dateKey: toDateKey(workout.date),
@@ -4229,10 +4229,10 @@ function getExerciseProgressEntries() {
 function getProgressPeriodLabel(period = state.progressExercisePeriodFilter) {
   const labels = {
     all: 'todo o historico',
-    week: 'esta semana',
-    month: 'este mes',
-    quarter: 'ultimos 3 meses',
-    year: 'este ano'
+    week: 'this week',
+    month: 'this month',
+    quarter: 'last 3 months',
+    year: 'this year'
   };
 
   return labels[period] || labels.all;
@@ -4259,7 +4259,7 @@ function getExercisePrMetrics(entry) {
         type: 'round_reps',
         label: 'Golpes',
         value: entry.roundReps,
-        formatted: `${entry.roundReps} golpes`
+        formatted: `${entry.roundReps} strikes`
       }
     ].filter((metric) => metric.value > 0);
   }
@@ -4267,7 +4267,7 @@ function getExercisePrMetrics(entry) {
   return [
     {
       type: 'max_weight',
-      label: 'Carga',
+      label: 'Load',
       value: entry.maxWeight,
       formatted: formatLoadModeWeight(entry.maxWeight, entry.loadMode)
     },
@@ -4383,7 +4383,7 @@ function refreshProgressExerciseOptions(entries) {
   }
 
   progressExerciseSelect.innerHTML = [
-    '<option value="">Selecione um exercicio</option>',
+    '<option value="">Select an exercise</option>',
     ...options.map((option) => (
       `<option value="${escapeHtml(option.key)}" ${option.key === state.selectedProgressExercise ? 'selected' : ''}>${escapeHtml(option.name)} (${option.count})</option>`
     ))
@@ -4423,7 +4423,7 @@ function formatExerciseProgressPrimary(entry) {
   }
 
   if (entry.roundReps > 0) {
-    return `${entry.roundReps} golpes`;
+    return `${entry.roundReps} strikes`;
   }
 
   if (entry.totalRoundSeconds > 0) {
@@ -4446,14 +4446,14 @@ function getExerciseCompareMetrics(entries) {
       {
         label: 'Golpes',
         value: (entry) => entry.roundReps,
-        format: (value) => `${formatCompactNumber(value)} golpes`
+        format: (value) => `${formatCompactNumber(value)} strikes`
       }
     ];
   }
 
   return [
     {
-      label: 'Carga',
+      label: 'Load',
       value: (entry) => entry.maxWeight,
       format: (value, entry) => formatLoadModeWeight(value, entry.loadMode)
     },
@@ -4479,7 +4479,7 @@ function getTrendLabel(firstValue, lastValue) {
     return `-${formatCompactNumber(firstValue - lastValue)}`;
   }
 
-  return 'estavel';
+  return 'stable';
 }
 
 function renderProgressExerciseCompare(entries) {
@@ -4492,7 +4492,7 @@ function renderProgressExerciseCompare(entries) {
   progressCompareCount.textContent = `${ordered.length} PTS`;
 
   if (ordered.length < 2) {
-    progressExerciseCompare.innerHTML = '<p class="empty-state">Registre pelo menos duas execucoes validas para comparar a evolucao.</p>';
+    progressExerciseCompare.innerHTML = '<p class="empty-state">Log at least two valid executions to compare evolution.</p>';
     return;
   }
 
@@ -4507,7 +4507,7 @@ function renderProgressExerciseCompare(entries) {
     .filter((metric) => metric.points.length >= 2);
 
   if (!metrics.length) {
-    progressExerciseCompare.innerHTML = '<p class="empty-state">Ainda nao ha dados suficientes para comparar este exercicio.</p>';
+    progressExerciseCompare.innerHTML = '<p class="empty-state">There is not enough data to compare this exercise yet.</p>';
     return;
   }
 
@@ -4551,9 +4551,9 @@ function renderProgressExerciseSummary(entries) {
 
   if (!entries.length) {
     renderSummaryCards(progressExerciseSummaryCards, [
-      { icon: 'HIST', label: 'Historico', value: '0', detail: 'sem execucoes validas', tone: 'green' },
+      { icon: 'HIST', label: 'History', value: '0', detail: 'no valid executions', tone: 'green' },
       { icon: 'PR', label: 'Melhor marca', value: '0', detail: 'aguardando dados', tone: 'blue' },
-      { icon: 'VOL', label: 'Volume', value: '0', detail: 'sem carga registrada', tone: 'orange' },
+      { icon: 'VOL', label: 'Volume', value: '0', detail: 'no load logged', tone: 'orange' },
       { icon: 'LAST', label: 'Ultima vez', value: '-', detail: getProgressPeriodLabel(), tone: 'purple' }
     ]);
     return;
@@ -4573,14 +4573,14 @@ function renderProgressExerciseSummary(entries) {
   renderSummaryCards(progressExerciseSummaryCards, [
     {
       icon: 'HIST',
-      label: 'Historico',
+      label: 'History',
       value: String(entries.length),
       detail: `${formatDate(summary.first.dateKey)} ate ${formatDate(summary.last.dateKey)}`,
       tone: 'green'
     },
     {
       icon: 'PR',
-      label: isRoundBased ? (hasRoundReps ? 'Melhor golpes' : 'Maior tempo') : 'Maior carga',
+      label: isRoundBased ? (hasRoundReps ? 'Best strikes' : 'Longest time') : 'Highest load',
       value: bestPrimary,
       detail: isRoundBased && bestRoundEntry ? formatDate(bestRoundEntry.dateKey) : formatDate(summary.bestWeight.dateKey),
       tone: 'blue'
@@ -4589,14 +4589,14 @@ function renderProgressExerciseSummary(entries) {
       icon: isRoundBased ? 'TIME' : 'VOL',
       label: isRoundBased ? 'Tempo total' : 'Volume total',
       value: totalPrimary,
-      detail: isRoundBased ? 'rounds concluidos' : 'carga x repeticoes',
+      detail: isRoundBased ? 'rounds completeds' : 'carga x repeticoes',
       tone: 'orange'
     },
     {
       icon: 'LAST',
       label: 'Ultima vez',
       value: formatExerciseProgressPrimary(summary.last),
-      detail: `${summary.last.workout.workoutCode} em ${formatDate(summary.last.dateKey)}`,
+      detail: `${summary.last.workout.workoutCode} on ${formatDate(summary.last.dateKey)}`,
       tone: 'purple'
     }
   ]);
@@ -4608,7 +4608,7 @@ function renderProgressExerciseHistory(entries) {
   }
 
   if (!entries.length) {
-    progressExerciseHistory.innerHTML = `<p class="empty-state">Nenhuma execucao valida para este exercicio em ${escapeHtml(getProgressPeriodLabel())}.</p>`;
+    progressExerciseHistory.innerHTML = `<p class="empty-state">No valid execution for this exercise in ${escapeHtml(getProgressPeriodLabel())}.</p>`;
     return;
   }
 
@@ -4618,8 +4618,8 @@ function renderProgressExerciseHistory(entries) {
   progressExerciseHistory.innerHTML = ordered.map((entry) => {
     const isRoundBased = entry.validRounds > 0;
     const metricLine = isRoundBased
-      ? `${entry.validRounds} rounds | ${formatSeconds(entry.totalRoundSeconds)} | ${entry.roundReps} golpes`
-      : `${entry.validSets} series | max ${formatLoadModeWeight(entry.maxWeight, entry.loadMode)} | ${formatCompactNumber(entry.volume)} kg vol`;
+      ? `${entry.validRounds} rounds | ${formatSeconds(entry.totalRoundSeconds)} | ${entry.roundReps} strikes`
+      : `${entry.validSets} sets | max ${formatLoadModeWeight(entry.maxWeight, entry.loadMode)} | ${formatCompactNumber(entry.volume)} kg vol`;
     const meterWidth = Math.max(4, Math.round((entry.score / maxScore) * 100));
     const prBadges = (entry.personalRecords || []).length
       ? `<div class="pr-badges">${entry.personalRecords.map((record) => `<span class="pr-badge">PR ${escapeHtml(record.label)}</span>`).join('')}</div>`
@@ -4653,7 +4653,7 @@ function renderProgressRecentPrs(entries) {
   progressPrCount.textContent = `${recentPrs.length} PR`;
 
   if (!recentPrs.length) {
-    progressPrList.innerHTML = `<p class="empty-state">Nenhum PR em ${escapeHtml(getProgressPeriodLabel())}. Os proximos recordes aparecem aqui quando uma marca anterior for superada.</p>`;
+    progressPrList.innerHTML = `<p class="empty-state">No PR in ${escapeHtml(getProgressPeriodLabel())}. Next records appear here when a previous mark is beaten.</p>`;
     return;
   }
 
@@ -4791,17 +4791,17 @@ function getAnnualAchievements(stats) {
   return [
     makeAnnualAchievement({
       id: 'first-workout-annual',
-      category: 'Entrada',
+      category: 'Entry',
       title: 'Primeiro Passo',
-      description: 'Registrar o primeiro treino da jornada anual.',
+      description: 'Log the first workout of the annual journey.',
       progress: stats.completedWorkouts,
       target: 1
     }),
     makeAnnualAchievement({
       id: 'first-active-week',
-      category: 'Consistencia',
-      title: 'Primeira Semana Ativa',
-      description: 'Ter pelo menos 3 dias ativos em uma semana da jornada.',
+      category: 'Consistency',
+      title: 'First Active Week',
+      description: 'Have at least 3 active days in one journey week.',
       progress: stats.bestActiveWeekDays,
       target: 3
     }),
@@ -4809,73 +4809,73 @@ function getAnnualAchievements(stats) {
       id: 'first-pr-annual',
       category: 'Performance',
       title: 'Primeiro PR',
-      description: 'Bater o primeiro recorde pessoal dentro da jornada.',
+      description: 'Set the first personal record inside the journey.',
       progress: stats.totalPrs,
       target: 1
     }),
     makeAnnualAchievement({
       id: 'first-body-measurement',
-      category: 'Corporal',
-      title: 'Primeira Medicao',
-      description: 'Registrar a primeira avaliacao corporal da jornada.',
+      category: 'Body',
+      title: 'First Measurement',
+      description: 'Log the first body assessment of the journey.',
       progress: stats.bodyMeasurements,
       target: 1
     }),
     makeAnnualAchievement({
       id: 'first-strength',
-      category: 'Modalidade',
+      category: 'Modality',
       title: 'Forca Iniciada',
-      description: 'Concluir o primeiro treino de forca da jornada.',
+      description: 'Complete the first strength workout of the journey.',
       progress: stats.strengthWorkouts,
       target: 1
     }),
     makeAnnualAchievement({
       id: 'first-combat',
-      category: 'Modalidade',
+      category: 'Modality',
       title: 'Combatente Iniciado',
-      description: 'Concluir o primeiro treino de luta da jornada.',
+      description: 'Complete the first combat workout of the journey.',
       progress: stats.combatWorkouts,
       target: 1
     }),
     makeAnnualAchievement({
       id: 'first-extra',
-      category: 'Entrada',
-      title: 'Treino Extra Registrado',
-      description: 'Registrar um treino fora da campanha do dia.',
+      category: 'Entry',
+      title: 'Extra Workout Logged',
+      description: 'Log a workout outside today campaign.',
       progress: stats.extraWorkouts,
       target: 1
     }),
     makeAnnualAchievement({
       id: 'smart-substitution',
-      category: 'Campanha',
+      category: 'Campaign',
       title: 'Substituicao Inteligente',
-      description: 'Substituir corretamente um bloco pendente pelo mesmo tipo de treino.',
+      description: 'Correctly replace a pending block with the same workout type.',
       progress: stats.substitutions,
       target: 1
     }),
     makeAnnualAchievement({
       id: 'workouts-10',
-      category: 'Consistencia',
-      title: '10 Treinos Realizados',
-      description: 'Concluir 10 treinos validos na jornada anual.',
+      category: 'Consistency',
+      title: '10 Workouts Completed',
+      description: 'Complete 10 valid workouts in the annual journey.',
       progress: stats.completedWorkouts,
       target: 10
     }),
     makeAnnualAchievement({
       id: 'workouts-25',
-      category: 'Consistencia',
+      category: 'Consistency',
       tier: 'silver',
-      title: '25 Treinos Realizados',
-      description: 'Concluir 25 treinos validos na jornada anual.',
+      title: '25 Workouts Completed',
+      description: 'Complete 25 valid workouts in the annual journey.',
       progress: stats.completedWorkouts,
       target: 25
     }),
     makeAnnualAchievement({
       id: 'workouts-50',
-      category: 'Consistencia',
+      category: 'Consistency',
       tier: 'gold',
-      title: '50 Treinos Realizados',
-      description: 'Concluir 50 treinos validos na jornada anual.',
+      title: '50 Workouts Completed',
+      description: 'Complete 50 valid workouts in the annual journey.',
       progress: stats.completedWorkouts,
       target: 50
     }),
@@ -4884,7 +4884,7 @@ function getAnnualAchievements(stats) {
       category: 'Performance',
       tier: 'silver',
       title: '5 PRs Registrados',
-      description: 'Bater 5 recordes pessoais depois do inicio da jornada.',
+      description: 'Beat 5 personal records after the journey start.',
       progress: stats.totalPrs,
       target: 5
     }),
@@ -4893,42 +4893,42 @@ function getAnnualAchievements(stats) {
       category: 'Performance',
       tier: 'gold',
       title: '10 PRs Registrados',
-      description: 'Bater 10 recordes pessoais depois do inicio da jornada.',
+      description: 'Beat 10 personal records after the journey start.',
       progress: stats.totalPrs,
       target: 10
     }),
     makeAnnualAchievement({
       id: 'weekly-campaign-complete',
-      category: 'Campanha',
-      title: 'Campanha Semanal Completa',
-      description: 'Concluir 6 treinos validos em uma mesma semana da jornada.',
+      category: 'Campaign',
+      title: 'Weekly Campaign Complete',
+      description: 'Complete 6 valid workouts in the same journey week.',
       progress: stats.completeCampaignWeeks,
       target: 1
     }),
     makeAnnualAchievement({
       id: 'active-weeks-4',
-      category: 'Consistencia',
+      category: 'Consistency',
       tier: 'silver',
-      title: '4 Semanas Ativas',
-      description: 'Completar 4 semanas com pelo menos um treino valido.',
+      title: '4 Active Weeks',
+      description: 'Complete 4 weeks with at least one valid workout.',
       progress: stats.journeyWorkouts.length ? new Set(stats.journeyWorkouts.map((workout) => getJourneyWeekKey(workout.date))).size : 0,
       target: 4
     }),
     makeAnnualAchievement({
       id: 'level-10',
-      category: 'Nivel',
+      category: 'Level',
       tier: 'silver',
       title: 'LV 10 Academy',
-      description: 'Alcancar o nivel 10 dentro da jornada anual.',
+      description: 'Alcancar o nivel 10 dentro of annual journey.',
       progress: stats.level,
       target: 10
     }),
     makeAnnualAchievement({
       id: 'level-25',
-      category: 'Nivel',
+      category: 'Level',
       tier: 'gold',
       title: 'LV 25 Academy',
-      description: 'Alcancar o nivel 25 dentro da jornada anual.',
+      description: 'Alcancar o nivel 25 dentro of annual journey.',
       progress: stats.level,
       target: 25
     })
@@ -4973,7 +4973,7 @@ function renderAchievementCategorySummary(achievements) {
     return;
   }
 
-  const categories = ['Entrada', 'Consistencia', 'Performance', 'Modalidade', 'Campanha', 'Corporal', 'Nivel'];
+  const categories = ['Entry', 'Consistency', 'Performance', 'Modality', 'Campaign', 'Body', 'Level'];
 
   progressAchievementCategoryList.innerHTML = categories.map((category) => {
     const categoryAchievements = achievements.filter((achievement) => achievement.category === category);
@@ -5017,30 +5017,30 @@ function renderAnnualAchievements(items, exerciseEntries) {
   renderSummaryCards(progressAchievementSummaryCards, [
     {
       icon: 'YEAR',
-      label: 'Jornada',
+      label: 'Journey',
       value: `${percent}%`,
-      detail: `inicio em ${formatDate(academyJourneyStartDate)}`,
+      detail: `starts on ${formatDate(academyJourneyStartDate)}`,
       tone: 'green'
     },
     {
       icon: 'DONE',
       label: 'Desbloqueadas',
       value: `${unlocked.length}/${achievements.length}`,
-      detail: 'conquistas anuais iniciais',
+      detail: 'initial annual achievements',
       tone: 'blue'
     },
     {
       icon: 'XP',
-      label: 'XP Jornada',
+      label: 'XP Journey',
       value: String(stats.totalXp),
       detail: `LV ${stats.level} desde o marco zero`,
       tone: 'orange'
     },
     {
       icon: 'PR',
-      label: 'PRs Jornada',
+      label: 'PRs Journey',
       value: String(stats.totalPrs),
-      detail: `${stats.uniquePrExercises} exercicios com PR`,
+      detail: `${stats.uniquePrExercises} exercises with PR`,
       tone: 'purple'
     }
   ]);
@@ -5048,7 +5048,7 @@ function renderAnnualAchievements(items, exerciseEntries) {
   renderAchievementCategorySummary(achievements);
 
   if (!filteredAchievements.length) {
-    progressAchievementList.innerHTML = '<p class="empty-state">Nenhuma conquista encontrada para os filtros atuais.</p>';
+    progressAchievementList.innerHTML = '<p class="empty-state">No achievements found for current filters.</p>';
     return;
   }
 
@@ -5088,35 +5088,35 @@ function renderProgressSummary(items) {
       icon: 'XP',
       label: 'Total',
       value: String(totalXp),
-      detail: `${executionXp} execucao + ${campaignXp} campanha`,
+      detail: `${executionXp} execution + ${campaignXp} campaign`,
       tone: 'green'
     },
     {
       icon: 'WK',
-      label: 'Semana',
+      label: 'Week',
       value: String(weeklyXp),
-      detail: `${weeklyItems.length} treinos nesta semana`,
+      detail: `${weeklyItems.length} workouts this week`,
       tone: 'blue'
     },
     {
       icon: 'AVG',
       label: 'Media',
       value: String(averageXp),
-      detail: 'xp medio por treino valido',
+      detail: 'avg XP per valid workout',
       tone: 'orange'
     },
     {
       icon: 'TOP',
-      label: 'Melhor treino',
+      label: 'Best workout',
       value: best ? String(best.xp.total) : '0',
-      detail: best ? `${best.workout.workoutCode} em ${formatDate(best.workout.date)}` : 'sem treinos ainda',
+      detail: best ? `${best.workout.workoutCode} on ${formatDate(best.workout.date)}` : 'no workouts yet',
       tone: 'purple'
     },
     {
       icon: 'SNAP',
       label: 'Snapshot',
       value: `${items.filter((item) => item.xp.snapshot).length}/${items.length}`,
-      detail: 'treinos com XP oficial salvo',
+      detail: 'workouts with official XP saved',
       tone: 'red'
     }
   ]);
@@ -5138,37 +5138,37 @@ function renderSeasonProgress() {
       icon: 'DAY',
       label: 'Dia',
       value: String(position.day),
-      detail: `semana ${position.week} da jornada anual`,
+      detail: `week ${position.week} of annual journey`,
       tone: 'green'
     },
     {
       icon: `T${position.seasonNumber}`,
       label: 'Temporada',
       value: position.season.name,
-      detail: `semana ${position.weekInSeason}/${academySeasonWeeks}`,
+      detail: `week ${position.weekInSeason}/${academySeasonWeeks}`,
       tone: 'blue'
     },
     {
       icon: `C${position.cycleInSeason}`,
-      label: 'Ciclo',
+      label: 'Cycle',
       value: `${position.cycleInSeason}/3`,
-      detail: `semana ${position.weekInCycle}/${academyCycleWeeks}`,
+      detail: `week ${position.weekInCycle}/${academyCycleWeeks}`,
       tone: 'orange'
     },
     {
       icon: 'YR',
       label: 'Ano',
       value: `${position.annualPercent}%`,
-      detail: `${academyJourneyWeeks} semanas planejadas`,
+      detail: `${academyJourneyWeeks} planned weeks`,
       tone: 'purple'
     }
   ]);
 
   const progressItems = [
     {
-      label: 'Jornada anual',
+      label: 'Annual journey',
       value: `${position.annualPercent}%`,
-      detail: `Semana ${position.week}/${academyJourneyWeeks}`,
+      detail: `Week ${position.week}/${academyJourneyWeeks}`,
       percent: position.annualPercent,
       className: 'annual'
     },
@@ -5180,9 +5180,9 @@ function renderSeasonProgress() {
       className: 'season'
     },
     {
-      label: `Ciclo ${position.cycleInSeason}`,
+      label: `Cycle ${position.cycleInSeason}`,
       value: `${position.cyclePercent}%`,
-      detail: `Semana ${position.weekInCycle}/${academyCycleWeeks} do ciclo atual`,
+      detail: `Week ${position.weekInCycle}/${academyCycleWeeks} of current cycle`,
       percent: position.cyclePercent,
       className: 'cycle'
     }
@@ -5206,7 +5206,7 @@ function renderProgressTrend(items) {
   }
 
   if (!items.length) {
-    progressXpTrend.innerHTML = '<p class="empty-state">Sem XP registrado ainda.</p>';
+    progressXpTrend.innerHTML = '<p class="empty-state">No XP logged yet.</p>';
     return;
   }
 
@@ -5229,9 +5229,9 @@ function renderProgressTrend(items) {
     <article class="xp-trend-row">
       <div>
         <strong>${escapeHtml(formatDate(dateKey))}</strong>
-        <span>${row.workouts} treino${row.workouts === 1 ? '' : 's'} | ${row.execution} exec + ${row.campaign} camp</span>
+        <span>${row.workouts} workout${row.workouts === 1 ? '' : 's'} | ${row.execution} exec + ${row.campaign} camp</span>
       </div>
-      <div class="xp-trend-meter" aria-label="XP em ${escapeHtml(formatDate(dateKey))}">
+      <div class="xp-trend-meter" aria-label="XP on ${escapeHtml(formatDate(dateKey))}">
         <span style="width:${Math.max(4, Math.round((row.total / maxXp) * 100))}%"></span>
       </div>
       <strong>${row.total} XP</strong>
@@ -5255,13 +5255,13 @@ function renderProgressSplit(items) {
       <span>Execucao</span>
       <strong>${executionXp} XP</strong>
       <div class="xp-trend-meter"><span style="width:${executionPercent}%"></span></div>
-      <p>${executionPercent}% do total</p>
+      <p>${executionPercent}% of total</p>
     </article>
     <article class="xp-split-card campaign">
-      <span>Campanha</span>
+      <span>Campaign</span>
       <strong>${campaignXp} XP</strong>
       <div class="xp-trend-meter"><span style="width:${campaignPercent}%"></span></div>
-      <p>${campaignPercent}% do total</p>
+      <p>${campaignPercent}% of total</p>
     </article>
   `;
 }
@@ -5274,7 +5274,7 @@ function renderProgressLog(items) {
   progressLogCount.textContent = `${items.length} REG`;
 
   if (!items.length) {
-    progressXpLog.innerHTML = '<p class="empty-state">Salve um treino para iniciar sua evolucao de XP.</p>';
+    progressXpLog.innerHTML = '<p class="empty-state">Save a workout to start your XP evolution.</p>';
     return;
   }
 
@@ -5285,8 +5285,8 @@ function renderProgressLog(items) {
       <article class="progress-xp-row">
         <div>
           <span class="row-tag ${origin.className}">${escapeHtml(origin.label)}</span>
-          <h3>Treino ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}</h3>
-          <p>${escapeHtml(formatDate(workout.date))} | ${workout.exercises.length} exercicios | ${xp.snapshot ? 'snapshot oficial' : 'fallback v2'}</p>
+          <h3>Workout ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}</h3>
+          <p>${escapeHtml(formatDate(workout.date))} | ${workout.exercises.length} exercises | ${xp.snapshot ? 'official snapshot' : 'fallback v2'}</p>
         </div>
         <div class="progress-xp-values">
           <strong>${xp.total} XP</strong>
@@ -5303,8 +5303,8 @@ function renderProgress() {
 
   if (progressSubtitle) {
     progressSubtitle.textContent = items.length
-      ? `// ${items.length} treinos com XP | ${items.filter((item) => item.xp.snapshot).length} snapshots oficiais`
-      : '// nenhum treino com XP registrado';
+      ? `// ${items.length} workouts with XP | ${items.filter((item) => item.xp.snapshot).length} official snapshots`
+      : '// no workouts with XP logged';
   }
 
   renderProgressSummary(items);
@@ -5331,7 +5331,7 @@ function formatBodyDelta(value, suffix = '') {
   const number = Number(value || 0);
 
   if (!number) {
-    return 'sem variacao';
+    return 'no change';
   }
 
   return `${number > 0 ? '+' : ''}${number.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}${suffix}`;
@@ -5401,7 +5401,7 @@ function fillBodyMeasurementForm(measurement) {
   bodyLeftCalfInput.value = values.leftCalf || '';
   bodyNotesInput.value = measurement.notes || '';
   bodyMeasurementSubmit.textContent = 'UPDATE_MEASURE';
-  setBodyProgressStatus('Editando medicao selecionada.');
+  setBodyProgressStatus('Editing selected measurement.');
   bodyMeasurementForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -5424,16 +5424,16 @@ function getBodyDelta(first, latest, field) {
 function getBodyInsight(measurements, daysSinceLast) {
   if (!measurements.length) {
     return {
-      title: 'Primeira medicao pendente',
-      detail: 'Registre peso e medidas para iniciar a leitura de recomposicao corporal.',
+      title: 'First measurement pending',
+      detail: 'Log weight and measurements to start body recomposition tracking.',
       tone: 'idle'
     };
   }
 
   if (measurements.length === 1) {
     return {
-      title: 'Marco corporal criado',
-      detail: 'A proxima medicao vai permitir comparar tendencia de peso, cintura e abdomen.',
+      title: 'Body milestone created',
+      detail: 'The next measurement will allow trend comparison for weight, waist and abdomen.',
       tone: 'ok'
     };
   }
@@ -5446,8 +5446,8 @@ function getBodyInsight(measurements, daysSinceLast) {
 
   if (daysSinceLast > 14) {
     return {
-      title: 'Medicao atrasada',
-      detail: `${daysSinceLast} dias desde o ultimo registro. Uma nova medicao fecha melhor o ciclo atual.`,
+      title: 'Measurement overdue',
+      detail: `${daysSinceLast} days since last log. A new measurement closes the current cycle better.`,
       tone: 'warn'
     };
   }
@@ -5455,15 +5455,15 @@ function getBodyInsight(measurements, daysSinceLast) {
   if (Math.abs(weightDelta) <= 1 && (waistDelta < 0 || abdomenDelta < 0)) {
     return {
       title: 'Recomposicao positiva',
-      detail: `Peso estavel e medidas centrais em queda: cintura ${formatBodyDelta(waistDelta, ' cm')} | abdomen ${formatBodyDelta(abdomenDelta, ' cm')}.`,
+      detail: `Stable weight and core measurements decreasing: waist ${formatBodyDelta(waistDelta, ' cm')} | abdomen ${formatBodyDelta(abdomenDelta, ' cm')}.`,
       tone: 'ok'
     };
   }
 
   if (weightDelta > 0 && (waistDelta < 0 || abdomenDelta < 0)) {
     return {
-      title: 'Peso subiu, medida caiu',
-      detail: `Isso pode ser recomposicao. Peso ${formatBodyDelta(weightDelta, ' kg')} | cintura ${formatBodyDelta(waistDelta, ' cm')}.`,
+      title: 'Weight subiu, medida caiu',
+      detail: `This may be recomposition. Weight ${formatBodyDelta(weightDelta, ' kg')} | waist ${formatBodyDelta(waistDelta, ' cm')}.`,
       tone: 'ok'
     };
   }
@@ -5471,14 +5471,14 @@ function getBodyInsight(measurements, daysSinceLast) {
   if (waistDelta < 0 || abdomenDelta < 0) {
     return {
       title: 'Medidas centrais melhorando',
-      detail: `Cintura ${formatBodyDelta(waistDelta, ' cm')} | abdomen ${formatBodyDelta(abdomenDelta, ' cm')} desde o inicio.`,
+      detail: `Waist ${formatBodyDelta(waistDelta, ' cm')} | abdomen ${formatBodyDelta(abdomenDelta, ' cm')} since start.`,
       tone: 'ok'
     };
   }
 
   return {
-    title: 'Tendencia em observacao',
-    detail: `Peso ${formatBodyDelta(weightDelta, ' kg')} | cintura ${formatBodyDelta(waistDelta, ' cm')} desde o inicio.`,
+    title: 'Trend under observation',
+    detail: `Weight ${formatBodyDelta(weightDelta, ' kg')} | waist ${formatBodyDelta(waistDelta, ' cm')} since start.`,
     tone: 'watch'
   };
 }
@@ -5509,13 +5509,13 @@ function renderBodyProgressCharts(measurements) {
   }
 
   if (measurements.length < 2) {
-    bodyProgressChartGrid.innerHTML = '<p class="empty-state">Registre pelo menos duas medicoes para gerar graficos corporais.</p>';
+    bodyProgressChartGrid.innerHTML = '<p class="empty-state">Log at least two measurements to generate body charts.</p>';
     return;
   }
 
   const chartConfigs = [
-    { key: 'weightKg', label: 'Peso', suffix: ' kg', tone: 'green' },
-    { key: 'waist', label: 'Cintura', suffix: ' cm', tone: 'blue' },
+    { key: 'weightKg', label: 'Weight', suffix: ' kg', tone: 'green' },
+    { key: 'waist', label: 'Waist', suffix: ' cm', tone: 'blue' },
     { key: 'abdomen', label: 'Abdomen', suffix: ' cm', tone: 'orange' }
   ];
 
@@ -5536,7 +5536,7 @@ function renderBodyProgressCharts(measurements) {
             <span>${escapeHtml(config.label)}</span>
             <strong>-</strong>
           </header>
-          <p>sem dados suficientes</p>
+          <p>not enough data</p>
         </article>
       `;
     }
@@ -5568,15 +5568,15 @@ function renderBodyProgressCharts(measurements) {
 function getBodyMeasurementLines(values = {}) {
   return [
     {
-      label: 'Peito',
+      label: 'Chest',
       value: formatMeasurementValue(values.chest, ' cm')
     },
     {
-      label: 'Bracos',
+      label: 'Arms',
       value: `Dir ${formatMeasurementValue(values.rightArm, ' cm')} | Esq ${formatMeasurementValue(values.leftArm, ' cm')}`
     },
     {
-      label: 'Cintura',
+      label: 'Waist',
       value: formatMeasurementValue(values.waist, ' cm')
     },
     {
@@ -5584,15 +5584,15 @@ function getBodyMeasurementLines(values = {}) {
       value: formatMeasurementValue(values.abdomen, ' cm')
     },
     {
-      label: 'Quadril',
+      label: 'Hips',
       value: formatMeasurementValue(values.hips, ' cm')
     },
     {
-      label: 'Coxas',
+      label: 'Thighs',
       value: `Dir ${formatMeasurementValue(values.rightThigh, ' cm')} | Esq ${formatMeasurementValue(values.leftThigh, ' cm')}`
     },
     {
-      label: 'Panturrilhas',
+      label: 'Calves',
       value: `Dir ${formatMeasurementValue(values.rightCalf, ' cm')} | Esq ${formatMeasurementValue(values.leftCalf, ' cm')}`
     }
   ];
@@ -5619,30 +5619,30 @@ function renderBodyProgress() {
   renderSummaryCards(bodyProgressSummaryCards, [
     {
       icon: 'KG',
-      label: 'Peso atual',
+      label: 'Weight current',
       value: formatMeasurementValue(latest?.weightKg, ' kg'),
-      detail: first && latest ? `${formatBodyDelta(Number(latest.weightKg || 0) - Number(first.weightKg || 0), ' kg')} desde o inicio` : 'aguardando primeira medicao',
+      detail: first && latest ? `${formatBodyDelta(Number(latest.weightKg || 0) - Number(first.weightKg || 0), ' kg')} since start` : 'waiting for first measurement',
       tone: 'green'
     },
     {
       icon: 'CIN',
-      label: 'Cintura',
+      label: 'Waist',
       value: formatMeasurementValue(latestValues.waist, ' cm'),
-      detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} desde o inicio` : 'medida principal da recomposicao',
+      detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} since start` : 'main recomposition measurement',
       tone: 'blue'
     },
     {
       icon: 'ABD',
       label: 'Abdomen',
       value: formatMeasurementValue(latestValues.abdomen, ' cm'),
-      detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} desde o inicio` : 'acompanhe a tendencia',
+      detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} since start` : 'acompanhe a tendencia',
       tone: 'orange'
     },
     {
       icon: 'DAY',
-      label: 'Ultima medicao',
+      label: 'Last measurement',
       value: latest ? formatDate(getBodyMeasurementDateKey(latest)) : '-',
-      detail: latest ? `${daysSinceLast} dias desde o ultimo registro` : 'sem registros corporais ainda',
+      detail: latest ? `${daysSinceLast} days since last log` : 'no body logs yet',
       tone: 'purple'
     }
   ]);
@@ -5662,15 +5662,15 @@ function renderBodyProgress() {
   if (bodyProgressCycle) {
     bodyProgressCycle.innerHTML = `
       <span>CICLO ATUAL</span>
-      <h3>${escapeHtml(cycle.label)} | ${cycle.count} medicao${cycle.count === 1 ? '' : 'es'}</h3>
-      <p>Desde ${escapeHtml(formatDate(cycle.startDate))}: peso ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | cintura ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
+      <h3>${escapeHtml(cycle.label)} | ${cycle.count} measurement${cycle.count === 1 ? '' : 's'}</h3>
+      <p>Desde ${escapeHtml(formatDate(cycle.startDate))}: peso ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | waist ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
     `;
   }
 
   renderBodyProgressCharts(measurements);
 
   if (!measurements.length) {
-    bodyProgressHistory.innerHTML = '<p class="empty-state">Nenhuma medicao corporal registrada ainda.</p>';
+    bodyProgressHistory.innerHTML = '<p class="empty-state">No body measurements logged yet.</p>';
     return;
   }
 
@@ -5731,7 +5731,7 @@ function renderAchievements(items, exerciseEntries) {
   achievementProgress.textContent = `${unlocked.length}/${achievements.length}`;
 
   if (!visibleAchievements.length) {
-    achievementList.innerHTML = '<p class="empty-state">A jornada anual comeca no primeiro treino valido de hoje.</p>';
+    achievementList.innerHTML = '<p class="empty-state">The annual journey starts with today first valid workout.</p>';
     return;
   }
 
@@ -5784,7 +5784,7 @@ function renderDashboardHistory() {
   const recentWorkouts = state.allWorkouts.slice(0, 3);
 
   if (!recentWorkouts.length) {
-    dashboardHistory.innerHTML = '<p class="empty-state">Nenhum treino registrado ainda.</p>';
+    dashboardHistory.innerHTML = '<p class="empty-state">No workouts logged yet.</p>';
     return;
   }
 
@@ -5801,13 +5801,13 @@ function renderWorkoutCard(workout) {
   const completedUnits = countCompletedUnits(workout);
   const quality = getWorkoutExecutionQuality(workout);
   const duration = Number(workout.durationMinutes || 0);
-  const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// Treino registrado no protocolo.';
+  const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// Workout logged in protocol.';
 
   return `
     <article class="workout-card">
       <div class="workout-card-header">
         <div>
-          <h4>Treino ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}</h4>
+          <h4>Workout ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}</h4>
           <div class="workout-tags">
             <span class="row-tag ${origin.className}">${origin.label}</span>
             ${renderWorkoutQualityTag(quality)}
@@ -5820,7 +5820,7 @@ function renderWorkoutCard(workout) {
         </div>
       </div>
       <div class="workout-stats-row">
-        <span>${formatWorkoutQualitySummary(quality)}${skippedCount && !quality.skippedCount ? ` | ${skippedCount} pulados` : ''}</span>
+        <span>${formatWorkoutQualitySummary(quality)}${skippedCount && !quality.skippedCount ? ` | ${skippedCount} skipped` : ''}</span>
         <strong>${volume ? `${formatCompactNumber(volume)} kg` : `${validRounds} rounds`}</strong>
       </div>
       <div class="workout-bar">
@@ -5857,14 +5857,14 @@ function renderHistoryStats(filteredWorkouts) {
       icon: '#',
       label: 'Total',
       value: String(filteredWorkouts.length),
-      detail: 'sessoes no filtro atual',
+      detail: 'sessions in current filter',
       tone: 'green'
     },
     {
       icon: 'MO',
-      label: 'Este mes',
+      label: 'This month',
       value: String(workoutsThisMonth),
-      detail: 'registros no mes atual',
+      detail: 'records in current month',
       tone: 'purple'
     },
     {
@@ -5876,20 +5876,20 @@ function renderHistoryStats(filteredWorkouts) {
     },
     {
       icon: 'TM',
-      label: 'Duracao media',
+      label: 'Avg duration',
       value: `${averageDuration} min`,
-      detail: durationWorkouts.length ? 'media dos treinos com tempo' : 'sem tempo registrado',
+      detail: durationWorkouts.length ? 'average of timed workouts' : 'no time logged',
       tone: 'orange'
     },
     {
       icon: '+',
       label: 'Extras',
       value: String(extraWorkouts),
-      detail: lastWorkout ? `ultimo: ${lastWorkout.workoutCode} em ${formatDate(lastWorkout.date)}` : 'nenhum treino ainda',
+      detail: lastWorkout ? `last: ${lastWorkout.workoutCode} on ${formatDate(lastWorkout.date)}` : 'no workouts yet',
       tone: 'red'
     }
   ]);
-  historySubtitle.textContent = `// ${filteredWorkouts.length} sessoes encontradas | volume filtrado: ${formatCompactNumber(totalVolume)} kg`;
+  historySubtitle.textContent = `// ${filteredWorkouts.length} sessions found | filtered volume: ${formatCompactNumber(totalVolume)} kg`;
 }
 
 function renderWorkoutTags(tags) {
@@ -5914,8 +5914,8 @@ function renderHistoryListRow(workout, index) {
     <article class="workout-row">
       <div class="row-id">#${rowNumber}</div>
       <div class="row-name">
-        Treino ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}
-        <span class="sub">${formatWorkoutQualitySummary(quality)} | ${validSets} series | ${validRounds} rounds${skippedCount && !quality.skippedCount ? ` | ${skippedCount} pulados` : ''}</span>
+        Workout ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}
+        <span class="sub">${formatWorkoutQualitySummary(quality)} | ${validSets} sets | ${validRounds} rounds${skippedCount && !quality.skippedCount ? ` | ${skippedCount} skipped` : ''}</span>
       </div>
       <div class="row-tags"><span class="row-tag ${origin.className}">${origin.label}</span>${renderWorkoutQualityTag(quality)}${renderWorkoutTags(tags)}</div>
       <div class="row-date">
@@ -5943,13 +5943,13 @@ function renderHistoryCard(workout) {
   const validRounds = countValidRounds(workout);
   const skippedCount = countSkippedExercises(workout);
   const quality = getWorkoutExecutionQuality(workout);
-  const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// Sem observacoes registradas.';
+  const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// No notes logged.';
 
   return `
     <article class="archive-card">
       <header>
         <div>
-          <h3>Treino ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}</h3>
+          <h3>Workout ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}</h3>
           <div class="card-tags"><span class="row-tag ${origin.className}">${origin.label}</span>${renderWorkoutQualityTag(quality)}${renderWorkoutTags(tags)}</div>
         </div>
       </header>
@@ -5963,7 +5963,7 @@ function renderHistoryCard(workout) {
           <strong class="blue">${volume ? formatCompactNumber(volume) : `${validRounds}r`}</strong>
         </div>
         <div class="card-stat">
-          <span>Duracao</span>
+          <span>Duration</span>
           <strong class="orange">${duration ? `${duration}m` : '-'}</strong>
         </div>
       </div>
@@ -6000,7 +6000,7 @@ function renderHistoryPagination(totalItems) {
     .join('');
 
   historyPagination.innerHTML = `
-    <div class="pagination-info">Mostrando <span>${start}-${end}</span> de <span>${totalItems}</span> sessoes</div>
+    <div class="pagination-info">Showing <span>${start}-${end}</span> of <span>${totalItems}</span> sessions</div>
     <div class="pagination-controls">
       <button class="page-btn" type="button" data-history-page="${state.historyPage - 1}" ${state.historyPage === 1 ? 'disabled' : ''}>PREV</button>
       ${pageButtons}
@@ -6017,7 +6017,7 @@ function resetHistoryPageAndRender() {
 function exportHistoryCsv() {
   const workouts = getFilteredHistoryWorkouts();
   const rows = [
-    ['data', 'ficha', 'nome', 'exercicios', 'pulados', 'series_validas', 'volume_kg', 'duracao_min', 'observacoes'],
+    ['date', 'template', 'name', 'exercises', 'skipped', 'valid_sets', 'volume_kg', 'duration_min', 'notes'],
     ...workouts.map((workout) => [
       toDateKey(workout.date),
       workout.workoutCode,
@@ -6036,7 +6036,7 @@ function exportHistoryCsv() {
   const link = document.createElement('a');
 
   link.href = url;
-  link.download = `treinos-realizados-${todayInputValue()}.csv`;
+  link.download = `workouts-realizados-${todayInputValue()}.csv`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -6062,7 +6062,7 @@ function renderHeatmap() {
     const mission = getDailyMissionForDate(date);
     const completedWorkouts = completedWorkoutsByDate.get(dateKey) || [];
     const missionCodes = mission?.restDay
-      ? 'descanso planejado'
+      ? 'planned rest'
       : (mission?.blocks || [])
           .filter((block) => block.type !== 'recovery')
           .map((block) => block.workoutCode)
@@ -6087,7 +6087,7 @@ Extra: ${extraLabels}` : status.title
       return withExtra({
         className: 'heat-future',
         title: `${formatDate(dateKey)}
-Status: Sem missao configurada`
+Status: No mission configured`
       }, extraLabels);
     }
 
@@ -6097,7 +6097,7 @@ Status: Sem missao configurada`
       return withExtra({
         className: 'heat-rest',
         title: `${formatDate(dateKey)}
-Status: Descanso planejado`
+Status: Planned rest`
       }, extraLabels);
     }
 
@@ -6139,9 +6139,9 @@ Status: Descanso planejado`
           className: 'heat-today',
           title: `${formatDate(dateKey)}
 Status: Em aberto
-Missao: ${missionCodes}
-Feito: nenhum
-Faltou: ${missingLabels}`
+Mission: ${missionCodes}
+Done: nenhum
+Missing: ${missingLabels}`
         }, extraLabels);
       }
 
@@ -6149,9 +6149,9 @@ Faltou: ${missingLabels}`
         className: 'heat-missed',
         title: `${formatDate(dateKey)}
 Status: Perdida
-Missao: ${missionCodes}
-Feito: nenhum
-Faltou: ${missingLabels}`
+Mission: ${missionCodes}
+Done: nenhum
+Missing: ${missingLabels}`
       }, extraLabels);
     }
 
@@ -6159,10 +6159,10 @@ Faltou: ${missingLabels}`
       return withExtra({
         className: 'heat-partial',
         title: `${formatDate(dateKey)}
-Status: Parcial
-Missao: ${missionCodes}
-Feito: ${attemptedLabels}
-Faltou: ${missingLabels}`
+Status: Partial
+Mission: ${missionCodes}
+Done: ${attemptedLabels}
+Missing: ${missingLabels}`
       }, extraLabels);
     }
 
@@ -6170,10 +6170,10 @@ Faltou: ${missingLabels}`
       return withExtra({
         className: 'heat-partial',
         title: `${formatDate(dateKey)}
-Status: Parcial
-Missao: ${missionCodes}
-Feito: ${completedLabels}
-Faltou: ${missingLabels}`
+Status: Partial
+Mission: ${missionCodes}
+Done: ${completedLabels}
+Missing: ${missingLabels}`
       }, extraLabels);
     }
 
@@ -6181,8 +6181,8 @@ Faltou: ${missingLabels}`
       className: 'heat-complete',
       title: `${formatDate(dateKey)}
 Status: Completa
-Missao: ${missionCodes}
-Feito: ${completedLabels}`
+Mission: ${missionCodes}
+Done: ${completedLabels}`
     }, extraLabels);
   }
 
@@ -6212,7 +6212,7 @@ function renderHistory() {
   historyListHeader.hidden = state.historyView === 'cards';
 
   if (!filteredWorkouts.length) {
-    historyList.innerHTML = '<p class="empty-state">Nenhum treino encontrado para estes filtros.</p>';
+    historyList.innerHTML = '<p class="empty-state">No workouts found for these filters.</p>';
     return;
   }
 
@@ -6225,7 +6225,7 @@ function renderHistory() {
     .join('');
 }
 
-function setSelectOptions(select, values, currentValue, allLabel = 'Todas') {
+function setSelectOptions(select, values, currentValue, allLabel = 'All') {
   const options = [
     `<option value="all">${escapeHtml(allLabel)}</option>`,
     ...values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`)
@@ -6278,15 +6278,15 @@ function renderCategoryOptions() {
   const modalities = [...new Set(state.exercises.map((exercise) => exercise.modality || 'strength'))].sort();
   const measurementTypes = [...new Set(state.exercises.map((exercise) => exercise.measurementType || 'sets_reps_weight'))].sort();
   const options = [
-    '<option value="all">Todas</option>',
+    '<option value="all">All</option>',
     ...categories.map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
   ].join('');
   const modalityOptions = [
-    '<option value="all">Todas</option>',
+    '<option value="all">All</option>',
     ...modalities.map((modality) => `<option value="${escapeHtml(modality)}">${escapeHtml(getWorkoutTypeName(modality))}</option>`)
   ].join('');
   const measurementOptions = [
-    '<option value="all">Todas</option>',
+    '<option value="all">All</option>',
     ...measurementTypes.map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(getMeasurementLabel(type))}</option>`)
   ].join('');
 
@@ -6320,7 +6320,7 @@ function renderCatalog() {
   });
 
   if (!filteredExercises.length) {
-    catalogList.innerHTML = `<p class="empty-state">Nenhum exercicio encontrado para ${escapeHtml(selectedWorkoutType.name)}.</p>`;
+    catalogList.innerHTML = `<p class="empty-state">No exercise found for ${escapeHtml(selectedWorkoutType.name)}.</p>`;
     return;
   }
 
@@ -6336,7 +6336,7 @@ function renderCatalog() {
           <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(formatExercisePrescription(exercise))}${escapeHtml(loadLabel)} | ${escapeHtml(exercise.equipment.join(', '))}</div>
         </div>
         <button class="button ${isSelected ? 'button-ghost' : 'button-secondary'}" type="button" data-catalog-id="${exercise._id}" ${isSelected ? 'disabled' : ''}>
-          ${isSelected ? 'Adicionado' : 'Adicionar'}
+          ${isSelected ? 'Adicionado' : 'Add'}
         </button>
       </article>
     `;
@@ -6354,14 +6354,14 @@ function renderExerciseStats(exercises = state.exercises) {
       icon: '#',
       label: 'Total',
       value: String(exercises.length),
-      detail: 'exercicios no filtro atual',
+      detail: 'exercises in current filter',
       tone: 'green'
     },
     {
       icon: 'STR',
       label: 'Musculacao',
       value: String(strengthExercises),
-      detail: 'exercicios de carga',
+      detail: 'load exercises',
       tone: 'blue'
     },
     {
@@ -6373,14 +6373,14 @@ function renderExerciseStats(exercises = state.exercises) {
     },
     {
       icon: 'CAT',
-      label: 'Categorias',
+      label: 'Categories',
       value: String(categories),
       detail: 'grupos diferentes',
       tone: 'orange'
     },
     {
       icon: 'SUB',
-      label: 'Subcategorias',
+      label: 'Subcategories',
       value: String(subcategories),
       detail: 'recortes especificos',
       tone: 'purple'
@@ -6395,9 +6395,9 @@ function getExerciseMediaActionsMarkup(exercise) {
     return `
       <div class="media-actions">
         <button class="button button-secondary sync-exercise-media" type="button" data-exercise-id="${exercise._id}">
-          Atualizar imagem
+          UPDATE IMAGE
         </button>
-        <span class="media-status">Imagem vinculada: ${escapeHtml(exercise.mediaProvider || 'media')}</span>
+        <span class="media-status">Linked image: ${escapeHtml(exercise.mediaProvider || 'media')}</span>
       </div>
     `;
   }
@@ -6405,7 +6405,7 @@ function getExerciseMediaActionsMarkup(exercise) {
   if (!canSyncAutomatically) {
     return `
       <div class="media-actions">
-        <span class="media-status muted">Sem imagem automatica confiavel</span>
+        <span class="media-status muted">No reliable automatic image</span>
       </div>
     `;
   }
@@ -6413,9 +6413,9 @@ function getExerciseMediaActionsMarkup(exercise) {
   return `
     <div class="media-actions">
       <button class="button button-secondary sync-exercise-media" type="button" data-exercise-id="${exercise._id}">
-        Sincronizar imagem
+        Sync image
       </button>
-      <span class="media-status muted">Sem imagem confiavel no wger</span>
+      <span class="media-status muted">No reliable image on wger</span>
     </div>
   `;
 }
@@ -6440,12 +6440,12 @@ function renderExercisePage() {
   renderExerciseStats(filteredExercises);
 
   if (!filteredExercises.length) {
-    exercisePageList.innerHTML = '<p class="empty-state">Nenhum exercicio encontrado.</p>';
-    exerciseSubtitle.textContent = '// nenhum item encontrado para o filtro atual';
+    exercisePageList.innerHTML = '<p class="empty-state">No exercise found.</p>';
+    exerciseSubtitle.textContent = '// no item found for current filter';
     return;
   }
 
-  exerciseSubtitle.textContent = `// ${filteredExercises.length} exercicios no catalogo | filtros ativos aplicados em tempo real`;
+  exerciseSubtitle.textContent = `// ${filteredExercises.length} exercises in catalog | active filters applied in real time`;
   exercisePageList.innerHTML = filteredExercises.map((exercise) => {
     const isRoundBased = (exercise.measurementType || 'sets_reps_weight').startsWith('rounds');
     const loadMeta = getLoadModeMeta(getExerciseLoadMode(exercise));
@@ -6480,7 +6480,7 @@ async function syncExerciseMedia(exerciseId) {
     return;
   }
 
-  resultsContainer.innerHTML = '<p class="empty-state media-loading">Sincronizando imagem automaticamente...</p>';
+  resultsContainer.innerHTML = '<p class="empty-state media-loading">Syncing image automatically...</p>';
 
   try {
     const result = await requestJson('/api/exercise-media/sync', {
@@ -6498,7 +6498,7 @@ async function syncExerciseMedia(exerciseId) {
           category: result.exercise?.category
         }, 'result')}
         <div>
-          <h4>Imagem vinculada automaticamente</h4>
+          <h4>Image linked automatically</h4>
           <p>${escapeHtml(media.name || result.exercise?.name || exercise.name)}</p>
           ${result.exercise?.imageAuthor ? `<p>Autor: ${escapeHtml(result.exercise.imageAuthor)}</p>` : ''}
         </div>
@@ -6548,7 +6548,7 @@ async function linkExerciseMedia(exerciseId, media) {
 
 function renderSelectedTemplateExercises() {
   if (!state.selectedTemplateExercises.length) {
-    selectedTemplateList.innerHTML = '<p class="empty-state">Escolha exercicios no catalogo para montar a ficha.</p>';
+    selectedTemplateList.innerHTML = '<p class="empty-state">Choose exercises from the catalog to build the template.</p>';
     return;
   }
 
@@ -6572,15 +6572,15 @@ function renderSelectedTemplateExercises() {
       </label>
     ` : `
       <label>
-        Series
+        Sets
         <input class="template-planned-sets" type="number" min="1" step="1" value="${exercise.plannedSets || 1}" required />
       </label>
       <label>
-        Repeticoes
+        Reps
         <input class="template-planned-reps" type="text" value="${escapeHtml(exercise.plannedReps || '')}" required />
       </label>
       <label>
-        Carga
+        Load
         <select class="template-load-mode">
           ${getLoadModeOptionsMarkup(loadMode)}
         </select>
@@ -6596,7 +6596,7 @@ function renderSelectedTemplateExercises() {
           <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(getMeasurementLabel(measurementType))}${isRoundBased ? '' : ` | ${escapeHtml(loadMeta.label)}`}</div>
         </div>
         ${fields}
-        <button class="icon-button remove-template-exercise" type="button" aria-label="Remover exercicio">x</button>
+        <button class="icon-button remove-template-exercise" type="button" aria-label="Remove exercise">x</button>
       </article>
     `;
   }).join('');
@@ -6645,11 +6645,11 @@ function renderTemplateFilterOptions() {
   const measurementOptions = [...new Set(state.templates.map((template) => template.measurementType || 'sets_reps_weight'))].sort();
 
   templateTypeFilter.innerHTML = [
-    '<option value="all">Todos</option>',
+    '<option value="all">All</option>',
     ...typeOptions.map(([code, name]) => `<option value="${escapeHtml(code)}">${escapeHtml(name)}</option>`)
   ].join('');
   templateMeasurementFilter.innerHTML = [
-    '<option value="all">Todas</option>',
+    '<option value="all">All</option>',
     ...measurementOptions.map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(getMeasurementLabel(type))}</option>`)
   ].join('');
 
@@ -6671,14 +6671,14 @@ function renderTemplateStats(templates = state.templates) {
       icon: '#',
       label: 'Total',
       value: String(totalTemplates),
-      detail: 'fichas cadastradas',
+      detail: 'registered templates',
       tone: 'green'
     },
     {
       icon: 'STR',
       label: 'Musculacao',
       value: String(strengthTemplates),
-      detail: 'protocolos de carga',
+      detail: 'load protocols',
       tone: 'blue'
     },
     {
@@ -6690,16 +6690,16 @@ function renderTemplateStats(templates = state.templates) {
     },
     {
       icon: 'EX',
-      label: 'Exercicios',
+      label: 'Exercises',
       value: String(linkedExercises),
-      detail: 'itens vinculados nas fichas',
+      detail: 'items linked in templates',
       tone: 'orange'
     },
     {
       icon: 'XP',
-      label: 'XP possivel',
+      label: 'Possible XP',
       value: String(totalXp),
-      detail: 'recompensa somada das fichas',
+      detail: 'summed template reward',
       tone: 'purple'
     }
   ]);
@@ -6712,29 +6712,29 @@ function renderTemplates() {
   renderTemplateStats(filteredTemplates);
 
   if (!state.templates.length) {
-    templateList.innerHTML = '<p class="empty-state">Nenhuma ficha cadastrada ainda.</p>';
-    templateSubtitle.textContent = '// nenhuma ficha cadastrada ainda';
+    templateList.innerHTML = '<p class="empty-state">No template registered yet.</p>';
+    templateSubtitle.textContent = '// no template registered yet';
     return;
   }
 
   if (!filteredTemplates.length) {
-    templateList.innerHTML = '<p class="empty-state">Nenhuma ficha encontrada para estes filtros.</p>';
-    templateSubtitle.textContent = '// nenhum protocolo encontrado para o filtro atual';
+    templateList.innerHTML = '<p class="empty-state">No template found for these filters.</p>';
+    templateSubtitle.textContent = '// no protocol found for current filter';
     return;
   }
 
-  templateSubtitle.textContent = `// ${filteredTemplates.length} de ${state.templates.length} protocolos | filtros ativos aplicados em tempo real`;
+  templateSubtitle.textContent = `// ${filteredTemplates.length} of ${state.templates.length} protocols | active filters applied in real time`;
   templateList.innerHTML = filteredTemplates.map((template) => `
     <article class="template-card">
       <header>
         <div>
-          <span class="template-code">Treino ${escapeHtml(template.code)}</span>
+          <span class="template-code">Workout ${escapeHtml(template.code)}</span>
           <h3>${escapeHtml(template.name)}</h3>
         </div>
         <strong>${template.exercises.length}</strong>
       </header>
       <p class="type-line">${escapeHtml(template.workoutTypeName || 'Musculacao')} | ${escapeHtml(template.measurementType || 'sets_reps_weight')}</p>
-      ${template.level || template.xpReward ? `<p class="type-line">${escapeHtml(template.level || 'Livre')} | ${Number(template.xpReward || 0)} XP</p>` : ''}
+      ${template.level || template.xpReward ? `<p class="type-line">${escapeHtml(template.level || 'Free')} | ${Number(template.xpReward || 0)} XP</p>` : ''}
       ${template.description ? `<p>${escapeHtml(template.description)}</p>` : ''}
       <div class="template-muscles">
         ${[...new Set(template.exercises.map((exercise) => exercise.category))].slice(0, 5).map((tag) => (
@@ -6758,7 +6758,7 @@ function renderWorkoutTypeOptions() {
   const strengthType = getStrengthWorkoutType();
 
   templateWorkoutTypeInput.innerHTML = [
-    '<option value="">Selecione um tipo</option>',
+    '<option value="">Select a type</option>',
     ...state.workoutTypes.map((type) => (
       `<option value="${type._id}">${escapeHtml(type.name)} | ${escapeHtml(type.measurementType)}</option>`
     ))
@@ -6791,11 +6791,11 @@ function renderWorkoutTypeFilterOptions() {
   const fieldOptions = [...new Set(state.workoutTypes.flatMap((type) => type.fields || []))].sort();
 
   workoutTypeMeasurementFilter.innerHTML = [
-    '<option value="all">Todas</option>',
+    '<option value="all">All</option>',
     ...measurementOptions.map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(getMeasurementLabel(type))}</option>`)
   ].join('');
   workoutTypeFieldFilter.innerHTML = [
-    '<option value="all">Todos</option>',
+    '<option value="all">All</option>',
     ...fieldOptions.map((field) => `<option value="${escapeHtml(field)}">${escapeHtml(field)}</option>`)
   ].join('');
 
@@ -6817,35 +6817,35 @@ function renderWorkoutTypeStats(types = state.workoutTypes) {
       icon: '#',
       label: 'Total',
       value: String(types.length),
-      detail: 'tipos no filtro atual',
+      detail: 'types in current filter',
       tone: 'green'
     },
     {
       icon: 'USE',
-      label: 'Em fichas',
+      label: 'In templates',
       value: String(usedTypes),
-      detail: 'tipos usados por protocolos',
+      detail: 'types used by protocols',
       tone: 'blue'
     },
     {
       icon: 'SET',
-      label: 'Series',
+      label: 'Sets',
       value: String(setsTypes),
-      detail: 'medicao por series/reps',
+      detail: 'measurement by sets/reps',
       tone: 'orange'
     },
     {
       icon: 'RND',
       label: 'Rounds',
       value: String(roundsTypes),
-      detail: 'medicao por tempo/rounds',
+      detail: 'measurement by time/rounds',
       tone: 'red'
     },
     {
       icon: 'FLD',
-      label: 'Campos',
+      label: 'Fields',
       value: String(fieldsCount),
-      detail: 'campos diferentes',
+      detail: 'different fields',
       tone: 'purple'
     }
   ]);
@@ -6858,18 +6858,18 @@ function renderWorkoutTypes() {
   renderWorkoutTypeStats(filteredTypes);
 
   if (!state.workoutTypes.length) {
-    workoutTypeList.innerHTML = '<p class="empty-state">Nenhum tipo de treino cadastrado.</p>';
-    workoutTypeSubtitle.textContent = '// nenhum tipo cadastrado ainda';
+    workoutTypeList.innerHTML = '<p class="empty-state">No workout type registered.</p>';
+    workoutTypeSubtitle.textContent = '// no type registered yet';
     return;
   }
 
   if (!filteredTypes.length) {
-    workoutTypeList.innerHTML = '<p class="empty-state">Nenhum tipo encontrado para estes filtros.</p>';
-    workoutTypeSubtitle.textContent = '// nenhum tipo encontrado para o filtro atual';
+    workoutTypeList.innerHTML = '<p class="empty-state">No type found for these filters.</p>';
+    workoutTypeSubtitle.textContent = '// no type found for current filter';
     return;
   }
 
-  workoutTypeSubtitle.textContent = `// ${filteredTypes.length} de ${state.workoutTypes.length} tipos disponiveis para fichas e treinos`;
+  workoutTypeSubtitle.textContent = `// ${filteredTypes.length} of ${state.workoutTypes.length} types available for templates and workouts`;
   workoutTypeList.innerHTML = filteredTypes.map((type) => `
     <article class="type-card">
       <header>
@@ -6879,7 +6879,7 @@ function renderWorkoutTypes() {
         </div>
         <strong>${escapeHtml(type.measurementType)}</strong>
       </header>
-      <p>${escapeHtml(type.description || 'Tipo de treino personalizado.')}</p>
+      <p>${escapeHtml(type.description || 'Custom workout type.')}</p>
       <div class="template-muscles">
         ${(type.fields || []).map((field) => `<span class="row-tag core">${escapeHtml(field)}</span>`).join('')}
       </div>
@@ -6911,7 +6911,7 @@ function getWorkoutTypePayload() {
 
 function fillWorkoutTypeForm(type) {
   state.workoutTypeEditingId = type._id;
-  workoutTypeFormTitle.textContent = 'Editar tipo';
+  workoutTypeFormTitle.textContent = 'Edit type';
   workoutTypeCodeInput.value = type.code;
   workoutTypeNameInput.value = type.name;
   workoutTypeMeasurementInput.value = type.measurementType;
@@ -6924,7 +6924,7 @@ function fillWorkoutTypeForm(type) {
 function renderWorkoutTemplateOptions() {
   const currentValue = workoutTemplateInput.value;
   workoutTemplateInput.innerHTML = [
-    '<option value="">Selecione uma ficha</option>',
+    '<option value="">Select a template</option>',
     ...state.templates.map((template) => (
       `<option value="${template._id}">${escapeHtml(template.code)} - ${escapeHtml(template.name)}</option>`
     ))
@@ -7018,7 +7018,7 @@ function resetTemplateForm() {
     xpReward: 0,
     description: ''
   };
-  templateFormTitle.textContent = 'Nova ficha';
+  templateFormTitle.textContent = 'New template';
   templateForm.reset();
   templateWorkoutTypeInput.value = getStrengthWorkoutType()._id || '';
   renderSelectedTemplateExercises();
@@ -7046,7 +7046,7 @@ function getTemplatePayload() {
 
 function fillTemplateForm(template) {
   state.templateEditingId = template._id;
-  templateFormTitle.textContent = 'Editar ficha';
+  templateFormTitle.textContent = 'Edit template';
   templateCodeInput.value = template.code;
   templateNameInput.value = template.name;
   templateWorkoutTypeInput.value = template.workoutTypeId || getStrengthWorkoutType()._id || '';
@@ -7090,7 +7090,7 @@ function fillTemplateForm(template) {
 function showTemplate(template) {
   detailTitle.textContent = `${template.code} - ${template.name}`;
   detailContent.innerHTML = `
-    <p class="detail-meta">${template.exercises.length} exercicios cadastrados na ficha.${template.level ? ` | ${escapeHtml(template.level)}` : ''}${template.xpReward ? ` | ${Number(template.xpReward)} XP` : ''}</p>
+    <p class="detail-meta">${template.exercises.length} exercises registered in template.${template.level ? ` | ${escapeHtml(template.level)}` : ''}${template.xpReward ? ` | ${Number(template.xpReward)} XP` : ''}</p>
     ${template.description ? `<p>${escapeHtml(template.description)}</p>` : ''}
     <div class="detail-grid">
       ${template.exercises.map((exercise) => `
@@ -7112,14 +7112,14 @@ function renderExerciseLogTable(exercise) {
   const isRoundBased = exercise.measurementType === 'rounds_time' || exercise.measurementType === 'rounds_time_reps';
 
   if (exercise.skipped) {
-    return `<p class="empty-state compact">Exercicio pulado${exercise.skipReason ? `: ${escapeHtml(exercise.skipReason)}` : '.'}</p>`;
+    return `<p class="empty-state compact">Exercise skipped${exercise.skipReason ? `: ${escapeHtml(exercise.skipReason)}` : '.'}</p>`;
   }
 
   if (isRoundBased) {
     const rounds = exercise.rounds || [];
 
     if (rounds.length === 0) {
-      return '<p class="empty-state compact">Nenhum round registrado neste exercicio.</p>';
+      return '<p class="empty-state compact">No round logged for this exercise.</p>';
     }
 
     return `
@@ -7128,7 +7128,7 @@ function renderExerciseLogTable(exercise) {
           <tr>
             <th>Round</th>
             <th>Tempo</th>
-            <th>Descanso</th>
+            <th>Rest</th>
             <th>Golpes</th>
             <th>Int.</th>
           </tr>
@@ -7151,15 +7151,15 @@ function renderExerciseLogTable(exercise) {
   const sets = exercise.sets || [];
 
   if (sets.length === 0) {
-    return '<p class="empty-state compact">Nenhuma serie registrada neste exercicio.</p>';
+    return '<p class="empty-state compact">No set logged for this exercise.</p>';
   }
 
   return `
     <table class="set-table">
       <thead>
         <tr>
-          <th>Serie</th>
-          <th>Carga</th>
+          <th>Set</th>
+          <th>Load</th>
           <th>Reps</th>
         </tr>
       </thead>
@@ -7199,7 +7199,7 @@ function getExerciseSource(exercise, plannedExerciseNames) {
 }
 
 function getExerciseSourceLabel(source) {
-  return source === 'extra' ? 'Adicionado' : 'Planejado';
+  return source === 'extra' ? 'Adicionado' : 'Planned';
 }
 
 function renderWorkoutXpBreakdown(workout) {
@@ -7212,13 +7212,13 @@ function renderWorkoutXpBreakdown(workout) {
   const rows = hasSnapshot
     ? (workout.xp.breakdown || []).map((entry) => ({ label: entry.label, value: entry.xp }))
     : [
-        { label: 'Base do treino', value: execution.base },
-        { label: `${execution.validExercises}/${execution.totalExercises} exercicios validos`, value: execution.exerciseXp },
-        { label: `${execution.skippedExercises || 0} exercicios pulados`, value: 0, show: Boolean(execution.skippedExercises) },
-        { label: `${execution.validSets} series validas`, value: execution.setXp },
-        { label: `${execution.validRounds} rounds validos`, value: execution.roundXp },
-        { label: 'Reps/golpes validos', value: execution.repsBonus },
-        { label: 'Treino completo', value: execution.completionBonus },
+        { label: 'Workout base', value: execution.base },
+        { label: `${execution.validExercises}/${execution.totalExercises} valid exercises`, value: execution.exerciseXp },
+        { label: `${execution.skippedExercises || 0} skipped exercises`, value: 0, show: Boolean(execution.skippedExercises) },
+        { label: `${execution.validSets} valid sets`, value: execution.setXp },
+        { label: `${execution.validRounds} valid rounds`, value: execution.roundXp },
+        { label: 'Valid reps/strikes', value: execution.repsBonus },
+        { label: 'Full workout', value: execution.completionBonus },
         ...campaign.entries.map((entry) => ({ label: entry.label, value: entry.xp }))
       ].filter((row) => Number(row.value || 0) > 0 || row.show);
 
@@ -7234,7 +7234,7 @@ function renderWorkoutXpBreakdown(workout) {
           <strong>${executionTotal} XP</strong>
         </article>
         <article>
-          <span>Campanha</span>
+          <span>Campaign</span>
           <strong>${campaignTotal} XP</strong>
         </article>
       </div>
@@ -7258,7 +7258,7 @@ function renderDetails(workout) {
 
   detailTitle.textContent = `${workout.workoutCode} - ${workout.workoutName}`;
   detailContent.innerHTML = `
-    <p class="detail-meta">${formatDate(workout.date)} | ${plannedCount} planejados | ${extraCount} adicionados | ${skippedCount} pulados | ${workout.exercises.length} exercicios</p>
+    <p class="detail-meta">${formatDate(workout.date)} | ${plannedCount} planned | ${extraCount} added | ${skippedCount} skipped | ${workout.exercises.length} exercises</p>
     <section class="execution-quality-card ${quality.className}">
       <div>
         <span>EXECUCAO_DA_FICHA</span>
@@ -7280,7 +7280,7 @@ function renderDetails(workout) {
           <p class="detail-meta">
             ${escapeHtml(formatExerciseGroup(exercise))}
             | planejado: ${escapeHtml(formatExercisePrescription(exercise))}
-            | feito: ${exercise.skipped ? 'pulado' : exercise.measurementType === 'rounds_time' || exercise.measurementType === 'rounds_time_reps' ? `${exercise.completedRounds || (exercise.rounds || []).length} rounds` : `${exercise.completedSets || (exercise.sets || []).length} series`}
+            | done: ${exercise.skipped ? 'skipped' : exercise.measurementType === 'rounds_time' || exercise.measurementType === 'rounds_time_reps' ? `${exercise.completedRounds || (exercise.rounds || []).length} rounds` : `${exercise.completedSets || (exercise.sets || []).length} sets`}
             ${exercise.skipReason ? ` | motivo: ${escapeHtml(exercise.skipReason)}` : ''}
             ${exercise.notes ? ` | ${escapeHtml(exercise.notes)}` : ''}
           </p>
@@ -7370,7 +7370,7 @@ form.addEventListener('submit', async (event) => {
     if (shouldReturnToMissions) {
       document.querySelector(`[data-tab="${returnTab}"]`)?.click();
     }
-    setStatus('Treino salvo com sucesso.');
+    setStatus('Workout saved successfully.');
     submitButton.textContent = 'COMMITTED';
     setTimeout(() => {
       submitButton.textContent = 'COMMIT_SESSION';
@@ -7414,7 +7414,7 @@ startMissionButton.addEventListener('click', () => {
 function prepareReplacementWorkout(blockType) {
   resetForm();
   dateInput.value = todayInputValue();
-  setStatus(`Escolha uma ficha de ${blockType === 'combat' ? 'combate' : 'forca'} para substituir o bloco da campanha.`);
+  setStatus(`Choose a ${blockType === 'combat' ? 'combat' : 'strength'} template to replace the campaign block.`);
   document.querySelector('[data-tab="workout-create"]').click();
   workoutTemplateInput.focus();
 }
@@ -7640,7 +7640,7 @@ bodyMeasurementForm?.addEventListener('submit', async (event) => {
 
     resetBodyMeasurementForm();
     await loadBodyMeasurements();
-    setBodyProgressStatus('Medicao salva com sucesso.');
+    setBodyProgressStatus('Measurement saved successfully.');
   } catch (error) {
     setBodyProgressStatus(error.message, true);
   }
@@ -7658,7 +7658,7 @@ bodyProgressHistory?.addEventListener('click', async (event) => {
   const measurement = state.bodyMeasurements.find((item) => item._id === button.dataset.id);
 
   if (!measurement) {
-    setBodyProgressStatus('Medicao nao encontrada.', true);
+    setBodyProgressStatus('Measurement not found.', true);
     return;
   }
 
@@ -7668,7 +7668,7 @@ bodyProgressHistory?.addEventListener('click', async (event) => {
   }
 
   if (button.dataset.bodyAction === 'delete') {
-    const confirmed = window.confirm('Excluir esta medicao corporal?');
+    const confirmed = window.confirm('Delete this body measurement?');
 
     if (!confirmed) {
       return;
@@ -7676,7 +7676,7 @@ bodyProgressHistory?.addEventListener('click', async (event) => {
 
     await requestJson(`/api/body-measurements/${measurement._id}`, { method: 'DELETE' });
     await loadBodyMeasurements();
-    setBodyProgressStatus('Medicao excluida.');
+    setBodyProgressStatus('Measurement deleted.');
   }
 });
 
@@ -7755,7 +7755,7 @@ missionActions?.addEventListener('click', async (event) => {
     let workout;
 
     try {
-      setStatus('Carregando treino...');
+      setStatus('Loading workout...');
       workout = await loadWorkoutDetails(button.dataset.workoutId);
       setStatus('');
     } catch (error) {
@@ -7785,7 +7785,7 @@ async function handleWorkoutAction(event) {
 
   if (button.dataset.action === 'details' || button.dataset.action === 'edit') {
     try {
-      setStatus('Carregando treino...');
+      setStatus('Loading workout...');
       workout = await loadWorkoutDetails(workoutId);
       setStatus('');
     } catch (error) {
@@ -7795,7 +7795,7 @@ async function handleWorkoutAction(event) {
   }
 
   if (!workout) {
-    setStatus('Treino nao encontrado.', true);
+    setStatus('Workout not found.', true);
     return;
   }
 
@@ -7808,7 +7808,7 @@ async function handleWorkoutAction(event) {
   }
 
   if (button.dataset.action === 'delete') {
-    const confirmed = window.confirm('Excluir este treino?');
+    const confirmed = window.confirm('Delete this workout?');
 
     if (!confirmed) {
       return;
@@ -7904,7 +7904,7 @@ workoutExercisePickerList.addEventListener('click', (event) => {
     ...exercise,
     source: 'extra'
   });
-  setStatus(`${exercise.name} adicionado ao treino.`);
+  setStatus(`${exercise.name} added to workout.`);
   renderWorkoutExercisePicker();
 });
 exercisePageModalityFilter.addEventListener('change', renderExercisePage);
@@ -7957,7 +7957,7 @@ templateForm.addEventListener('submit', async (event) => {
     const payload = getTemplatePayload();
 
     if (!payload.exercises.length) {
-      throw new Error('Escolha pelo menos um exercicio para a ficha.');
+      throw new Error('Choose at least one exercise for the template.');
     }
 
     const url = state.templateEditingId ? `/api/templates/${state.templateEditingId}` : '/api/templates';
@@ -7970,7 +7970,7 @@ templateForm.addEventListener('submit', async (event) => {
 
     resetTemplateForm();
     await loadTemplates();
-    setTemplateStatus('Ficha salva com sucesso.');
+    setTemplateStatus('Template saved successfully.');
   } catch (error) {
     setTemplateStatus(error.message, true);
   }
@@ -7995,7 +7995,7 @@ workoutTypeForm.addEventListener('submit', async (event) => {
     resetWorkoutTypeForm();
     await loadWorkoutTypes();
     await loadTemplates();
-    setWorkoutTypeStatus('Tipo salvo com sucesso.');
+    setWorkoutTypeStatus('Type saved successfully.');
   } catch (error) {
     setWorkoutTypeStatus(error.message, true);
   }
@@ -8021,7 +8021,7 @@ workoutTypeList.addEventListener('click', async (event) => {
   }
 
   if (button.dataset.typeAction === 'delete') {
-    const confirmed = window.confirm('Excluir este tipo de treino?');
+    const confirmed = window.confirm('Delete this workout type?');
 
     if (!confirmed) {
       return;
@@ -8054,7 +8054,7 @@ templateList.addEventListener('click', async (event) => {
   }
 
   if (button.dataset.templateAction === 'delete') {
-    const confirmed = window.confirm('Excluir esta ficha?');
+    const confirmed = window.confirm('Delete this template?');
 
     if (!confirmed) {
       return;

@@ -2774,25 +2774,30 @@ h4 {
   color: var(--green);
 }
 
-.week-node.parcial {
+.week-node.parcial,
+.week-node.partial {
   border-color: rgba(245, 158, 11, 0.55);
   background: rgba(245, 158, 11, 0.08);
 }
 
-.week-node.parcial strong {
+.week-node.parcial strong,
+.week-node.partial strong {
   color: var(--orange);
 }
 
-.week-node.hoje {
+.week-node.hoje,
+.week-node.today {
   border-color: rgba(88, 166, 255, 0.72);
   background: rgba(88, 166, 255, 0.1);
 }
 
-.week-node.hoje strong {
+.week-node.hoje strong,
+.week-node.today strong {
   color: var(--blue);
 }
 
-.week-node.descanso {
+.week-node.descanso,
+.week-node.rest {
   border-style: dashed;
 }
 
