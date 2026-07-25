@@ -54,6 +54,8 @@ const state = {
   documentationCache: {}
 };
 
+const sideNav = document.querySelector('.side-nav');
+const menuToggle = document.querySelector('.menu-toggle');
 const form = document.querySelector('#workout-form');
 const dateInput = document.querySelector('#date');
 const workoutTemplateInput = document.querySelector('#workout-template');
@@ -7242,6 +7244,20 @@ function updateTabUrl(tabName) {
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
 }
 
+function setMobileMenuOpen(isOpen) {
+  if (!sideNav || !menuToggle) {
+    return;
+  }
+
+  sideNav.classList.toggle('menu-open', isOpen);
+  menuToggle.setAttribute('aria-expanded', String(isOpen));
+  menuToggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+}
+
+function toggleMobileMenu() {
+  setMobileMenuOpen(!sideNav?.classList.contains('menu-open'));
+}
+
 async function activateTab(tabName, options = {}) {
   const { updateUrl = true, scroll = true } = options;
   const targetView = document.querySelector(`#view-${tabName}`);
@@ -7281,10 +7297,32 @@ async function activateTab(tabName, options = {}) {
 
 document.querySelectorAll('.nav-link[data-tab]').forEach((button) => {
   button.addEventListener('click', () => {
+    setMobileMenuOpen(false);
     activateTab(button.dataset.tab, {
       documentationDoc: button.dataset.documentationShortcut || state.activeDocumentationDoc
     }).catch((error) => setStatus(error.message, true));
   });
+});
+
+menuToggle?.addEventListener('click', (event) => {
+  event.stopPropagation();
+  toggleMobileMenu();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    setMobileMenuOpen(false);
+  }
+});
+
+document.addEventListener('click', (event) => {
+  if (!sideNav?.classList.contains('menu-open')) {
+    return;
+  }
+
+  if (!sideNav.contains(event.target)) {
+    setMobileMenuOpen(false);
+  }
 });
 
 documentationMenuButtons.forEach((button) => {
