@@ -523,8 +523,8 @@ h4 {
 
 .journey-command-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
   padding: 0 20px 20px;
 }
 
@@ -535,6 +535,7 @@ h4 {
   display: grid;
   grid-template-columns: 46px minmax(0, 1fr);
   gap: 12px;
+  min-height: 82px;
   min-width: 0;
   border: 1px solid var(--border);
   border-left: 4px solid var(--command-accent);
@@ -571,6 +572,11 @@ h4 {
 .journey-command-card:nth-child(5) {
   --command-accent: var(--ember);
   --command-accent-soft: rgba(248, 81, 73, 0.1);
+}
+
+.journey-command-card:nth-child(6) {
+  --command-accent: #d2a8ff;
+  --command-accent-soft: rgba(210, 168, 255, 0.1);
 }
 
 .journey-command-card > span {
