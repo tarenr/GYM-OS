@@ -13,6 +13,8 @@
     "journey:clear:preview": "node scripts/clear-prejourney-workouts.js",
     "journey:clear:prestart": "node scripts/clear-prejourney-workouts.js --yes",
     "missions:sync": "node scripts/sync-daily-missions.js",
+    "db:translate:english:preview": "node scripts/translate-db-to-english.js",
+    "db:translate:english": "node scripts/translate-db-to-english.js --write",
     "xp:recalculate:preview": "node scripts/recalculate-xp.js",
     "xp:recalculate": "node scripts/recalculate-xp.js --write",
     "media:preview": "node scripts/sync-wger-media.js",
@@ -23,12 +25,12 @@
     "media:sync:b": "node scripts/sync-wger-media.js --template=B --write",
     "media:preview:c": "node scripts/sync-wger-media.js --template=C",
     "media:sync:c": "node scripts/sync-wger-media.js --template=C --write",
-    "media:ficha-a:preview": "node scripts/link-ficha-a-ai-media.js",
-    "media:ficha-a:sync": "node scripts/link-ficha-a-ai-media.js --write",
-    "media:ficha-b:preview": "node scripts/link-ficha-b-ai-media.js",
-    "media:ficha-b:sync": "node scripts/link-ficha-b-ai-media.js --write",
-    "media:ficha-c:preview": "node scripts/link-ficha-c-ai-media.js",
-    "media:ficha-c:sync": "node scripts/link-ficha-c-ai-media.js --write"
+    "media:template-a:preview": "node scripts/link-template-a-ai-media.js",
+    "media:template-a:sync": "node scripts/link-template-a-ai-media.js --write",
+    "media:template-b:preview": "node scripts/link-template-b-ai-media.js",
+    "media:template-b:sync": "node scripts/link-template-b-ai-media.js --write",
+    "media:template-c:preview": "node scripts/link-template-c-ai-media.js",
+    "media:template-c:sync": "node scripts/link-template-c-ai-media.js --write"
   },
   "dependencies": {
     "chart.js": "^4.5.1",

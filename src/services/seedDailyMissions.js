@@ -36,7 +36,7 @@ export async function seedDailyMissions() {
           type: 'recovery',
           modality: 'recovery',
           workoutCode: 'DESC',
-          workoutName: 'Recuperacao',
+          workoutName: 'Recovery',
           intensity: mission.intensity,
           xpReward: 0
         }]

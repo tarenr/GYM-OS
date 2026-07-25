@@ -17,16 +17,16 @@ async function main() {
 
   const count = await Workout.countDocuments(demoFilter);
 
-  console.log(`Lote demo: ${demoBatch}`);
+  console.log(`Demo batch: ${demoBatch}`);
   console.log(`Treinos demo encontrados: ${count}`);
 
   if (!shouldDelete) {
-    console.log('Modo previa: nenhum treino foi removido. Rode npm run demo:clear para apagar este lote.');
+    console.log('Preview mode: no workout was removed. Run npm run demo:clear to delete this batch.');
     return;
   }
 
   const result = await Workout.deleteMany(demoFilter);
-  console.log(`Treinos demo removidos: ${result.deletedCount}`);
+  console.log(`Treinos demo removeds: ${result.deletedCount}`);
 }
 
 main()

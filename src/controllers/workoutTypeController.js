@@ -18,7 +18,7 @@ function normalizeWorkoutTypePayload(payload) {
 }
 
 function notFoundResponse(response) {
-  return response.status(404).json({ message: 'Tipo de treino nao encontrado.' });
+  return response.status(404).json({ message: 'Workout type not found.' });
 }
 
 export async function listWorkoutTypes(request, response, next) {

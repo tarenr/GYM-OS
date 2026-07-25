@@ -1,36 +1,36 @@
 export const defaultWorkoutTypes = [
   {
     code: 'strength',
-    name: 'Musculacao',
-    description: 'Treinos com series, carga e repeticoes.',
+    name: 'Strength',
+    description: 'Workouts with sets, load and reps.',
     measurementType: 'sets_reps_weight',
     fields: ['sets', 'weight', 'reps']
   },
   {
     code: 'boxing',
-    name: 'Boxe',
-    description: 'Treinos com rounds, tempo, descanso e intensidade.',
+    name: 'Boxing',
+    description: 'Workouts with rounds, time, rest and intensity.',
     measurementType: 'rounds_time',
     fields: ['rounds', 'durationSeconds', 'restSeconds', 'intensity', 'completed']
   },
   {
     code: 'kickboxing',
     name: 'Kickboxing',
-    description: 'Treinos com rounds, tempo, golpes, descanso e intensidade.',
+    description: 'Workouts with rounds, time, strikes, rest and intensity.',
     measurementType: 'rounds_time_reps',
     fields: ['rounds', 'durationSeconds', 'restSeconds', 'reps', 'intensity', 'completed']
   },
   {
     code: 'cardio',
     name: 'Cardio',
-    description: 'Treinos por duracao, distancia e intensidade.',
+    description: 'Workouts by duration, distance and intensity.',
     measurementType: 'duration',
     fields: ['durationMinutes', 'distance', 'intensity']
   },
   {
     code: 'mobility',
-    name: 'Mobilidade',
-    description: 'Mobilidade, alongamento e recuperacao.',
+    name: 'Mobility',
+    description: 'Mobility, stretching and recovery.',
     measurementType: 'duration',
     fields: ['durationMinutes', 'notes']
   }

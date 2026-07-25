@@ -50,7 +50,7 @@ export async function seedCombatWorkoutTemplates() {
       const exercise = exerciseByName.get(plannedExercise.name);
 
       if (!exercise) {
-        throw new Error(`Exercicio nao encontrado para ficha ${template.code}: ${plannedExercise.name}`);
+        throw new Error(`Exercise not found for template ${template.code}: ${plannedExercise.name}`);
       }
 
       return buildTemplateExercise(exercise, plannedExercise, index);

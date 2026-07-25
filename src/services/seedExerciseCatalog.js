@@ -3,42 +3,42 @@ import { combatExerciseCatalog } from '../data/combatExerciseCatalog.js';
 import { Exercise } from '../models/Exercise.js';
 
 const strengthSubcategories = new Map([
-  ['Supino reto com halteres', 'Peito medio'],
-  ['Supino reto com pegada supinada', 'Peito superior'],
-  ['Crucifixo reto com halteres', 'Abertura do peito'],
-  ['Pullover com halter no banco', 'Peitoral e serratil'],
-  ['Pullover com halter no banco reto', 'Peitoral e serratil'],
-  ['Squeeze press com halteres', 'Peito interno'],
-  ['Supino fechado com halteres', 'Peito interno e triceps'],
-  ['Remada curvada com halteres', 'Dorsal'],
-  ['Remada unilateral apoiado no banco', 'Dorsal unilateral'],
-  ['Remada aberta com halteres', 'Costas superiores'],
-  ['Crucifixo inverso com halteres', 'Posterior de ombro'],
-  ['Pullover com halter', 'Dorsal e serratil'],
-  ['Rosca direta com halteres', 'Biceps braquial'],
-  ['Rosca direta com halteres ou barra curta', 'Biceps braquial'],
-  ['Rosca martelo com halteres', 'Braquial e antebraco'],
-  ['Rosca concentrada', 'Biceps isolado'],
-  ['Rosca alternada', 'Biceps unilateral'],
-  ['Triceps frances com halter', 'Cabeca longa'],
-  ['Triceps testa com halteres', 'Triceps geral'],
-  ['Triceps testa com halteres ou barra curta', 'Triceps geral'],
-  ['Coice de triceps com halter', 'Triceps lateral'],
-  ['Agachamento goblet com kettlebell ou halter', 'Quadriceps e gluteos'],
-  ['Agachamento goblet', 'Quadriceps e gluteos'],
-  ['Afundo com halteres', 'Quadriceps e gluteos'],
-  ['Stiff com halteres', 'Posterior de coxa'],
-  ['Elevacao pelvica com halter', 'Gluteos'],
-  ['Agachamento sumo com halter', 'Adutores e gluteos'],
-  ['Panturrilha em pe com halteres', 'Panturrilhas'],
-  ['Desenvolvimento com halteres', 'Ombro anterior'],
-  ['Elevacao lateral com halteres', 'Ombro lateral'],
-  ['Elevacao frontal com halteres', 'Ombro anterior'],
-  ['Encolhimento com halteres', 'Trapezio'],
-  ['Prancha', 'Core estabilizacao'],
-  ['Abdominal tradicional', 'Abdomen superior'],
-  ['Elevacao de pernas', 'Abdomen inferior'],
-  ['Russian twist com halter', 'Obliquos']
+  ['Flat dumbbell bench press', 'Mid chest'],
+  ['Reverse-grip dumbbell bench press', 'Upper chest'],
+  ['Flat dumbbell fly', 'Chest fly'],
+  ['Dumbbell pullover on bench', 'Chest and serratus'],
+  ['Dumbbell pullover on flat bench', 'Chest and serratus'],
+  ['Dumbbell squeeze press', 'Inner chest'],
+  ['Close-grip dumbbell bench press', 'Inner chest and triceps'],
+  ['Bent-over dumbbell row', 'Back'],
+  ['Supported single-arm dumbbell row', 'Single-arm back'],
+  ['Wide dumbbell row', 'Upper back'],
+  ['Dumbbell reverse fly', 'Rear delts'],
+  ['Dumbbell pullover', 'Back and serratus'],
+  ['Dumbbell curl', 'Biceps brachii'],
+  ['Dumbbell or short-bar curl', 'Biceps brachii'],
+  ['Dumbbell hammer curl', 'Brachialis and forearm'],
+  ['Concentration curl', 'Isolated biceps'],
+  ['Alternating dumbbell curl', 'Single-arm biceps'],
+  ['Overhead dumbbell triceps extension', 'Long head'],
+  ['Dumbbell skull crusher', 'General triceps'],
+  ['Dumbbell or short-bar skull crusher', 'General triceps'],
+  ['Dumbbell triceps kickback', 'Lateral triceps'],
+  ['Goblet squat with kettlebell or dumbbell', 'Quads and glutes'],
+  ['Goblet squat', 'Quads and glutes'],
+  ['Dumbbell lunge', 'Quads and glutes'],
+  ['Dumbbell Romanian deadlift', 'Hamstrings'],
+  ['Dumbbell hip thrust', 'Glutes'],
+  ['Dumbbell sumo squat', 'Adductors and glutes'],
+  ['Standing dumbbell calf raise', 'Calves'],
+  ['Dumbbell shoulder press', 'Front delts'],
+  ['Dumbbell lateral raise', 'Side delts'],
+  ['Dumbbell front raise', 'Front delts'],
+  ['Dumbbell shrug', 'Traps'],
+  ['Plank', 'Core stability'],
+  ['Crunch', 'Upper abs'],
+  ['Leg raise', 'Lower abs'],
+  ['Dumbbell Russian twist', 'Obliques']
 ]);
 
 export function getStrengthSubcategory(exerciseName, category) {
@@ -55,9 +55,9 @@ function inferLoadMode(exercise = {}) {
   const text = `${name} ${equipment}`;
 
   if ((exercise.measurementType || '').startsWith('rounds')) return 'non_weight';
-  if (text.includes('barra')) return 'bar_total';
-  if (text.includes('maquina') || text.includes('polia')) return 'machine_stack';
-  if (text.includes('peso corporal') || text.includes('prancha') || text.includes('abdominal') || text.includes('elevacao de pernas')) return 'bodyweight';
+  if (text.includes('barbell') || text.includes('short-bar')) return 'bar_total';
+  if (text.includes('machine') || text.includes('cable')) return 'machine_stack';
+  if (text.includes('bodyweight') || text.includes('plank') || text.includes('crunch') || text.includes('leg raise')) return 'bodyweight';
 
   return 'dumbbell_each';
 }

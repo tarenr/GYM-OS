@@ -5,7 +5,7 @@ export async function connectDatabase() {
   const uri = process.env.MONGODB_URI;
 
   if (!uri) {
-    throw new Error('MONGODB_URI nao foi definida no arquivo .env.');
+    throw new Error('MONGODB_URI was not defined in the .env file.');
   }
 
   if (
@@ -14,7 +14,7 @@ export async function connectDatabase() {
     uri.includes('cluster.mongodb.net')
   ) {
     throw new Error(
-      'MONGODB_URI ainda esta com o exemplo. Cole a string real do MongoDB Atlas no arquivo .env.'
+      'MONGODB_URI is still using the example value. Add the real MongoDB Atlas string to the .env file.'
     );
   }
 
@@ -26,5 +26,5 @@ export async function connectDatabase() {
     family: 4
   });
 
-  console.log('MongoDB conectado.');
+  console.log('MongoDB connected.');
 }

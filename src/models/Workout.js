@@ -314,7 +314,7 @@ const workoutSchema = new mongoose.Schema(
       type: [exerciseSchema],
       validate: {
         validator: (exercises) => Array.isArray(exercises) && exercises.length > 0,
-        message: 'O treino precisa ter pelo menos um exercicio.'
+        message: 'Workout needs at least one exercise.'
       }
     },
     notes: {

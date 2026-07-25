@@ -9,66 +9,66 @@ const shouldWrite = process.argv.includes('--write');
 
 const mediaByExerciseName = new Map([
   [
-    'supino reto com halteres',
+    'goblet squat',
     {
-      imageUrl: '/assets/exercises/ficha-a/supino-reto-com-halteres.png',
-      imageAlt: 'Movimento inicial e final do supino reto com halteres'
+      imageUrl: '/assets/exercises/template-c/agachamento-goblet-com-kettlebell-ou-halter.png',
+      imageAlt: 'Start and end movement of goblet squat'
     }
   ],
   [
-    'supino reto com pegada supinada',
+    'goblet squat with kettlebell or dumbbell',
     {
-      imageUrl: '/assets/exercises/ficha-a/supino-reto-pegada-supinada.png',
-      imageAlt: 'Movimento inicial e final do supino reto com pegada supinada'
+      imageUrl: '/assets/exercises/template-c/agachamento-goblet-com-kettlebell-ou-halter.png',
+      imageAlt: 'Start and end movement of goblet squat with kettlebell or dumbbell'
     }
   ],
   [
-    'crucifixo reto com halteres',
+    'dumbbell lunge',
     {
-      imageUrl: '/assets/exercises/ficha-a/crucifixo-reto-com-halteres.png',
-      imageAlt: 'Movimento inicial e final do crucifixo reto com halteres'
+      imageUrl: '/assets/exercises/template-c/afundo-com-halteres.png',
+      imageAlt: 'Start and end movement of dumbbell lunge'
     }
   ],
   [
-    'pullover com halter no banco',
+    'dumbbell romanian deadlift',
     {
-      imageUrl: '/assets/exercises/ficha-a/pullover-com-halter-no-banco-reto.png',
-      imageAlt: 'Movimento inicial e final do pullover com halter no banco reto'
+      imageUrl: '/assets/exercises/template-c/stiff-com-halteres.png',
+      imageAlt: 'Start and end movement of dumbbell romanian deadlift'
     }
   ],
   [
-    'pullover com halter no banco reto',
+    'dumbbell hip thrust',
     {
-      imageUrl: '/assets/exercises/ficha-a/pullover-com-halter-no-banco-reto.png',
-      imageAlt: 'Movimento inicial e final do pullover com halter no banco reto'
+      imageUrl: '/assets/exercises/template-c/elevacao-pelvica-com-halter.png',
+      imageAlt: 'Start and end movement of dumbbell hip thrust'
     }
   ],
   [
-    'squeeze press com halteres',
+    'standing dumbbell calf raise',
     {
-      imageUrl: '/assets/exercises/ficha-a/squeeze-press-com-halteres.png',
-      imageAlt: 'Movimento inicial e final do squeeze press com halteres'
+      imageUrl: '/assets/exercises/template-c/panturrilha-em-pe-com-halteres.png',
+      imageAlt: 'Start and end movement of standing dumbbell calf raise'
     }
   ],
   [
-    'triceps frances com halter',
+    'dumbbell shoulder press',
     {
-      imageUrl: '/assets/exercises/ficha-a/triceps-frances-com-halter.png',
-      imageAlt: 'Movimento inicial e final do triceps frances com halter'
+      imageUrl: '/assets/exercises/template-c/desenvolvimento-com-halteres.png',
+      imageAlt: 'Start and end movement of dumbbell shoulder press'
     }
   ],
   [
-    'triceps testa com halteres',
+    'dumbbell lateral raise',
     {
-      imageUrl: '/assets/exercises/ficha-a/triceps-testa-com-halteres.png',
-      imageAlt: 'Movimento inicial e final do triceps testa com halteres'
+      imageUrl: '/assets/exercises/template-c/elevacao-lateral-com-halteres.png',
+      imageAlt: 'Start and end movement of dumbbell lateral raise'
     }
   ],
   [
-    'triceps testa com halteres ou barra curta',
+    'dumbbell shrug',
     {
-      imageUrl: '/assets/exercises/ficha-a/triceps-testa-com-halteres.png',
-      imageAlt: 'Movimento inicial e final do triceps testa com halteres'
+      imageUrl: '/assets/exercises/template-c/encolhimento-com-halteres.png',
+      imageAlt: 'Start and end movement of dumbbell shrug'
     }
   ]
 ]);
@@ -121,10 +121,10 @@ async function findExercise(templateExercise) {
 async function main() {
   await connectDatabase();
 
-  const template = await WorkoutTemplate.findOne({ code: 'A', active: true });
+  const template = await WorkoutTemplate.findOne({ code: 'C', active: true });
 
   if (!template) {
-    throw new Error('Ficha A nao encontrada.');
+    throw new Error('Template C not found.');
   }
 
   const summary = [];
@@ -135,18 +135,18 @@ async function main() {
 
     if (!mediaPayload) {
       summary.push({
-        exercicio: templateExercise.name,
-        status: 'sem mapa de imagem',
-        imagem: ''
+        exercise: templateExercise.name,
+        status: 'no image map',
+        image: ''
       });
       continue;
     }
 
     if (!exercise) {
       summary.push({
-        exercicio: templateExercise.name,
-        status: 'exercicio nao encontrado',
-        imagem: mediaPayload.imageUrl
+        exercise: templateExercise.name,
+        status: 'exercise not found',
+        image: mediaPayload.imageUrl
       });
       continue;
     }
@@ -156,18 +156,18 @@ async function main() {
     }
 
     summary.push({
-      exercicio: templateExercise.name,
-      status: shouldWrite ? 'vinculado' : 'previa',
-      imagem: mediaPayload.imageUrl
+      exercise: templateExercise.name,
+      status: shouldWrite ? 'linked' : 'preview',
+      image: mediaPayload.imageUrl
     });
   }
 
-  console.log(`Ficha: ${template.code} - ${template.name}`);
-  console.log(`Modo: ${shouldWrite ? 'gravacao' : 'previa'}`);
+  console.log(`Template: ${template.code} - ${template.name}`);
+  console.log(`Mode: ${shouldWrite ? 'write' : 'preview'}`);
   console.table(summary);
 
   if (!shouldWrite) {
-    console.log('Nenhuma alteracao gravada. Rode com --write para aplicar.');
+    console.log('No changes saved. Run with --write to apply.');
   }
 }
 

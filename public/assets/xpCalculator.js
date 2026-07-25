@@ -11,7 +11,7 @@ export function calculateWorkoutXpBreakdown(workout) {
   const exerciseDetails = exercises.map((exercise) => {
     if (exercise.skipped) {
       return {
-        name: exercise.name || 'Exercicio',
+        name: exercise.name || 'Exercise',
         skipped: true,
         valid: false,
         validSets: 0,
@@ -33,7 +33,7 @@ export function calculateWorkoutXpBreakdown(workout) {
       : 0;
 
     return {
-      name: exercise.name || 'Exercicio',
+      name: exercise.name || 'Exercise',
       skipped: false,
       valid,
       validSets: validSets.length,

@@ -14,27 +14,27 @@ const demoFilter = {
 };
 
 const demoPlan = [
-  { date: '2026-07-01', codes: ['C', 'BOXE_02', 'KICK_01'], note: 'Missao completa com perna pesada e kick extra tecnico.' },
-  { date: '2026-07-02', codes: ['A', 'BOXE_01'], note: 'Missao parcial: musculacao feita e boxe extra tecnico.' },
-  { date: '2026-07-03', codes: ['B', 'BOXE_03', 'A'], note: 'Missao completa e treino extra leve de peito.' },
-  { date: '2026-07-04', codes: ['C', 'KICK_03', 'BOXE_02'], note: 'Dia intenso com foco em condicionamento e boxe extra.' },
-  { date: '2026-07-06', codes: ['A', 'BOXE_01'], note: 'Semana aberta com missao completa.' },
-  { date: '2026-07-07', codes: ['B', 'KICK_01', 'BOXE_01'], note: 'Missao completa e bloco extra tecnico.' },
-  { date: '2026-07-08', codes: ['C', 'KICK_03'], note: 'Missao parcial: pernas feitas e kick extra.' },
-  { date: '2026-07-09', codes: ['A', 'KICK_02'], note: 'Missao do dia completa para testar dashboard.' }
+  { date: '2026-07-01', codes: ['C', 'BOXE_02', 'KICK_01'], note: 'Complete mission with heavy legs and technical kick extra.' },
+  { date: '2026-07-02', codes: ['A', 'BOXE_01'], note: 'Partial mission: strength done and technical boxing extra.' },
+  { date: '2026-07-03', codes: ['B', 'BOXE_03', 'A'], note: 'Complete mission and light extra chest workout.' },
+  { date: '2026-07-04', codes: ['C', 'KICK_03', 'BOXE_02'], note: 'Intense day focused on conditioning and extra boxing.' },
+  { date: '2026-07-06', codes: ['A', 'BOXE_01'], note: 'Week opened with a complete mission.' },
+  { date: '2026-07-07', codes: ['B', 'KICK_01', 'BOXE_01'], note: 'Complete mission and technical extra block.' },
+  { date: '2026-07-08', codes: ['C', 'KICK_03'], note: 'Partial mission: legs done and kick extra.' },
+  { date: '2026-07-09', codes: ['A', 'KICK_02'], note: 'Daily mission complete to test dashboard.' }
 ];
 
 const strengthBaseWeights = {
-  Peito: 18,
-  Costas: 20,
-  Pernas: 26,
-  Ombros: 12,
+  Chest: 18,
+  Back: 20,
+  Legs: 26,
+  Shoulders: 12,
   Triceps: 10,
   Biceps: 11,
-  Panturrilhas: 18,
-  Gluteos: 24,
-  Trapezio: 20,
-  Outros: 14
+  Calves: 18,
+  Glutes: 24,
+  Traps: 20,
+  Other: 14
 };
 
 function toWorkoutDate(dateKey) {
@@ -61,10 +61,10 @@ function getRepTarget(plannedReps, exerciseIndex, planIndex) {
 }
 
 function getBaseWeight(exercise) {
-  const group = exercise.category || exercise.muscleGroup || 'Outros';
+  const group = exercise.category || exercise.muscleGroup || 'Other';
   const matchedKey = Object.keys(strengthBaseWeights).find((key) => group.toLowerCase().includes(key.toLowerCase()));
 
-  return strengthBaseWeights[matchedKey || 'Outros'];
+  return strengthBaseWeights[matchedKey || 'Other'];
 }
 
 function buildStrengthSets(exercise, exerciseIndex, planIndex) {
@@ -121,7 +121,7 @@ function buildWorkoutFromTemplate(template, plan, planIndex, codeIndex) {
       completedRounds: rounds.length,
       sets,
       rounds,
-      notes: '[DEMO] Exercicio ficticio para validar estatisticas.'
+      notes: '[DEMO] Fake exercise to validate statistics.'
     };
   });
 
@@ -149,7 +149,7 @@ async function main() {
       const template = templatesByCode.get(code);
 
       if (!template) {
-        console.warn(`Ficha ${code} nao encontrada. Ignorando este item demo.`);
+        console.warn(`Template ${code} not found. Skipping this demo item.`);
         return [];
       }
 
@@ -157,25 +157,25 @@ async function main() {
     });
   });
 
-  console.log(`Lote demo: ${demoBatch}`);
-  console.log(`Treinos preparados: ${workouts.length}`);
+  console.log(`Demo batch: ${demoBatch}`);
+  console.log(`Prepared workouts: ${workouts.length}`);
   console.table(workouts.map((workout) => ({
-    data: workout.date.toISOString().slice(0, 10),
-    ficha: workout.workoutCode,
-    nome: workout.workoutName,
-    exercicios: workout.exercises.length,
-    origem: workout.workoutCode.length > 1 ? 'luta' : 'musculacao'
+    date: workout.date.toISOString().slice(0, 10),
+    template: workout.workoutCode,
+    name: workout.workoutName,
+    exercises: workout.exercises.length,
+    origin: workout.workoutCode.length > 1 ? 'combat' : 'strength'
   })));
 
   if (!shouldWrite) {
-    console.log('Modo previa: nenhum treino foi cadastrado. Rode npm run demo:seed para gravar.');
+    console.log('Preview mode: no workout was logged. Run npm run demo:seed to save.');
     return;
   }
 
   const deleted = await Workout.deleteMany(demoFilter);
   await Workout.insertMany(workouts);
-  console.log(`Treinos demo antigos removidos: ${deleted.deletedCount}`);
-  console.log(`Treinos demo cadastrados: ${workouts.length}`);
+  console.log(`Old demo workouts removed: ${deleted.deletedCount}`);
+  console.log(`Demo workouts logged: ${workouts.length}`);
 }
 
 main()

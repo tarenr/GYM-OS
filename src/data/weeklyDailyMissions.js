@@ -1,63 +1,63 @@
 export const weeklyDailyMissions = [
   {
     dayIndex: 1,
-    dayOfWeek: 'Segunda',
-    missionName: 'Fundacao A',
-    intensity: 'Peito e triceps | recomposicao corporal',
+    dayOfWeek: 'Monday',
+    missionName: 'Foundation A',
+    intensity: 'Chest and triceps | body recomposition',
     strengthCode: 'A',
     strengthXp: 150,
     bonusXp: 30
   },
   {
     dayIndex: 2,
-    dayOfWeek: 'Terca',
-    missionName: 'Fundacao B',
-    intensity: 'Costas e biceps | recomposicao corporal',
+    dayOfWeek: 'Tuesday',
+    missionName: 'Foundation B',
+    intensity: 'Back and biceps | body recomposition',
     strengthCode: 'B',
     strengthXp: 150,
     bonusXp: 30
   },
   {
     dayIndex: 3,
-    dayOfWeek: 'Quarta',
-    missionName: 'Fundacao C',
-    intensity: 'Pernas e ombros | recomposicao corporal',
+    dayOfWeek: 'Wednesday',
+    missionName: 'Foundation C',
+    intensity: 'Legs and shoulders | body recomposition',
     strengthCode: 'C',
     strengthXp: 150,
     bonusXp: 30
   },
   {
     dayIndex: 4,
-    dayOfWeek: 'Quinta',
-    missionName: 'Fundacao A Reforco',
-    intensity: 'Peito e triceps | segunda volta da semana',
+    dayOfWeek: 'Thursday',
+    missionName: 'Foundation A Reinforcement',
+    intensity: 'Chest and triceps | second weekly pass',
     strengthCode: 'A',
     strengthXp: 150,
     bonusXp: 30
   },
   {
     dayIndex: 5,
-    dayOfWeek: 'Sexta',
-    missionName: 'Fundacao B Reforco',
-    intensity: 'Costas e biceps | segunda volta da semana',
+    dayOfWeek: 'Friday',
+    missionName: 'Foundation B Reinforcement',
+    intensity: 'Back and biceps | second weekly pass',
     strengthCode: 'B',
     strengthXp: 150,
     bonusXp: 30
   },
   {
     dayIndex: 6,
-    dayOfWeek: 'Sabado',
-    missionName: 'Fundacao C Reforco',
-    intensity: 'Pernas e ombros | fechamento da semana',
+    dayOfWeek: 'Saturday',
+    missionName: 'Foundation C Reinforcement',
+    intensity: 'Legs and shoulders | weekly closure',
     strengthCode: 'C',
     strengthXp: 150,
     bonusXp: 30
   },
   {
     dayIndex: 0,
-    dayOfWeek: 'Domingo',
-    missionName: 'Recuperacao Programada',
-    intensity: 'Recuperacao ativa sem quebrar a sequencia',
+    dayOfWeek: 'Sunday',
+    missionName: 'Scheduled Recovery',
+    intensity: 'Active recovery without breaking the sequence',
     restDay: true,
     bonusXp: 0
   }

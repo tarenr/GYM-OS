@@ -42,12 +42,12 @@ function validateBodyMeasurementPayload(payload) {
   }
 
   if (Number(payload.weightKg || 0) < 0) {
-    errors.push('O peso nao pode ser negativo.');
+    errors.push('Weight cannot be negative.');
   }
 
   measurementFields.forEach((field) => {
     if (Number(payload.measurementsCm?.[field] || 0) < 0) {
-      errors.push(`A medida ${field} nao pode ser negativa.`);
+      errors.push(`Measurement ${field} cannot be negative.`);
     }
   });
 
@@ -59,7 +59,7 @@ function validateBodyMeasurementPayload(payload) {
 }
 
 function notFoundResponse(response) {
-  return response.status(404).json({ message: 'Medicao corporal nao encontrada.' });
+  return response.status(404).json({ message: 'Body measurement not found.' });
 }
 
 export async function listBodyMeasurements(request, response, next) {

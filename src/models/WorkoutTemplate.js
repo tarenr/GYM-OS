@@ -171,7 +171,7 @@ const workoutTemplateSchema = new mongoose.Schema(
     },
     workoutTypeName: {
       type: String,
-      default: 'Musculacao',
+      default: 'Strength',
       trim: true
     },
     measurementType: {
@@ -183,7 +183,7 @@ const workoutTemplateSchema = new mongoose.Schema(
       type: [templateExerciseSchema],
       validate: {
         validator: (exercises) => Array.isArray(exercises) && exercises.length > 0,
-        message: 'A ficha precisa ter pelo menos um exercicio.'
+        message: 'Template needs at least one exercise.'
       }
     },
     active: {

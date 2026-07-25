@@ -25,7 +25,7 @@ async function main() {
   const template = templateCode ? await WorkoutTemplate.findOne({ code: templateCode, active: true }) : null;
 
   if (templateCode && !template) {
-    throw new Error(`Ficha ${templateCode} nao encontrada.`);
+    throw new Error(`Template ${templateCode} not found.`);
   }
 
   const exercises = template
@@ -41,7 +41,7 @@ async function main() {
     if (exercise.missing) {
       summary.push({
         exercise: exercise.name,
-        status: 'nao encontrado',
+        status: 'not found',
         query: ''
       });
       continue;
@@ -50,7 +50,7 @@ async function main() {
     if (!force && exercise.imageUrl) {
       summary.push({
         exercise: exercise.name,
-        status: 'ja vinculado',
+        status: 'already linked',
         query: resolveWgerSearchQuery(exercise.name),
         result: exercise.externalExerciseId || exercise.mediaProvider || 'local'
       });
@@ -67,7 +67,7 @@ async function main() {
     } catch (error) {
       summary.push({
         exercise: exercise.name,
-        status: 'erro',
+        status: 'error',
         query,
         result: error.message
       });
@@ -78,7 +78,7 @@ async function main() {
     if (!shouldWrite) {
       summary.push({
         exercise: exercise.name,
-        status: exercise.imageUrl ? 'ja vinculado' : 'pendente',
+        status: exercise.imageUrl ? 'already linked' : 'pending',
         query,
         result: exercise.externalExerciseId || ''
       });
@@ -91,7 +91,7 @@ async function main() {
     if (!result || result.status === 'not-found' || result.status === 'unsupported-modality') {
       summary.push({
         exercise: exercise.name,
-        status: result?.status === 'unsupported-modality' ? 'ignorado' : 'sem imagem',
+        status: result?.status === 'unsupported-modality' ? 'ignored' : 'no image',
         query
       });
       await sleep(delayMs);
@@ -100,22 +100,22 @@ async function main() {
 
     summary.push({
       exercise: exercise.name,
-      status: result.status === 'already-linked' ? 'ja vinculado' : 'vinculado',
+      status: result.status === 'already-linked' ? 'already linked' : 'linked',
       query,
       result: result.media ? `${result.media.externalExerciseId} - ${result.media.name}` : exercise.externalExerciseId || '',
-      image: result.exercise?.imageUrl ? 'sim' : 'nao',
+      image: result.exercise?.imageUrl ? 'yes' : 'no',
       author: result.media?.imageAuthor || exercise.imageAuthor || ''
     });
 
     await sleep(delayMs);
   }
 
-  console.log(template ? `Ficha: ${template.code} - ${template.name}` : 'Catalogo completo de exercicios');
-  console.log(`Modo: ${shouldWrite ? 'gravacao' : 'previa'}${force ? ' | force' : ''}`);
+  console.log(template ? `Template: ${template.code} - ${template.name}` : 'Full exercise catalog');
+  console.log(`Mode: ${shouldWrite ? 'write' : 'preview'}${force ? ' | force' : ''}`);
   console.table(summary);
 
   if (!shouldWrite) {
-    console.log('Nenhuma alteracao gravada. Rode npm run media:sync para vincular tudo.');
+    console.log('No changes saved. Run npm run media:sync to link everything.');
   }
 }
 

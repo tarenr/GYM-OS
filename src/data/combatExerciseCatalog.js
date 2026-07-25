@@ -1,371 +1,371 @@
 export const combatExerciseCatalog = [
   {
-    name: 'Sombra livre',
+    name: 'Free shadowboxing',
     modality: 'boxing',
-    category: 'Tecnica',
+    category: 'Technique',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Sombra com movimentacao',
+    name: 'Shadowboxing with movement',
     modality: 'boxing',
-    category: 'Movimentacao',
+    category: 'Movement',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Base e guarda',
+    name: 'Stance and guard',
     modality: 'boxing',
-    category: 'Fundamento',
+    category: 'Fundamentals',
     measurementType: 'rounds_time',
     defaultRounds: 2,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 30,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Deslocamento para frente e para tras',
+    name: 'Forward and backward footwork',
     modality: 'boxing',
-    category: 'Movimentacao',
+    category: 'Movement',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 30,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Deslocamento lateral',
+    name: 'Lateral footwork',
     modality: 'boxing',
-    category: 'Movimentacao',
+    category: 'Movement',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 30,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
     name: 'Jab',
     modality: 'boxing',
-    category: 'Golpe',
+    category: 'Strike',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Direto',
+    name: 'Cross',
     modality: 'boxing',
-    category: 'Golpe',
+    category: 'Strike',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Cruzado',
+    name: 'Hook',
     modality: 'boxing',
-    category: 'Golpe',
+    category: 'Strike',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
     name: 'Uppercut',
     modality: 'boxing',
-    category: 'Golpe',
+    category: 'Strike',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Jab + direto',
+    name: 'Jab + cross',
     modality: 'boxing',
-    category: 'Combinacao',
+    category: 'Combination',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Jab + direto + cruzado',
+    name: 'Jab + cross + hook',
     modality: 'boxing',
-    category: 'Combinacao',
+    category: 'Combination',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Jab + direto + uppercut',
+    name: 'Jab + cross + uppercut',
     modality: 'boxing',
-    category: 'Combinacao',
+    category: 'Combination',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Jab + direto + esquiva',
+    name: 'Jab + cross + slip',
     modality: 'boxing',
-    category: 'Combinacao e defesa',
+    category: 'Combination and defense',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Esquiva lateral',
+    name: 'Lateral slip',
     modality: 'boxing',
-    category: 'Defesa',
+    category: 'Defense',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Pendulo',
+    name: 'Bob and weave',
     modality: 'boxing',
-    category: 'Defesa',
+    category: 'Defense',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Bloqueio alto',
+    name: 'High block',
     modality: 'boxing',
-    category: 'Defesa',
+    category: 'Defense',
     measurementType: 'rounds_time',
     defaultRounds: 2,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 30,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Sombra com defesa',
+    name: 'Shadowboxing with defense',
     modality: 'boxing',
-    category: 'Tecnica',
+    category: 'Technique',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Sombra em alta intensidade',
+    name: 'High-intensity shadowboxing',
     modality: 'boxing',
-    category: 'Condicionamento',
+    category: 'Conditioning',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 180,
     defaultRestSeconds: 60,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Corda',
+    name: 'Jump rope',
     modality: 'boxing',
-    category: 'Aquecimento',
+    category: 'Warm-up',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 30,
-    equipment: ['Corda']
+    equipment: ['Jump rope']
   },
   {
-    name: 'Sombra de kickboxing',
+    name: 'Kickboxing shadowboxing',
     modality: 'kickboxing',
-    category: 'Tecnica',
+    category: 'Technique',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Base e guarda de kickboxing',
+    name: 'Kickboxing stance and guard',
     modality: 'kickboxing',
-    category: 'Fundamento',
+    category: 'Fundamentals',
     measurementType: 'rounds_time',
     defaultRounds: 2,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 30,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Chute frontal',
+    name: 'Front kick',
     modality: 'kickboxing',
-    category: 'Chute',
+    category: 'Kick',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Chute baixo alternado',
+    name: 'Alternating low kick',
     modality: 'kickboxing',
-    category: 'Chute',
+    category: 'Kick',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Chute medio alternado',
+    name: 'Alternating middle kick',
     modality: 'kickboxing',
-    category: 'Chute',
+    category: 'Kick',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Chute circular',
+    name: 'Roundhouse kick',
     modality: 'kickboxing',
-    category: 'Chute',
+    category: 'Kick',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Joelhada alternada',
+    name: 'Alternating knee strike',
     modality: 'kickboxing',
-    category: 'Joelho',
+    category: 'Knee',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 60,
     defaultRestSeconds: 30,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Jab + direto + chute frontal',
+    name: 'Jab + cross + front kick',
     modality: 'kickboxing',
-    category: 'Combinacao',
+    category: 'Combination',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Jab + direto + chute baixo',
+    name: 'Jab + cross + low kick',
     modality: 'kickboxing',
-    category: 'Combinacao',
+    category: 'Combination',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Jab + direto + cruzado + chute baixo',
+    name: 'Jab + cross + hook + low kick',
     modality: 'kickboxing',
-    category: 'Combinacao',
+    category: 'Combination',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Direto + cruzado + chute medio',
+    name: 'Cross + hook + middle kick',
     modality: 'kickboxing',
-    category: 'Combinacao',
+    category: 'Combination',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Chute frontal + direto',
+    name: 'Front kick + cross',
     modality: 'kickboxing',
-    category: 'Combinacao',
+    category: 'Combination',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Esquiva + contra-ataque',
+    name: 'Slip + counterattack',
     modality: 'kickboxing',
-    category: 'Defesa e contra-ataque',
+    category: 'Defense and counterattack',
     measurementType: 'rounds_time_reps',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Bloqueio de chute baixo',
+    name: 'Low-kick block',
     modality: 'kickboxing',
-    category: 'Defesa',
+    category: 'Defense',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Sombra com chutes',
+    name: 'Shadowboxing with kicks',
     modality: 'kickboxing',
-    category: 'Tecnica',
+    category: 'Technique',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 120,
     defaultRestSeconds: 45,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Sombra livre de kickboxing',
+    name: 'Free kickboxing shadowboxing',
     modality: 'kickboxing',
-    category: 'Condicionamento',
+    category: 'Conditioning',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 180,
     defaultRestSeconds: 60,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Burpee com guarda',
+    name: 'Burpee with guard',
     modality: 'kickboxing',
-    category: 'Condicionamento',
+    category: 'Conditioning',
     measurementType: 'sets_reps',
     defaultSets: 3,
     defaultReps: '8-12',
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   },
   {
-    name: 'Polichinelo com guarda',
+    name: 'Jumping jack with guard',
     modality: 'kickboxing',
-    category: 'Aquecimento',
+    category: 'Warm-up',
     measurementType: 'rounds_time',
     defaultRounds: 3,
     defaultDurationSeconds: 60,
     defaultRestSeconds: 30,
-    equipment: ['Peso corporal']
+    equipment: ['Bodyweight']
   }
 ];

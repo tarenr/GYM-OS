@@ -77,10 +77,10 @@ function getWorkoutBlockType(workout, templatesByCode, templatesById) {
 }
 
 function getBlockLabel(block) {
-  if (block.type === 'strength') return 'Forca';
-  if (block.type === 'combat') return block.modality === 'boxing' ? 'Boxe' : 'Kickboxing';
+  if (block.type === 'strength') return 'Strength';
+  if (block.type === 'combat') return block.modality === 'boxing' ? 'Boxing' : 'Kickboxing';
 
-  return 'Recuperacao';
+  return 'Recovery';
 }
 
 function formatMissionBlockCompletion(block, workout) {
@@ -130,7 +130,7 @@ export function calculateWorkoutXpBreakdown(workout) {
   const exerciseDetails = exercises.map((exercise) => {
     if (exercise.skipped) {
       return {
-        name: exercise.name || 'Exercicio',
+        name: exercise.name || 'Exercise',
         skipped: true,
         valid: false,
         validSets: 0,
@@ -150,7 +150,7 @@ export function calculateWorkoutXpBreakdown(workout) {
     const xp = valid ? 10 + validSets.length * 5 + validRounds.length * 8 + repsBonus : 0;
 
     return {
-      name: exercise.name || 'Exercicio',
+      name: exercise.name || 'Exercise',
       skipped: false,
       valid,
       validSets: validSets.length,
@@ -193,12 +193,12 @@ export function calculateWorkoutXpBreakdown(workout) {
 
 function buildExecutionBreakdown(execution) {
   return [
-    { type: 'execution', label: 'Base do treino', xp: execution.base },
-    { type: 'execution', label: `${execution.validExercises}/${execution.totalExercises} exercicios validos`, xp: execution.exerciseXp },
-    { type: 'execution', label: `${execution.validSets} series validas`, xp: execution.setXp },
-    { type: 'execution', label: `${execution.validRounds} rounds validos`, xp: execution.roundXp },
-    { type: 'execution', label: 'Reps/golpes validos', xp: execution.repsBonus },
-    { type: 'execution', label: 'Treino completo', xp: execution.completionBonus }
+    { type: 'execution', label: 'Workout base', xp: execution.base },
+    { type: 'execution', label: `${execution.validExercises}/${execution.totalExercises} valid exercises`, xp: execution.exerciseXp },
+    { type: 'execution', label: `${execution.validSets} valid sets`, xp: execution.setXp },
+    { type: 'execution', label: `${execution.validRounds} valid rounds`, xp: execution.roundXp },
+    { type: 'execution', label: 'Valid reps/strikes', xp: execution.repsBonus },
+    { type: 'execution', label: 'Workout completo', xp: execution.completionBonus }
   ].filter((item) => item.xp > 0);
 }
 

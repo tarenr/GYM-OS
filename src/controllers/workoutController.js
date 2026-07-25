@@ -3,9 +3,9 @@ import { Workout } from '../models/Workout.js';
 import { recalculateWorkoutDateXpSnapshots } from '../services/xpCalculator.js';
 
 const workoutNames = {
-  A: 'Peito e triceps',
-  B: 'Costas e biceps',
-  C: 'Pernas e ombros'
+  A: 'Chest and triceps',
+  B: 'Back and biceps',
+  C: 'Legs and shoulders'
 };
 
 function normalizeWorkoutPayload(payload) {
@@ -62,28 +62,28 @@ function validateWorkoutPayload(payload) {
   const errors = [];
 
   if (!payload.date) {
-    errors.push('A data do treino e obrigatoria.');
+    errors.push('Workout date is required.');
   }
 
   if (!payload.workoutCode) {
-    errors.push('A ficha do treino e obrigatoria.');
+    errors.push('Workout template is required.');
   }
 
   if (!Array.isArray(payload.exercises) || payload.exercises.length === 0) {
-    errors.push('O treino precisa ter pelo menos um exercicio.');
+    errors.push('Workout needs at least one exercise.');
   }
 
   if (!Number.isFinite(Number(payload.durationMinutes)) || Number(payload.durationMinutes) < 0) {
-    errors.push('A duracao do treino precisa ser um numero valido.');
+    errors.push('Workout duration must be a valid number.');
   }
 
   payload.exercises.forEach((exercise, exerciseIndex) => {
     if (!exercise.name) {
-      errors.push(`Exercicio ${exerciseIndex + 1}: informe o nome.`);
+      errors.push(`Exercise ${exerciseIndex + 1}: enter the name.`);
     }
 
     if (!exercise.muscleGroup) {
-      errors.push(`Exercicio ${exerciseIndex + 1}: informe o grupo muscular.`);
+      errors.push(`Exercise ${exerciseIndex + 1}: enter the muscle group.`);
     }
 
     const measurementType = exercise.measurementType || 'sets_reps_weight';
@@ -95,33 +95,33 @@ function validateWorkoutPayload(payload) {
 
     if (isRoundBased) {
       if (!Array.isArray(exercise.rounds) || exercise.rounds.length === 0) {
-        errors.push(`Exercicio ${exerciseIndex + 1}: informe pelo menos um round.`);
+        errors.push(`Exercise ${exerciseIndex + 1}: enter at least one round.`);
       }
     } else if (!Array.isArray(exercise.sets) || exercise.sets.length === 0) {
-      errors.push(`Exercicio ${exerciseIndex + 1}: informe pelo menos uma serie.`);
+      errors.push(`Exercise ${exerciseIndex + 1}: enter at least one set.`);
     }
 
     (exercise.sets || []).forEach((set, setIndex) => {
       if (!Number.isFinite(Number(set.weight)) || Number(set.weight) < 0) {
-        errors.push(`Exercicio ${exerciseIndex + 1}, serie ${setIndex + 1}: carga invalida.`);
+        errors.push(`Exercise ${exerciseIndex + 1}, set ${setIndex + 1}: invalid load.`);
       }
 
       if (!Number.isFinite(Number(set.reps)) || Number(set.reps) < 0) {
-        errors.push(`Exercicio ${exerciseIndex + 1}, serie ${setIndex + 1}: repeticoes invalidas.`);
+        errors.push(`Exercise ${exerciseIndex + 1}, set ${setIndex + 1}: invalid reps.`);
       }
     });
 
     (exercise.rounds || []).forEach((round, roundIndex) => {
       if (!Number.isFinite(Number(round.durationSeconds)) || Number(round.durationSeconds) < 0) {
-        errors.push(`Exercicio ${exerciseIndex + 1}, round ${roundIndex + 1}: duracao invalida.`);
+        errors.push(`Exercise ${exerciseIndex + 1}, round ${roundIndex + 1}: invalid duration.`);
       }
 
       if (!Number.isFinite(Number(round.restSeconds)) || Number(round.restSeconds) < 0) {
-        errors.push(`Exercicio ${exerciseIndex + 1}, round ${roundIndex + 1}: descanso invalido.`);
+        errors.push(`Exercise ${exerciseIndex + 1}, round ${roundIndex + 1}: invalid rest.`);
       }
 
       if (!Number.isFinite(Number(round.reps)) || Number(round.reps) < 0) {
-        errors.push(`Exercicio ${exerciseIndex + 1}, round ${roundIndex + 1}: golpes invalidos.`);
+        errors.push(`Exercise ${exerciseIndex + 1}, round ${roundIndex + 1}: invalid strikes.`);
       }
     });
   });
@@ -130,7 +130,7 @@ function validateWorkoutPayload(payload) {
 }
 
 function notFoundResponse(response) {
-  return response.status(404).json({ message: 'Treino nao encontrado.' });
+  return response.status(404).json({ message: 'Workout not found.' });
 }
 
 export async function listWorkouts(request, response, next) {

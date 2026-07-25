@@ -374,13 +374,13 @@ app.get('/documentacao', async (request, response, next) => {
 });
 
 app.use((request, response) => {
-  response.status(404).json({ message: 'Rota nao encontrada.' });
+  response.status(404).json({ message: 'Route not found.' });
 });
 
 app.use((error, request, response, next) => {
   if (error.name === 'ValidationError') {
     return response.status(422).json({
-      message: 'Dados invalidos.',
+      message: 'Invalid data.',
       errors: Object.values(error.errors).map((item) => item.message)
     });
   }
@@ -388,7 +388,7 @@ app.use((error, request, response, next) => {
   console.error(error);
 
   response.status(500).json({
-    message: 'Erro interno no servidor.'
+    message: 'Internal server error.'
   });
 });
 
@@ -405,7 +405,7 @@ try {
     console.log('Dados no MongoDB Atlas.');
   });
 } catch (error) {
-  console.error('Nao foi possivel iniciar o servidor.');
+  console.error('Could not start the server.');
   console.error(error.message);
   process.exit(1);
 }

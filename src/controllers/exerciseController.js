@@ -28,7 +28,7 @@ export async function listExercises(request, response, next) {
           limit: Number(process.env.WGER_AUTO_SYNC_LIMIT || 100)
         });
       } catch (error) {
-        console.warn(`Nao foi possivel sincronizar imagens automaticamente: ${error.message}`);
+        console.warn(`Could not sync images automatically: ${error.message}`);
       }
     }
 

@@ -1,99 +1,99 @@
 export const combatWorkoutTemplates = [
   {
     code: 'BOXE_01',
-    name: 'Boxe 01 - Fundamentos',
+    name: 'Boxing 01 - Fundamentals',
     workoutTypeCode: 'boxing',
-    level: 'Iniciante',
+    level: 'Beginner',
     xpReward: 120,
-    description: 'Treino basico para base, guarda, movimentacao e golpes simples.',
+    description: 'Basic workout for stance, guard, movement and simple strikes.',
     exercises: [
-      { name: 'Base e guarda', rounds: 2, durationSeconds: 120, restSeconds: 30 },
-      { name: 'Deslocamento para frente e para tras', rounds: 3, durationSeconds: 120, restSeconds: 30 },
-      { name: 'Deslocamento lateral', rounds: 3, durationSeconds: 120, restSeconds: 30 },
+      { name: 'Stance and guard', rounds: 2, durationSeconds: 120, restSeconds: 30 },
+      { name: 'Forward and backward footwork', rounds: 3, durationSeconds: 120, restSeconds: 30 },
+      { name: 'Lateral footwork', rounds: 3, durationSeconds: 120, restSeconds: 30 },
       { name: 'Jab', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Direto', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Sombra livre', rounds: 2, durationSeconds: 180, restSeconds: 60 }
+      { name: 'Cross', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Free shadowboxing', rounds: 2, durationSeconds: 180, restSeconds: 60 }
     ]
   },
   {
     code: 'BOXE_02',
-    name: 'Boxe 02 - Combinacoes',
+    name: 'Boxing 02 - Combinations',
     workoutTypeCode: 'boxing',
-    level: 'Intermediario',
+    level: 'Intermediate',
     xpReward: 150,
-    description: 'Treino focado em combinacoes simples de golpes e ritmo.',
+    description: 'Workout focused on simple strike combinations and rhythm.',
     exercises: [
-      { name: 'Sombra com movimentacao', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Jab + direto', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Jab + direto + cruzado', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Jab + direto + uppercut', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Sombra com defesa', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Sombra em alta intensidade', rounds: 2, durationSeconds: 180, restSeconds: 60 }
+      { name: 'Shadowboxing with movement', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Jab + cross', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Jab + cross + hook', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Jab + cross + uppercut', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Shadowboxing with defense', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'High-intensity shadowboxing', rounds: 2, durationSeconds: 180, restSeconds: 60 }
     ]
   },
   {
     code: 'BOXE_03',
-    name: 'Boxe 03 - Defesa e Condicionamento',
+    name: 'Boxing 03 - Defense and Conditioning',
     workoutTypeCode: 'boxing',
-    level: 'Intermediario',
+    level: 'Intermediate',
     xpReward: 170,
-    description: 'Treino para esquivas, defesa, resistencia e ritmo de luta.',
+    description: 'Workout for slips, defense, endurance and fight rhythm.',
     exercises: [
-      { name: 'Corda', rounds: 3, durationSeconds: 120, restSeconds: 30 },
-      { name: 'Esquiva lateral', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Pendulo', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Jab + direto + esquiva', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Bloqueio alto', rounds: 2, durationSeconds: 120, restSeconds: 30 },
-      { name: 'Sombra em alta intensidade', rounds: 3, durationSeconds: 180, restSeconds: 60 }
+      { name: 'Jump rope', rounds: 3, durationSeconds: 120, restSeconds: 30 },
+      { name: 'Lateral slip', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Bob and weave', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Jab + cross + slip', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'High block', rounds: 2, durationSeconds: 120, restSeconds: 30 },
+      { name: 'High-intensity shadowboxing', rounds: 3, durationSeconds: 180, restSeconds: 60 }
     ]
   },
   {
     code: 'KICK_01',
-    name: 'Kickboxing 01 - Base e Chutes',
+    name: 'Kickboxing 01 - Stance and Kicks',
     workoutTypeCode: 'kickboxing',
-    level: 'Iniciante',
+    level: 'Beginner',
     xpReward: 140,
-    description: 'Treino basico para guarda, base, movimentacao e chutes principais.',
+    description: 'Basic workout for guard, stance, movement and main kicks.',
     exercises: [
-      { name: 'Base e guarda de kickboxing', rounds: 2, durationSeconds: 120, restSeconds: 30 },
-      { name: 'Sombra de kickboxing', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Chute frontal', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Chute baixo alternado', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Joelhada alternada', rounds: 3, durationSeconds: 60, restSeconds: 30 },
-      { name: 'Sombra com chutes', rounds: 2, durationSeconds: 180, restSeconds: 60 }
+      { name: 'Kickboxing stance and guard', rounds: 2, durationSeconds: 120, restSeconds: 30 },
+      { name: 'Kickboxing shadowboxing', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Front kick', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Alternating low kick', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Alternating knee strike', rounds: 3, durationSeconds: 60, restSeconds: 30 },
+      { name: 'Shadowboxing with kicks', rounds: 2, durationSeconds: 180, restSeconds: 60 }
     ]
   },
   {
     code: 'KICK_02',
-    name: 'Kickboxing 02 - Combinacoes',
+    name: 'Kickboxing 02 - Combinations',
     workoutTypeCode: 'kickboxing',
-    level: 'Intermediario',
+    level: 'Intermediate',
     xpReward: 170,
-    description: 'Treino para unir socos, chutes e movimentacao.',
+    description: 'Workout to connect punches, kicks and movement.',
     exercises: [
-      { name: 'Sombra de kickboxing', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Jab + direto + chute frontal', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Jab + direto + chute baixo', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Jab + direto + cruzado + chute baixo', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Direto + cruzado + chute medio', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Sombra livre de kickboxing', rounds: 2, durationSeconds: 180, restSeconds: 60 }
+      { name: 'Kickboxing shadowboxing', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Jab + cross + front kick', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Jab + cross + low kick', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Jab + cross + hook + low kick', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Cross + hook + middle kick', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Free kickboxing shadowboxing', rounds: 2, durationSeconds: 180, restSeconds: 60 }
     ]
   },
   {
     code: 'KICK_03',
-    name: 'Kickboxing 03 - Defesa e Condicionamento',
+    name: 'Kickboxing 03 - Defense and Conditioning',
     workoutTypeCode: 'kickboxing',
-    level: 'Intermediario',
+    level: 'Intermediate',
     xpReward: 190,
-    description: 'Treino mais intenso, com defesa, contra-ataque e condicionamento.',
+    description: 'More intense workout with defense, counterattack and conditioning.',
     exercises: [
-      { name: 'Polichinelo com guarda', rounds: 3, durationSeconds: 60, restSeconds: 30 },
-      { name: 'Bloqueio de chute baixo', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Esquiva + contra-ataque', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Chute frontal + direto', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Chute medio alternado', rounds: 3, durationSeconds: 120, restSeconds: 45 },
-      { name: 'Burpee com guarda', sets: 3, reps: '8-12' },
-      { name: 'Sombra livre de kickboxing', rounds: 3, durationSeconds: 180, restSeconds: 60 }
+      { name: 'Jumping jack with guard', rounds: 3, durationSeconds: 60, restSeconds: 30 },
+      { name: 'Low-kick block', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Slip + counterattack', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Front kick + cross', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Alternating middle kick', rounds: 3, durationSeconds: 120, restSeconds: 45 },
+      { name: 'Burpee with guard', sets: 3, reps: '8-12' },
+      { name: 'Free kickboxing shadowboxing', rounds: 3, durationSeconds: 180, restSeconds: 60 }
     ]
   }
 ];

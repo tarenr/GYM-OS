@@ -1,70 +1,70 @@
 export const exerciseCatalog = [
   {
-    category: 'Peito',
+    category: 'Chest',
     exercises: [
-      { name: 'Supino reto com halteres', equipment: ['Banco reto', 'Halteres'], defaultSets: 4, defaultReps: '8-12' },
-      { name: 'Crucifixo reto com halteres', equipment: ['Banco reto', 'Halteres'], defaultSets: 3, defaultReps: '10-15' },
-      { name: 'Pullover com halter no banco', equipment: ['Banco reto', 'Halter'], defaultSets: 3, defaultReps: '10-15' },
-      { name: 'Squeeze press com halteres', equipment: ['Banco reto', 'Halteres'], defaultSets: 3, defaultReps: '10-15' },
-      { name: 'Supino fechado com halteres', equipment: ['Banco reto', 'Halteres'], defaultSets: 3, defaultReps: '8-12' }
+      { name: 'Flat dumbbell bench press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 4, defaultReps: '8-12' },
+      { name: 'Flat dumbbell fly', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '10-15' },
+      { name: 'Dumbbell pullover on bench', equipment: ['Flat bench', 'Dumbbell'], defaultSets: 3, defaultReps: '10-15' },
+      { name: 'Dumbbell squeeze press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '10-15' },
+      { name: 'Close-grip dumbbell bench press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '8-12' }
     ]
   },
   {
-    category: 'Costas',
+    category: 'Back',
     exercises: [
-      { name: 'Remada curvada com halteres', equipment: ['Halteres'], defaultSets: 4, defaultReps: '8-12' },
-      { name: 'Remada unilateral apoiado no banco', equipment: ['Banco reto', 'Halter'], defaultSets: 3, defaultReps: '10-12 cada lado' },
-      { name: 'Remada aberta com halteres', equipment: ['Halteres'], defaultSets: 3, defaultReps: '10-12' },
-      { name: 'Crucifixo inverso com halteres', equipment: ['Halteres'], defaultSets: 3, defaultReps: '12-15' },
-      { name: 'Pullover com halter', equipment: ['Banco reto', 'Halter'], defaultSets: 3, defaultReps: '10-15' }
+      { name: 'Bent-over dumbbell row', equipment: ['Dumbbells'], defaultSets: 4, defaultReps: '8-12' },
+      { name: 'Supported single-arm dumbbell row', equipment: ['Flat bench', 'Dumbbell'], defaultSets: 3, defaultReps: '10-12 each side' },
+      { name: 'Wide dumbbell row', equipment: ['Dumbbells'], defaultSets: 3, defaultReps: '10-12' },
+      { name: 'Dumbbell reverse fly', equipment: ['Dumbbells'], defaultSets: 3, defaultReps: '12-15' },
+      { name: 'Dumbbell pullover', equipment: ['Flat bench', 'Dumbbell'], defaultSets: 3, defaultReps: '10-15' }
     ]
   },
   {
     category: 'Biceps',
     exercises: [
-      { name: 'Rosca direta com halteres', equipment: ['Halteres'], defaultSets: 4, defaultReps: '8-12' },
-      { name: 'Rosca martelo com halteres', equipment: ['Halteres'], defaultSets: 3, defaultReps: '10-12' },
-      { name: 'Rosca concentrada', equipment: ['Banco reto', 'Halter'], defaultSets: 3, defaultReps: '10-12 cada braco' },
-      { name: 'Rosca alternada', equipment: ['Halteres'], defaultSets: 3, defaultReps: '10-12' }
+      { name: 'Dumbbell curl', equipment: ['Dumbbells'], defaultSets: 4, defaultReps: '8-12' },
+      { name: 'Dumbbell hammer curl', equipment: ['Dumbbells'], defaultSets: 3, defaultReps: '10-12' },
+      { name: 'Concentration curl', equipment: ['Flat bench', 'Dumbbell'], defaultSets: 3, defaultReps: '10-12 each arm' },
+      { name: 'Alternating dumbbell curl', equipment: ['Dumbbells'], defaultSets: 3, defaultReps: '10-12' }
     ]
   },
   {
     category: 'Triceps',
     exercises: [
-      { name: 'Triceps frances com halter', equipment: ['Halter'], defaultSets: 3, defaultReps: '10-12' },
-      { name: 'Triceps testa com halteres', equipment: ['Banco reto', 'Halteres'], defaultSets: 3, defaultReps: '10-12' },
-      { name: 'Supino fechado com halteres', equipment: ['Banco reto', 'Halteres'], defaultSets: 3, defaultReps: '8-12' },
-      { name: 'Coice de triceps com halter', equipment: ['Halter'], defaultSets: 3, defaultReps: '12-15 cada braco' }
+      { name: 'Overhead dumbbell triceps extension', equipment: ['Dumbbell'], defaultSets: 3, defaultReps: '10-12' },
+      { name: 'Dumbbell skull crusher', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '10-12' },
+      { name: 'Close-grip dumbbell bench press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '8-12' },
+      { name: 'Dumbbell triceps kickback', equipment: ['Dumbbell'], defaultSets: 3, defaultReps: '12-15 each arm' }
     ]
   },
   {
-    category: 'Pernas',
+    category: 'Legs',
     exercises: [
-      { name: 'Agachamento goblet', equipment: ['Kettlebell ou Halter'], defaultSets: 4, defaultReps: '10-15' },
-      { name: 'Afundo com halteres', equipment: ['Halteres'], defaultSets: 3, defaultReps: '10 cada perna' },
-      { name: 'Stiff com halteres', equipment: ['Halteres'], defaultSets: 4, defaultReps: '10-12' },
-      { name: 'Elevacao pelvica com halter', equipment: ['Banco reto', 'Halter'], defaultSets: 3, defaultReps: '12-15' },
-      { name: 'Agachamento sumo com halter', equipment: ['Halter ou Kettlebell'], defaultSets: 3, defaultReps: '10-15' },
-      { name: 'Panturrilha em pe com halteres', equipment: ['Halteres'], defaultSets: 4, defaultReps: '15-25' }
+      { name: 'Goblet squat', equipment: ['Kettlebell or dumbbell'], defaultSets: 4, defaultReps: '10-15' },
+      { name: 'Dumbbell lunge', equipment: ['Dumbbells'], defaultSets: 3, defaultReps: '10 each leg' },
+      { name: 'Dumbbell Romanian deadlift', equipment: ['Dumbbells'], defaultSets: 4, defaultReps: '10-12' },
+      { name: 'Dumbbell hip thrust', equipment: ['Flat bench', 'Dumbbell'], defaultSets: 3, defaultReps: '12-15' },
+      { name: 'Dumbbell sumo squat', equipment: ['Dumbbell or kettlebell'], defaultSets: 3, defaultReps: '10-15' },
+      { name: 'Standing dumbbell calf raise', equipment: ['Dumbbells'], defaultSets: 4, defaultReps: '15-25' }
     ]
   },
   {
-    category: 'Ombros',
+    category: 'Shoulders',
     exercises: [
-      { name: 'Desenvolvimento com halteres', equipment: ['Halteres'], defaultSets: 4, defaultReps: '8-12' },
-      { name: 'Elevacao lateral com halteres', equipment: ['Halteres'], defaultSets: 3, defaultReps: '12-15' },
-      { name: 'Elevacao frontal com halteres', equipment: ['Halteres'], defaultSets: 3, defaultReps: '12-15' },
-      { name: 'Crucifixo inverso com halteres', equipment: ['Halteres'], defaultSets: 3, defaultReps: '12-15' },
-      { name: 'Encolhimento com halteres', equipment: ['Halteres'], defaultSets: 3, defaultReps: '12-15' }
+      { name: 'Dumbbell shoulder press', equipment: ['Dumbbells'], defaultSets: 4, defaultReps: '8-12' },
+      { name: 'Dumbbell lateral raise', equipment: ['Dumbbells'], defaultSets: 3, defaultReps: '12-15' },
+      { name: 'Dumbbell front raise', equipment: ['Dumbbells'], defaultSets: 3, defaultReps: '12-15' },
+      { name: 'Dumbbell reverse fly', equipment: ['Dumbbells'], defaultSets: 3, defaultReps: '12-15' },
+      { name: 'Dumbbell shrug', equipment: ['Dumbbells'], defaultSets: 3, defaultReps: '12-15' }
     ]
   },
   {
-    category: 'Abdomen',
+    category: 'Core',
     exercises: [
-      { name: 'Prancha', equipment: ['Peso corporal'], defaultSets: 3, defaultReps: '30-60 segundos' },
-      { name: 'Abdominal tradicional', equipment: ['Peso corporal'], defaultSets: 3, defaultReps: '15-25' },
-      { name: 'Elevacao de pernas', equipment: ['Peso corporal'], defaultSets: 3, defaultReps: '10-15' },
-      { name: 'Russian twist com halter', equipment: ['Halter'], defaultSets: 3, defaultReps: '20 alternado' }
+      { name: 'Plank', equipment: ['Bodyweight'], defaultSets: 3, defaultReps: '30-60 seconds' },
+      { name: 'Crunch', equipment: ['Bodyweight'], defaultSets: 3, defaultReps: '15-25' },
+      { name: 'Leg raise', equipment: ['Bodyweight'], defaultSets: 3, defaultReps: '10-15' },
+      { name: 'Dumbbell Russian twist', equipment: ['Dumbbell'], defaultSets: 3, defaultReps: '20 alternating' }
     ]
   }
 ];

@@ -15,7 +15,7 @@ export async function getTodayMission(request, response, next) {
     const mission = await DailyMission.findOne({ dayIndex, active: true });
 
     if (!mission) {
-      return response.status(404).json({ message: 'Missao diaria nao encontrada.' });
+      return response.status(404).json({ message: 'Daily mission not found.' });
     }
 
     response.json(mission);

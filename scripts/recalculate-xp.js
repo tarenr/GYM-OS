@@ -41,7 +41,7 @@ async function main() {
 
   const dates = await getWorkoutDates();
 
-  console.log(`Datas com treinos: ${dates.length}`);
+  console.log(`Dates with workouts: ${dates.length}`);
 
   if (!dates.length) {
     return;
@@ -55,7 +55,7 @@ async function main() {
     }
 
     console.table(preview);
-    console.log('Modo previa: nenhum XP foi gravado. Rode npm run xp:recalculate para salvar snapshots.');
+    console.log('Preview mode: no XP was saved. Run npm run xp:recalculate to save snapshots.');
     return;
   }
 
@@ -65,14 +65,14 @@ async function main() {
     const updated = await recalculateWorkoutDateXpSnapshots(dateKey);
 
     results.push({
-      data: dateKey,
-      treinos: updated.length,
+      date: dateKey,
+      workouts: updated.length,
       xpTotal: updated.reduce((total, workout) => total + Number(workout.xp?.total || 0), 0)
     });
   }
 
   console.table(results);
-  console.log(`Snapshots recalculados para ${results.reduce((total, item) => total + item.treinos, 0)} treinos.`);
+  console.log(`Snapshots recalculated for ${results.reduce((total, item) => total + item.workouts, 0)} workouts.`);
 }
 
 main()

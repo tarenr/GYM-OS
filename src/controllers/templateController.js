@@ -10,7 +10,7 @@ function normalizeTemplatePayload(payload) {
     description: String(payload.description || '').trim(),
     workoutTypeId: payload.workoutTypeId || null,
     workoutTypeCode: String(payload.workoutTypeCode || 'strength').toLowerCase().trim(),
-    workoutTypeName: String(payload.workoutTypeName || 'Musculacao').trim(),
+    workoutTypeName: String(payload.workoutTypeName || 'Strength').trim(),
     measurementType: String(payload.measurementType || 'sets_reps_weight').trim(),
     exercises: (payload.exercises || []).map((exercise, index) => ({
       exerciseId: exercise.exerciseId,
@@ -44,7 +44,7 @@ function normalizeTemplatePayload(payload) {
 }
 
 function notFoundResponse(response) {
-  return response.status(404).json({ message: 'Ficha nao encontrada.' });
+  return response.status(404).json({ message: 'Template not found.' });
 }
 
 export async function listTemplates(request, response, next) {

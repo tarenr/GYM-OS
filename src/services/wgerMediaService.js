@@ -2,53 +2,52 @@ const wgerBaseUrl = process.env.WGER_API_URL || 'https://wger.de/api/v2';
 const cacheTtlMs = Number(process.env.WGER_CACHE_TTL_MS || 1000 * 60 * 60);
 
 const exerciseSearchAliases = new Map([
-  ['supino reto com halteres', 'dumbbell bench press'],
-  ['supino reto com pegada supinada', 'reverse grip dumbbell bench press'],
-  ['crucifixo reto com halteres', 'dumbbell fly'],
-  ['pullover com halter no banco', 'dumbbell pullover'],
-  ['pullover com halter no banco reto', 'dumbbell pullover'],
-  ['squeeze press com halteres', 'dumbbell squeeze press'],
-  ['supino fechado com halteres', 'dumbbell close grip bench press'],
-  ['triceps frances com halter', 'dumbbell overhead triceps extension'],
-  ['triceps testa com halteres', 'dumbbell lying triceps extension'],
-  ['triceps testa com halteres ou barra curta', 'dumbbell lying triceps extension'],
-  ['coice de triceps com halter', 'dumbbell triceps kickback'],
-  ['remada curvada com halteres', 'dumbbell bent over row'],
-  ['remada unilateral apoiado no banco', 'dumbbell one arm row'],
-  ['remada aberta com halteres', 'dumbbell rear delt row'],
-  ['crucifixo inverso com halteres', 'dumbbell reverse fly'],
-  ['rosca direta com halteres', 'dumbbell curl'],
-  ['rosca direta com halteres ou barra curta', 'dumbbell curl'],
-  ['rosca alternada', 'alternating dumbbell curl'],
-  ['rosca martelo com halteres', 'hammer curl'],
-  ['rosca concentrada', 'concentration curl'],
-  ['abdominal tradicional', 'crunch'],
-  ['elevacao de pernas', 'leg raise'],
-  ['elevacao frontal com halteres', 'dumbbell front raise'],
-  ['agachamento goblet com kettlebell ou halter', 'goblet squat'],
-  ['agachamento goblet', 'goblet squat'],
-  ['afundo com halteres', 'dumbbell lunge'],
-  ['stiff com halteres', 'dumbbell romanian deadlift'],
-  ['elevacao pelvica com halter', 'weighted hip thrust'],
-  ['panturrilha em pe com halteres', 'dumbbell standing calf raise'],
-  ['desenvolvimento com halteres', 'dumbbell shoulder press'],
-  ['elevacao lateral com halteres', 'dumbbell lateral raise'],
-  ['encolhimento com halteres', 'dumbbell shrug']
+  ['flat dumbbell bench press', 'dumbbell bench press'],
+  ['reverse-grip dumbbell bench press', 'reverse grip dumbbell bench press'],
+  ['flat dumbbell fly', 'dumbbell fly'],
+  ['dumbbell pullover on bench', 'dumbbell pullover'],
+  ['dumbbell pullover on flat bench', 'dumbbell pullover'],
+  ['dumbbell squeeze press', 'dumbbell squeeze press'],
+  ['close-grip dumbbell bench press', 'dumbbell close grip bench press'],
+  ['overhead dumbbell triceps extension', 'dumbbell overhead triceps extension'],
+  ['dumbbell skull crusher', 'dumbbell lying triceps extension'],
+  ['dumbbell or short-bar skull crusher', 'dumbbell lying triceps extension'],
+  ['dumbbell triceps kickback', 'dumbbell triceps kickback'],
+  ['bent-over dumbbell row', 'dumbbell bent over row'],
+  ['supported single-arm dumbbell row', 'dumbbell one arm row'],
+  ['wide dumbbell row', 'dumbbell rear delt row'],
+  ['dumbbell reverse fly', 'dumbbell reverse fly'],
+  ['dumbbell curl', 'dumbbell curl'],
+  ['dumbbell or short-bar curl', 'dumbbell curl'],
+  ['alternating dumbbell curl', 'alternating dumbbell curl'],
+  ['dumbbell hammer curl', 'hammer curl'],
+  ['concentration curl', 'concentration curl'],
+  ['crunch', 'crunch'],
+  ['leg raise', 'leg raise'],
+  ['dumbbell front raise', 'dumbbell front raise'],
+  ['goblet squat with kettlebell or dumbbell', 'goblet squat'],
+  ['goblet squat', 'goblet squat'],
+  ['dumbbell lunge', 'dumbbell lunge'],
+  ['dumbbell romanian deadlift', 'dumbbell romanian deadlift'],
+  ['dumbbell hip thrust', 'weighted hip thrust'],
+  ['standing dumbbell calf raise', 'dumbbell standing calf raise'],
+  ['dumbbell shoulder press', 'dumbbell shoulder press'],
+  ['dumbbell lateral raise', 'dumbbell lateral raise'],
+  ['dumbbell shrug', 'dumbbell shrug']
 ]);
 
 const searchStopWords = new Set([
-  'com',
-  'sem',
-  'para',
-  'por',
-  'cada',
-  'lado',
-  'alternado',
-  'alternada',
-  'halter',
-  'halteres',
-  'barra',
-  'curta'
+  'with',
+  'without',
+  'for',
+  'by',
+  'each',
+  'side',
+  'alternating',
+  'dumbbell',
+  'dumbbells',
+  'barbell',
+  'short'
 ]);
 
 let cachedCatalog = {
@@ -75,7 +74,7 @@ function getEnglishName(item) {
   const translations = Array.isArray(item.translations) ? item.translations : [];
   return translations.find((translation) => translation.language === 2)?.name
     || translations.find((translation) => translation.name)?.name
-    || `Exercicio ${item.id}`;
+    || `Exercise ${item.id}`;
 }
 
 function getBestImage(item) {
@@ -97,7 +96,7 @@ function normalizeWgerItem(item) {
     equipment: '',
     secondaryMuscles: [],
     imageUrl: image?.image || '',
-    imageAlt: name ? `Imagem do exercicio ${name}` : 'Imagem do exercicio',
+    imageAlt: name ? `Exercise image ${name}` : 'Exercise image',
     imageLicense: image?.license_title || '',
     imageLicenseUrl: image?.license_object_url || '',
     imageAuthor: image?.license_author || item.license_author || '',
@@ -117,15 +116,15 @@ async function fetchWgerCatalog() {
   const response = await fetch(`${wgerBaseUrl}/exerciseinfo/?limit=1000`);
 
   if (!response.ok) {
-    const error = new Error(`wger respondeu ${response.status}.`);
+    const error = new Error(`wger responded ${response.status}.`);
     error.statusCode = response.status;
     throw error;
   }
 
-  const data = await response.json();
+  const date = await response.json();
   cachedCatalog = {
     loadedAt: now,
-    items: Array.isArray(data.results) ? data.results : []
+    items: Array.isArray(date.results) ? date.results : []
   };
 
   return cachedCatalog.items;

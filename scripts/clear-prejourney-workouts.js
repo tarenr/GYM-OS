@@ -26,21 +26,21 @@ async function main() {
 
   if (workouts.length) {
     console.table(workouts.map((workout) => ({
-      data: toDateKey(workout.date),
-      ficha: workout.workoutCode,
-      nome: workout.workoutName,
-      demo: workout.isDemo ? 'sim' : 'nao',
+      date: toDateKey(workout.date),
+      template: workout.workoutCode,
+      name: workout.workoutName,
+      demo: workout.isDemo ? 'yes' : 'no',
       lote: workout.demoBatch || ''
     })));
   }
 
   if (!shouldDelete) {
-    console.log('Modo previa: nenhum treino foi removido. Rode npm run journey:clear:prestart para apagar os treinos pre-jornada.');
+    console.log('Preview mode: no workout was removed. Run npm run journey:clear:prestart to delete pre-journey workouts.');
     return;
   }
 
   const result = await Workout.deleteMany(preJourneyFilter);
-  console.log(`Treinos pre-jornada removidos: ${result.deletedCount}`);
+  console.log(`Treinos pre-jornada removeds: ${result.deletedCount}`);
 }
 
 main()

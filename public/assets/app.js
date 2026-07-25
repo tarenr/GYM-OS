@@ -424,8 +424,8 @@ function getMissionTotalXp(mission) {
 }
 
 function getBlockLabel(block) {
-  if (block.type === 'strength') return 'Forca';
-  if (block.type === 'combat') return block.modality === 'boxing' ? 'Boxe' : 'Kickboxing';
+  if (block.type === 'strength') return 'Strength';
+  if (block.type === 'combat') return block.modality === 'boxing' ? 'Boxing' : 'Kickboxing';
   return 'Recovery';
 }
 
@@ -630,7 +630,7 @@ function getDashboardBlockAction(block, dateKey) {
     };
   }
 
-  const blockLabel = block.type === 'strength' ? 'Forca' : 'Luta';
+  const blockLabel = block.type === 'strength' ? 'Strength' : 'Combat';
   const blockCode = block.workoutCode || '';
 
   if (stateInfo.status === 'done') {
@@ -2514,7 +2514,7 @@ function createSetRow(set = {}, loadMode = 'dumbbell_each') {
       <input class="set-reps" type="number" min="0" step="1" value="${set.reps ?? ''}" placeholder="Reps" aria-label="Reps" required />
       <small>reps</small>
     </div>
-    <button class="icon-button remove-set" type="button" aria-label="Remover serie">x</button>
+    <button class="icon-button remove-set" type="button" aria-label="Remove set">x</button>
   `;
 
   row.querySelector('.remove-set').addEventListener('click', () => {
@@ -2553,22 +2553,22 @@ function createRoundRow(round = {}) {
   row.innerHTML = `
     <span class="set-number">R</span>
     <div class="set-field">
-      <input class="round-duration" type="number" min="0" step="1" value="${round.durationSeconds ?? ''}" placeholder="Tempo" aria-label="Round duration in seconds" required />
-      <small>seg</small>
+      <input class="round-duration" type="number" min="0" step="1" value="${round.durationSeconds ?? ''}" placeholder="Time" aria-label="Round duration in seconds" required />
+      <small>sec</small>
     </div>
     <div class="set-field">
-      <input class="round-rest" type="number" min="0" step="1" value="${round.restSeconds ?? ''}" placeholder="Desc." aria-label="Rest in seconds" required />
-      <small>desc</small>
+      <input class="round-rest" type="number" min="0" step="1" value="${round.restSeconds ?? ''}" placeholder="Rest" aria-label="Rest in seconds" required />
+      <small>rest</small>
     </div>
     <div class="set-field">
-      <input class="round-reps" type="number" min="0" step="1" value="${round.reps ?? 0}" placeholder="Golpes" aria-label="Golpes ou repeticoes" />
+      <input class="round-reps" type="number" min="0" step="1" value="${round.reps ?? 0}" placeholder="Strikes" aria-label="Strikes or reps" />
       <small>strikes</small>
     </div>
     <div class="set-field">
       <input class="round-intensity" type="number" min="0" max="10" step="1" value="${round.intensity ?? 7}" placeholder="Int." aria-label="Intensity from 0 to 10" />
       <small>0-10</small>
     </div>
-    <button class="icon-button remove-set" type="button" aria-label="Remover round">x</button>
+    <button class="icon-button remove-set" type="button" aria-label="Remove round">x</button>
   `;
 
   row.querySelector('.remove-set').addEventListener('click', () => {
@@ -2726,7 +2726,7 @@ function addExercise(exercise = {}) {
         <input class="exercise-skipped" type="checkbox" ${exercise.skipped ? 'checked' : ''} />
         <span>I will not do this exercise today</span>
       </label>
-      <input class="exercise-skip-reason" type="text" placeholder="Motivo opcional" value="${escapeHtml(exercise.skipReason || '')}" ${exercise.skipped ? '' : 'hidden disabled'} />
+      <input class="exercise-skip-reason" type="text" placeholder="Optional reason" value="${escapeHtml(exercise.skipReason || '')}" ${exercise.skipped ? '' : 'hidden disabled'} />
     `;
     const anchor = card.querySelector('.planned-meta') || card.querySelector('.form-grid');
 
@@ -2760,7 +2760,7 @@ function addExercise(exercise = {}) {
     }) : createSetRow({}, card.dataset.loadMode || loadMode));
     refreshSetNumbers(setsList);
   });
-  card.querySelector('.add-set').textContent = isRoundBased ? 'Add round' : 'Add serie';
+  card.querySelector('.add-set').textContent = isRoundBased ? 'Add round' : 'Add set';
   updateExerciseSkippedState(card);
 
   card.querySelector('.remove-exercise').addEventListener('click', () => {
@@ -3687,13 +3687,13 @@ function renderDashboard() {
     const strengthBlock = (mission?.blocks || []).find((block) => block.type === 'strength');
     const displayCode = mission?.restDay ? 'DESC' : strengthBlock?.workoutCode || item.code;
     const status = mission?.restDay || item.code === 'DESC'
-      ? 'descanso'
+      ? 'rest'
       : missionStatus?.complete
         ? 'done'
         : missionStatus?.completed > 0 || missionStatus?.attempted > 0
           ? 'partial'
           : isToday
-            ? 'hoje'
+            ? 'today'
             : 'pending';
     const title = mission
       ? `${mission.missionName} | ${formatDate(dateKey)}`
@@ -3774,7 +3774,7 @@ function renderDashboardEvolutionSubtab() {
     }
   ]);
 
-  // 2. Season Progress (Temporada 2026)
+  // 2. Season Progress (Season 2026)
   const position = getJourneyPosition();
   const dashSeasonBadge = document.getElementById('dash-safe-season-badge');
   const dashSeasonGrid = document.getElementById('dash-safe-season-grid');
@@ -3793,7 +3793,7 @@ function renderDashboardEvolutionSubtab() {
         className: 'annual'
       },
       {
-        label: `Temporada ${position.seasonNumber} - ${position.season.name}`,
+        label: `Season ${position.seasonNumber} - ${position.season.name}`,
         value: `${position.seasonPercent}%`,
         detail: position.season.focus,
         percent: position.seasonPercent,
@@ -3837,7 +3837,7 @@ function renderDashboardEvolutionSubtab() {
     : 0;
 
   if (dashBodyCount) {
-    dashBodyCount.textContent = `${measurements.length} REGISTROS`;
+    dashBodyCount.textContent = `${measurements.length} RECORDS`;
   }
 
   if (dashBodySummary) {
@@ -3853,14 +3853,14 @@ function renderDashboardEvolutionSubtab() {
         icon: 'CIN',
         label: 'Waist',
         value: formatMeasurementValue(latestValues.waist, ' cm'),
-        detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} since start` : 'medida principal',
+        detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} since start` : 'main measurement',
         tone: 'blue'
       },
       {
         icon: 'ABD',
         label: 'Abdomen',
         value: formatMeasurementValue(latestValues.abdomen, ' cm'),
-        detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} since start` : 'acompanhe a tendencia',
+        detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} since start` : 'track the trend',
         tone: 'orange'
       },
       {
@@ -3877,7 +3877,7 @@ function renderDashboardEvolutionSubtab() {
     const insight = getBodyInsight(measurements, daysSinceLast);
     dashBodyInsight.className = `body-progress-insight ${insight.tone}`;
     dashBodyInsight.innerHTML = `
-      <span>LEITURA</span>
+      <span>READING</span>
       <h3>${escapeHtml(insight.title)}</h3>
       <p>${escapeHtml(insight.detail)}</p>
     `;
@@ -3886,9 +3886,9 @@ function renderDashboardEvolutionSubtab() {
   if (dashBodyCycle) {
     const cycle = getBodyCycleSummary(measurements);
     dashBodyCycle.innerHTML = `
-      <span>CICLO ATUAL</span>
+      <span>CURRENT CYCLE</span>
       <h3>${escapeHtml(cycle.label)} | ${cycle.count} measurement${cycle.count === 1 ? '' : 's'}</h3>
-      <p>Desde ${escapeHtml(formatDate(cycle.startDate))}: peso ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | waist ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
+      <p>Since ${escapeHtml(formatDate(cycle.startDate))}: weight ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | waist ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
     `;
   }
 
@@ -4251,13 +4251,13 @@ function getExercisePrMetrics(entry) {
     return [
       {
         type: 'round_time',
-        label: 'Tempo',
+        label: 'Time',
         value: entry.totalRoundSeconds,
         formatted: formatSeconds(entry.totalRoundSeconds)
       },
       {
         type: 'round_reps',
-        label: 'Golpes',
+        label: 'Strikes',
         value: entry.roundReps,
         formatted: `${entry.roundReps} strikes`
       }
@@ -4430,7 +4430,7 @@ function formatExerciseProgressPrimary(entry) {
     return formatSeconds(entry.totalRoundSeconds);
   }
 
-  return `${entry.validSets + entry.validRounds} unidades`;
+  return `${entry.validSets + entry.validRounds} units`;
 }
 
 function getExerciseCompareMetrics(entries) {
@@ -4439,12 +4439,12 @@ function getExerciseCompareMetrics(entries) {
   if (hasRounds) {
     return [
       {
-        label: 'Tempo',
+        label: 'Time',
         value: (entry) => entry.totalRoundSeconds,
         format: (value) => formatSeconds(value)
       },
       {
-        label: 'Golpes',
+        label: 'Strikes',
         value: (entry) => entry.roundReps,
         format: (value) => `${formatCompactNumber(value)} strikes`
       }
@@ -4587,9 +4587,9 @@ function renderProgressExerciseSummary(entries) {
     },
     {
       icon: isRoundBased ? 'TIME' : 'VOL',
-      label: isRoundBased ? 'Tempo total' : 'Volume total',
+      label: isRoundBased ? 'Total time' : 'Total volume',
       value: totalPrimary,
-      detail: isRoundBased ? 'rounds completeds' : 'carga x repeticoes',
+      detail: isRoundBased ? 'completed rounds' : 'load x reps',
       tone: 'orange'
     },
     {
@@ -4824,7 +4824,7 @@ function getAnnualAchievements(stats) {
     makeAnnualAchievement({
       id: 'first-strength',
       category: 'Modality',
-      title: 'Forca Iniciada',
+      title: 'Strength Started',
       description: 'Complete the first strength workout of the journey.',
       progress: stats.strengthWorkouts,
       target: 1
@@ -5143,7 +5143,7 @@ function renderSeasonProgress() {
     },
     {
       icon: `T${position.seasonNumber}`,
-      label: 'Temporada',
+      label: 'Season',
       value: position.season.name,
       detail: `week ${position.weekInSeason}/${academySeasonWeeks}`,
       tone: 'blue'
@@ -5173,7 +5173,7 @@ function renderSeasonProgress() {
       className: 'annual'
     },
     {
-      label: `Temporada ${position.seasonNumber} - ${position.season.name}`,
+      label: `Season ${position.seasonNumber} - ${position.season.name}`,
       value: `${position.seasonPercent}%`,
       detail: position.season.focus,
       percent: position.seasonPercent,
@@ -5462,7 +5462,7 @@ function getBodyInsight(measurements, daysSinceLast) {
 
   if (weightDelta > 0 && (waistDelta < 0 || abdomenDelta < 0)) {
     return {
-      title: 'Weight subiu, medida caiu',
+      title: 'Weight Up, Measurement Down',
       detail: `This may be recomposition. Weight ${formatBodyDelta(weightDelta, ' kg')} | waist ${formatBodyDelta(waistDelta, ' cm')}.`,
       tone: 'ok'
     };
@@ -5653,7 +5653,7 @@ function renderBodyProgress() {
   if (bodyProgressInsight) {
     bodyProgressInsight.className = `body-progress-insight ${insight.tone}`;
     bodyProgressInsight.innerHTML = `
-      <span>LEITURA</span>
+      <span>READING</span>
       <h3>${escapeHtml(insight.title)}</h3>
       <p>${escapeHtml(insight.detail)}</p>
     `;
@@ -5661,9 +5661,9 @@ function renderBodyProgress() {
 
   if (bodyProgressCycle) {
     bodyProgressCycle.innerHTML = `
-      <span>CICLO ATUAL</span>
+      <span>CURRENT CYCLE</span>
       <h3>${escapeHtml(cycle.label)} | ${cycle.count} measurement${cycle.count === 1 ? '' : 's'}</h3>
-      <p>Desde ${escapeHtml(formatDate(cycle.startDate))}: peso ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | waist ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
+      <p>Since ${escapeHtml(formatDate(cycle.startDate))}: weight ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | waist ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
     `;
   }
 
@@ -5871,7 +5871,7 @@ function renderHistoryStats(filteredWorkouts) {
       icon: 'KG',
       label: 'Volume',
       value: `${formatCompactNumber(totalVolume)} kg`,
-      detail: 'carga total filtrada',
+      detail: 'filtered total load',
       tone: 'blue'
     },
     {
@@ -6118,15 +6118,15 @@ Status: Planned rest`
 
         return `${formatMissionBlockCompletion(entry.block, entry.workout)} ${quality.label} ${quality.plannedCount ? `${quality.percent}%` : ''}`.trim();
       })
-      .join(', ') || 'nenhum';
+      .join(', ') || 'none';
     const attemptedLabels = attemptedBlockEntries
       .map((entry) => {
         const quality = getWorkoutExecutionQuality(entry.workout);
 
         return `${formatMissionBlockCompletion(entry.block, entry.workout)} ${quality.label} ${quality.plannedCount ? `${quality.percent}%` : ''}`.trim();
       })
-      .join(', ') || 'nenhum';
-    const missingLabels = missingBlocks.map((block) => block.workoutCode).join(', ') || 'nenhum';
+      .join(', ') || 'none';
+    const missingLabels = missingBlocks.map((block) => block.workoutCode).join(', ') || 'none';
     const extraLabels = completedWorkouts
       .filter((workout) => !completedWorkoutIds.has(workout._id) && !attemptedWorkoutIds.has(workout._id))
       .map((workout) => workout.workoutCode)
@@ -6138,9 +6138,9 @@ Status: Planned rest`
         return withExtra({
           className: 'heat-today',
           title: `${formatDate(dateKey)}
-Status: Em aberto
+Status: Open
 Mission: ${missionCodes}
-Done: nenhum
+Done: none
 Missing: ${missingLabels}`
         }, extraLabels);
       }
@@ -6148,9 +6148,9 @@ Missing: ${missingLabels}`
       return withExtra({
         className: 'heat-missed',
         title: `${formatDate(dateKey)}
-Status: Perdida
+Status: Missed
 Mission: ${missionCodes}
-Done: nenhum
+Done: none
 Missing: ${missingLabels}`
       }, extraLabels);
     }
@@ -6180,7 +6180,7 @@ Missing: ${missingLabels}`
     return withExtra({
       className: 'heat-complete',
       title: `${formatDate(dateKey)}
-Status: Completa
+Status: Complete
 Mission: ${missionCodes}
 Done: ${completedLabels}`
     }, extraLabels);
@@ -6366,7 +6366,7 @@ function renderExerciseStats(exercises = state.exercises) {
     },
     {
       icon: 'LUT',
-      label: 'Luta',
+      label: 'Combat',
       value: String(combatExercises),
       detail: 'boxe e kickboxing',
       tone: 'red'
@@ -6563,7 +6563,7 @@ function renderSelectedTemplateExercises() {
         <input class="template-planned-rounds" type="number" min="1" step="1" value="${exercise.plannedRounds || 1}" required />
       </label>
       <label>
-        Tempo/s
+        Time/s
         <input class="template-planned-duration" type="number" min="1" step="1" value="${exercise.plannedDurationSeconds || 60}" required />
       </label>
       <label>
@@ -6683,7 +6683,7 @@ function renderTemplateStats(templates = state.templates) {
     },
     {
       icon: 'LUT',
-      label: 'Luta',
+      label: 'Combat',
       value: String(combatTemplates),
       detail: 'boxe e kickboxing',
       tone: 'red'
@@ -7127,9 +7127,9 @@ function renderExerciseLogTable(exercise) {
         <thead>
           <tr>
             <th>Round</th>
-            <th>Tempo</th>
+            <th>Time</th>
             <th>Rest</th>
-            <th>Golpes</th>
+            <th>Strikes</th>
             <th>Int.</th>
           </tr>
         </thead>

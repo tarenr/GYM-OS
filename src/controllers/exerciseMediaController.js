@@ -29,19 +29,19 @@ export async function linkExerciseMedia(request, response, next) {
     const { exerciseId } = request.body;
 
     if (!mongoose.isValidObjectId(exerciseId)) {
-      return response.status(400).json({ message: 'Exercicio invalido.' });
+      return response.status(400).json({ message: 'Exercise invalido.' });
     }
 
     const media = normalizeMediaPayload(request.body);
 
     if (!media.imageUrl) {
-      return response.status(422).json({ message: 'Informe uma imagem para vincular ao exercicio.' });
+      return response.status(422).json({ message: 'Provide an image to link to the exercise.' });
     }
 
     const exercise = await Exercise.findById(exerciseId);
 
     if (!exercise) {
-      return response.status(404).json({ message: 'Exercicio nao encontrado.' });
+      return response.status(404).json({ message: 'Exercise not found.' });
     }
 
     const updatedExercise = await applyExerciseMedia(exercise, media);
@@ -57,19 +57,19 @@ export async function syncExerciseMedia(request, response, next) {
     const { exerciseId } = request.body;
 
     if (!mongoose.isValidObjectId(exerciseId)) {
-      return response.status(400).json({ message: 'Exercicio invalido.' });
+      return response.status(400).json({ message: 'Exercise invalido.' });
     }
 
     const exercise = await Exercise.findById(exerciseId);
 
     if (!exercise) {
-      return response.status(404).json({ message: 'Exercicio nao encontrado.' });
+      return response.status(404).json({ message: 'Exercise not found.' });
     }
 
     const result = await syncExerciseImage(exercise, { force: true });
 
     if ((result.status === 'not-found' || result.status === 'unsupported-modality') && !result.exercise.imageUrl) {
-      return response.status(404).json({ message: 'Nenhuma imagem confiavel encontrada automaticamente para este exercicio.' });
+      return response.status(404).json({ message: 'No reliable automatic image found for this exercise.' });
     }
 
     response.json({

@@ -9,59 +9,66 @@ const shouldWrite = process.argv.includes('--write');
 
 const mediaByExerciseName = new Map([
   [
-    'remada curvada com halteres',
+    'flat dumbbell bench press',
     {
-      imageUrl: '/assets/exercises/ficha-b/remada-curvada-com-halteres.png',
-      imageAlt: 'Movimento inicial e final da remada curvada com halteres'
+      imageUrl: '/assets/exercises/template-a/supino-reto-com-halteres.png',
+      imageAlt: 'Start and end movement of flat dumbbell bench press'
     }
   ],
   [
-    'remada unilateral apoiado no banco',
+    'reverse-grip dumbbell bench press',
     {
-      imageUrl: '/assets/exercises/ficha-b/remada-unilateral-apoiado-no-banco.png',
-      imageAlt: 'Movimento inicial e final da remada unilateral apoiado no banco'
+      imageUrl: '/assets/exercises/template-a/supino-reto-pegada-supinada.png',
+      imageAlt: 'Start and end movement of reverse-grip dumbbell bench press'
     }
   ],
   [
-    'remada aberta com halteres',
+    'flat dumbbell fly',
     {
-      imageUrl: '/assets/exercises/ficha-b/remada-aberta-com-halteres.png',
-      imageAlt: 'Movimento inicial e final da remada aberta com halteres'
+      imageUrl: '/assets/exercises/template-a/crucifixo-reto-com-halteres.png',
+      imageAlt: 'Start and end movement of flat dumbbell fly'
     }
   ],
   [
-    'crucifixo inverso com halteres',
+    'dumbbell pullover on bench',
     {
-      imageUrl: '/assets/exercises/ficha-b/crucifixo-inverso-com-halteres.png',
-      imageAlt: 'Movimento inicial e final do crucifixo inverso com halteres'
+      imageUrl: '/assets/exercises/template-a/pullover-com-halter-no-banco-reto.png',
+      imageAlt: 'Start and end movement of dumbbell pullover on flat bench'
     }
   ],
   [
-    'rosca direta com halteres',
+    'dumbbell pullover on flat bench',
     {
-      imageUrl: '/assets/exercises/ficha-b/rosca-direta-com-halteres-ou-barra-curta.png',
-      imageAlt: 'Movimento inicial e final da rosca direta com halteres'
+      imageUrl: '/assets/exercises/template-a/pullover-com-halter-no-banco-reto.png',
+      imageAlt: 'Start and end movement of dumbbell pullover on flat bench'
     }
   ],
   [
-    'rosca direta com halteres ou barra curta',
+    'dumbbell squeeze press',
     {
-      imageUrl: '/assets/exercises/ficha-b/rosca-direta-com-halteres-ou-barra-curta.png',
-      imageAlt: 'Movimento inicial e final da rosca direta com halteres ou barra curta'
+      imageUrl: '/assets/exercises/template-a/squeeze-press-com-halteres.png',
+      imageAlt: 'Start and end movement of dumbbell squeeze press'
     }
   ],
   [
-    'rosca martelo com halteres',
+    'overhead dumbbell triceps extension',
     {
-      imageUrl: '/assets/exercises/ficha-b/rosca-martelo-com-halteres.png',
-      imageAlt: 'Movimento inicial e final da rosca martelo com halteres'
+      imageUrl: '/assets/exercises/template-a/triceps-frances-com-halter.png',
+      imageAlt: 'Start and end movement of overhead dumbbell triceps extension'
     }
   ],
   [
-    'rosca concentrada',
+    'dumbbell skull crusher',
     {
-      imageUrl: '/assets/exercises/ficha-b/rosca-concentrada.png',
-      imageAlt: 'Movimento inicial e final da rosca concentrada'
+      imageUrl: '/assets/exercises/template-a/triceps-testa-com-halteres.png',
+      imageAlt: 'Start and end movement of dumbbell skull crusher'
+    }
+  ],
+  [
+    'dumbbell or short-bar skull crusher',
+    {
+      imageUrl: '/assets/exercises/template-a/triceps-testa-com-halteres.png',
+      imageAlt: 'Start and end movement of dumbbell skull crusher'
     }
   ]
 ]);
@@ -114,10 +121,10 @@ async function findExercise(templateExercise) {
 async function main() {
   await connectDatabase();
 
-  const template = await WorkoutTemplate.findOne({ code: 'B', active: true });
+  const template = await WorkoutTemplate.findOne({ code: 'A', active: true });
 
   if (!template) {
-    throw new Error('Ficha B nao encontrada.');
+    throw new Error('Template A not found.');
   }
 
   const summary = [];
@@ -128,18 +135,18 @@ async function main() {
 
     if (!mediaPayload) {
       summary.push({
-        exercicio: templateExercise.name,
-        status: 'sem mapa de imagem',
-        imagem: ''
+        exercise: templateExercise.name,
+        status: 'no image map',
+        image: ''
       });
       continue;
     }
 
     if (!exercise) {
       summary.push({
-        exercicio: templateExercise.name,
-        status: 'exercicio nao encontrado',
-        imagem: mediaPayload.imageUrl
+        exercise: templateExercise.name,
+        status: 'exercise not found',
+        image: mediaPayload.imageUrl
       });
       continue;
     }
@@ -149,18 +156,18 @@ async function main() {
     }
 
     summary.push({
-      exercicio: templateExercise.name,
-      status: shouldWrite ? 'vinculado' : 'previa',
-      imagem: mediaPayload.imageUrl
+      exercise: templateExercise.name,
+      status: shouldWrite ? 'linked' : 'preview',
+      image: mediaPayload.imageUrl
     });
   }
 
-  console.log(`Ficha: ${template.code} - ${template.name}`);
-  console.log(`Modo: ${shouldWrite ? 'gravacao' : 'previa'}`);
+  console.log(`Template: ${template.code} - ${template.name}`);
+  console.log(`Mode: ${shouldWrite ? 'write' : 'preview'}`);
   console.table(summary);
 
   if (!shouldWrite) {
-    console.log('Nenhuma alteracao gravada. Rode com --write para aplicar.');
+    console.log('No changes saved. Run with --write to apply.');
   }
 }
 
