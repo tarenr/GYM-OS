@@ -23,7 +23,6 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const publicPath = path.resolve(__dirname, '../public');
-const chartJsPath = path.resolve(__dirname, '../node_modules/chart.js/dist');
 const documentationPath = path.resolve(__dirname, '../DOCUMENTACAO_APP.md');
 const academyRoadmapPath = path.resolve(__dirname, '../ROADMAP_ACADEMY.md');
 const academyProgressSystemPath = path.resolve(__dirname, '../ACADEMY_PROGRESS_SYSTEM.md');
@@ -287,7 +286,6 @@ function renderDocumentationPage(markdown) {
 
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
-app.use('/vendor/chart.js', express.static(chartJsPath));
 app.use(express.static(publicPath));
 
 app.use('/api/exercises', exerciseRoutes);
