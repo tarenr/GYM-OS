@@ -3327,6 +3327,213 @@ function renderDashboard() {
   });
   renderHeatmap();
   renderDailyMissions();
+  renderDashboardEvolutionSubtab();
+}
+
+function renderDashboardEvolutionSubtab() {
+  const dashXpSummary = document.getElementById('dash-safe-xp-summary');
+  if (!dashXpSummary) return;
+
+  // 1. XP Summary Cards
+  const items = getXpWorkouts();
+  const totalXp = items.reduce((total, item) => total + item.xp.total, 0);
+  const weeklyItems = items.filter((item) => new Date(item.workout.date) >= getMonday());
+  const weeklyXp = weeklyItems.reduce((total, item) => total + item.xp.total, 0);
+  const averageXp = items.length ? Math.round(totalXp / items.length) : 0;
+  const best = [...items].sort((a, b) => b.xp.total - a.xp.total)[0];
+  const executionXp = items.reduce((total, item) => total + item.xp.execution, 0);
+  const campaignXp = items.reduce((total, item) => total + item.xp.campaign, 0);
+
+  renderSummaryCards(dashXpSummary, [
+    {
+      icon: 'XP',
+      label: 'XP Total',
+      value: String(totalXp),
+      detail: `${executionXp} execucao + ${campaignXp} campanha`,
+      tone: 'green'
+    },
+    {
+      icon: 'WK',
+      label: 'XP Semana',
+      value: String(weeklyXp),
+      detail: `${weeklyItems.length} treinos nesta semana`,
+      tone: 'blue'
+    },
+    {
+      icon: 'AVG',
+      label: 'Media por Treino',
+      value: String(averageXp),
+      detail: 'xp medio por treino valido',
+      tone: 'orange'
+    },
+    {
+      icon: 'TOP',
+      label: 'Melhor Treino',
+      value: best ? String(best.xp.total) : '0',
+      detail: best ? `${best.workout.workoutCode} em ${formatDate(best.workout.date)}` : 'sem treinos ainda',
+      tone: 'purple'
+    }
+  ]);
+
+  // 2. Season Progress (Temporada 2026)
+  const position = getJourneyPosition();
+  const dashSeasonBadge = document.getElementById('dash-safe-season-badge');
+  const dashSeasonGrid = document.getElementById('dash-safe-season-grid');
+
+  if (dashSeasonBadge) {
+    dashSeasonBadge.textContent = position.label;
+  }
+
+  if (dashSeasonGrid) {
+    dashSeasonGrid.innerHTML = academySeasons.map((season) => {
+      const isCurrentSeason = season.number === position.seasonNumber;
+
+      return `
+        <article class="season-card ${isCurrentSeason ? 'active-season' : ''}">
+          <header>
+            <span>TEMPORADA ${season.number}</span>
+            <strong>${escapeHtml(season.name)}</strong>
+          </header>
+          <p>${escapeHtml(season.focus)}</p>
+          <div class="season-weeks">
+            ${Array.from({ length: academySeasonWeeks }, (_, index) => {
+              const weekNumber = ((season.number - 1) * academySeasonWeeks) + index + 1;
+              const isCompleted = weekNumber < position.week;
+              const isCurrent = weekNumber === position.week;
+              const stateClass = isCompleted ? 'completed' : isCurrent ? 'current' : 'future';
+
+              return `<span class="season-week-dot ${stateClass}" title="Semana ${weekNumber}"></span>`;
+            }).join('')}
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
+  // 3. Body Progress Section
+  const dashBodyCount = document.getElementById('dash-safe-body-count');
+  const dashBodySummary = document.getElementById('dash-safe-body-summary');
+  const dashBodyInsight = document.getElementById('dash-safe-body-insight');
+  const dashBodyCycle = document.getElementById('dash-safe-body-cycle');
+  const dashBodyChartGrid = document.getElementById('dash-safe-body-chart-grid');
+
+  const measurements = getSortedBodyMeasurements();
+  const first = measurements[0];
+  const latest = measurements[measurements.length - 1];
+  const latestValues = latest?.measurementsCm || {};
+  const firstValues = first?.measurementsCm || {};
+  const daysSinceLast = latest
+    ? Math.max(0, Math.floor((new Date(`${todayInputValue()}T00:00:00`) - new Date(`${getBodyMeasurementDateKey(latest)}T00:00:00`)) / 86400000))
+    : 0;
+
+  if (dashBodyCount) {
+    dashBodyCount.textContent = `${measurements.length} REGISTROS`;
+  }
+
+  if (dashBodySummary) {
+    renderSummaryCards(dashBodySummary, [
+      {
+        icon: 'KG',
+        label: 'Peso Atual',
+        value: formatMeasurementValue(latest?.weightKg, ' kg'),
+        detail: first && latest ? `${formatBodyDelta(Number(latest.weightKg || 0) - Number(first.weightKg || 0), ' kg')} desde o inicio` : 'aguardando primeira medicao',
+        tone: 'green'
+      },
+      {
+        icon: 'CIN',
+        label: 'Cintura',
+        value: formatMeasurementValue(latestValues.waist, ' cm'),
+        detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} desde o inicio` : 'medida principal',
+        tone: 'blue'
+      },
+      {
+        icon: 'ABD',
+        label: 'Abdomen',
+        value: formatMeasurementValue(latestValues.abdomen, ' cm'),
+        detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} desde o inicio` : 'acompanhe a tendencia',
+        tone: 'orange'
+      },
+      {
+        icon: 'DAY',
+        label: 'Ultima Medicao',
+        value: latest ? formatDate(getBodyMeasurementDateKey(latest)) : '-',
+        detail: latest ? `${daysSinceLast} dias atras` : 'sem registros',
+        tone: 'purple'
+      }
+    ]);
+  }
+
+  if (dashBodyInsight) {
+    const insight = getBodyInsight(measurements, daysSinceLast);
+    dashBodyInsight.className = `body-progress-insight ${insight.tone}`;
+    dashBodyInsight.innerHTML = `
+      <span>LEITURA</span>
+      <h3>${escapeHtml(insight.title)}</h3>
+      <p>${escapeHtml(insight.detail)}</p>
+    `;
+  }
+
+  if (dashBodyCycle) {
+    const cycle = getBodyCycleSummary(measurements);
+    dashBodyCycle.innerHTML = `
+      <span>CICLO ATUAL</span>
+      <h3>${escapeHtml(cycle.label)} | ${cycle.count} medicao${cycle.count === 1 ? '' : 'es'}</h3>
+      <p>Desde ${escapeHtml(formatDate(cycle.startDate))}: peso ${escapeHtml(formatBodyDelta(cycle.weightDelta, ' kg'))} | cintura ${escapeHtml(formatBodyDelta(cycle.waistDelta, ' cm'))}</p>
+    `;
+  }
+
+  if (dashBodyChartGrid) {
+    if (measurements.length < 2) {
+      dashBodyChartGrid.innerHTML = '<p class="empty-state">Registre pelo menos duas medicoes para gerar graficos corporais.</p>';
+    } else {
+      const chartConfigs = [
+        { key: 'weightKg', label: 'Peso', suffix: ' kg', tone: 'green' },
+        { key: 'waist', label: 'Cintura', suffix: ' cm', tone: 'blue' },
+        { key: 'abdomen', label: 'Abdomen', suffix: ' cm', tone: 'orange' }
+      ];
+
+      dashBodyChartGrid.innerHTML = chartConfigs.map((config) => {
+        const points = measurements
+          .map((measurement) => ({
+            dateKey: getBodyMeasurementDateKey(measurement),
+            value: config.key === 'weightKg'
+              ? Number(measurement.weightKg || 0)
+              : Number(measurement.measurementsCm?.[config.key] || 0)
+          }))
+          .filter((point) => point.value > 0);
+
+        if (!points.length) {
+          return `
+            <article class="body-progress-chart ${escapeHtml(config.tone)}">
+              <header><span>${escapeHtml(config.label)}</span><strong>-</strong></header>
+              <p>sem dados suficientes</p>
+            </article>
+          `;
+        }
+
+        const min = Math.min(...points.map((point) => point.value));
+        const max = Math.max(...points.map((point) => point.value));
+        const range = Math.max(1, max - min);
+        const bars = points.map((point) => {
+          const height = Math.max(12, Math.round(((point.value - min) / range) * 72) + 12);
+          return `<span style="height:${height}px" title="${escapeHtml(formatDate(point.dateKey))} | ${escapeHtml(formatMeasurementValue(point.value, config.suffix))}"></span>`;
+        }).join('');
+        const pFirst = points[0];
+        const pLatest = points[points.length - 1];
+
+        return `
+          <article class="body-progress-chart ${escapeHtml(config.tone)}">
+            <header>
+              <span>${escapeHtml(config.label)}</span>
+              <strong>${escapeHtml(formatBodyDelta(Number(pLatest?.value || 0) - Number(pFirst?.value || 0), config.suffix))}</strong>
+            </header>
+            <div class="body-chart-bars">${bars}</div>
+            <p>${escapeHtml(formatMeasurementValue(pFirst?.value, config.suffix))} -> ${escapeHtml(formatMeasurementValue(pLatest?.value, config.suffix))}</p>
+          </article>
+        `;
+      }).join('');
+    }
+  }
 }
 
 function renderDailyMissionBlocks(mission) {
