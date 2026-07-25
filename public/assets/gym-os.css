@@ -370,6 +370,8 @@ h3,
 h4,
 p {
   margin-top: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 h1 {
@@ -406,7 +408,8 @@ h4 {
   max-width: 640px;
   margin-bottom: 0;
   color: var(--muted-strong);
-  font-size: 0.98rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
 }
 
 .hero-metrics {
@@ -3235,10 +3238,15 @@ textarea:focus {
 
 .status-message,
 .history-meta,
-.empty-state,
 .detail-meta {
   color: var(--muted);
   font-size: 0.86rem;
+}
+
+.empty-state {
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.5;
 }
 
 .filter-row {
