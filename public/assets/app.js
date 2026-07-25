@@ -7423,6 +7423,19 @@ if (initialTab) {
   activateTab(initialTab, { updateUrl: false }).catch((error) => setStatus(error.message, true));
 }
 
+document.querySelectorAll('.dash-subnav-btn').forEach((button) => {
+  button.addEventListener('click', () => {
+    const targetTab = button.dataset.dashTab;
+    document.querySelectorAll('.dash-subnav-btn').forEach((item) => item.classList.remove('active'));
+    document.querySelectorAll('.dashboard-subtab').forEach((subtab) => subtab.classList.remove('active'));
+    button.classList.add('active');
+    const targetSubtab = document.getElementById(`dash-subtab-${targetTab}`);
+    if (targetSubtab) {
+      targetSubtab.classList.add('active');
+    }
+  });
+});
+
 loadWorkouts().catch((error) => setStatus(error.message, true));
 loadExercises()
   .then(renderExercisePage)
@@ -7432,3 +7445,4 @@ loadWorkoutTypes()
   .catch((error) => setWorkoutTypeStatus(error.message, true));
 loadDailyMissions().catch((error) => setStatus(error.message, true));
 loadBodyMeasurements().catch((error) => setBodyProgressStatus(error.message, true));
+
