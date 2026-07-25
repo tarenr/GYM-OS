@@ -2092,8 +2092,8 @@ function getDashboardActivityEvents(workouts, limit = 8) {
       title: isExtra
         ? 'Treino extra registrado'
         : isSubstitution
-          ? 'Bloco substituido na campanha'
-          : 'Bloco da campanha concluido',
+          ? 'Treino substituiu missao'
+          : 'Missao concluida',
       detail: isSubstitution
         ? `${origin.originalWorkoutCode} -> ${workout.workoutCode} | ${workout.workoutName}`
         : `Treino ${workout.workoutCode} - ${workout.workoutName}`,
@@ -2139,7 +2139,7 @@ function renderDashboardActivityFeed() {
   const events = getDashboardActivityEvents(state.allWorkouts);
 
   if (!events.length) {
-    dashboardActivityFeed.innerHTML = '<p class="empty-state">Salve um treino para gerar o feed de atividade.</p>';
+    dashboardActivityFeed.innerHTML = '<p class="empty-state">Registre um treino para gerar o feed de atividade.</p>';
     return;
   }
 
@@ -5784,7 +5784,7 @@ function renderDashboardHistory() {
   const recentWorkouts = state.allWorkouts.slice(0, 3);
 
   if (!recentWorkouts.length) {
-    dashboardHistory.innerHTML = '<p class="empty-state">Nenhuma sessao registrada ainda.</p>';
+    dashboardHistory.innerHTML = '<p class="empty-state">Nenhum treino registrado ainda.</p>';
     return;
   }
 
@@ -5801,7 +5801,7 @@ function renderWorkoutCard(workout) {
   const completedUnits = countCompletedUnits(workout);
   const quality = getWorkoutExecutionQuality(workout);
   const duration = Number(workout.durationMinutes || 0);
-  const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// Sessao registrada no protocolo.';
+  const note = workout.notes ? `// ${escapeHtml(workout.notes)}` : '// Treino registrado no protocolo.';
 
   return `
     <article class="workout-card">
