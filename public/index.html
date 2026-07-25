@@ -134,6 +134,9 @@
           <button class="dash-subnav-btn" type="button" data-dash-tab="analytics">
             <span class="dash-subnav-icon">📈</span> Desempenho & Métricas
           </button>
+          <button class="dash-subnav-btn" type="button" data-dash-tab="evolution">
+            <span class="dash-subnav-icon">🚀</span> Evolução & Progresso
+          </button>
           <button class="dash-subnav-btn" type="button" data-dash-tab="logs">
             <span class="dash-subnav-icon">📜</span> Activity Logs & Feed
           </button>
@@ -293,6 +296,41 @@
               </div>
               <div class="muscle-distribution" id="dashboard-muscle-distribution"></div>
             </article>
+          </section>
+        </div>
+
+        <!-- SUB-TAB 3: EVOLUÇÃO & PROGRESSO (SAFE & ISOLATED) -->
+        <div class="dashboard-subtab" id="dash-subtab-evolution">
+          <section class="summary-grid page-summary" id="dash-safe-xp-summary"></section>
+
+          <section class="panel season-progress-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">S</span>
+                <h2>SEASON_PROGRESS.sys</h2>
+              </div>
+              <span class="panel-badge" id="dash-safe-season-badge">TEMP 1</span>
+            </div>
+            <div class="season-progress-grid" id="dash-safe-season-grid"></div>
+          </section>
+
+          <section class="panel body-progress-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">KG</span>
+                <h2>BODY_PROGRESS.sys</h2>
+              </div>
+              <div class="panel-header-actions">
+                <span class="panel-badge" id="dash-safe-body-count">0 REG</span>
+                <button class="page-btn" type="button" data-tab-shortcut="progress">NOVA MEDIÇÃO</button>
+              </div>
+            </div>
+            <section class="summary-grid page-summary compact-summary" id="dash-safe-body-summary"></section>
+            <section class="body-progress-insight-grid">
+              <article class="body-progress-insight" id="dash-safe-body-insight"></article>
+              <article class="body-progress-cycle" id="dash-safe-body-cycle"></article>
+            </section>
+            <section class="body-progress-chart-grid" id="dash-safe-body-chart-grid"></section>
           </section>
         </div>
 
