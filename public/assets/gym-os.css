@@ -45,6 +45,7 @@
 }
 
 html {
+  font-size: 17px;
   scrollbar-gutter: stable;
 }
 
@@ -92,7 +93,7 @@ button:disabled {
 
 .app-layout {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: 292px minmax(0, 1fr);
   min-height: 100vh;
   max-width: 100%;
 }
@@ -216,11 +217,11 @@ button:disabled {
 }
 
 .app-shell {
-  width: min(1520px, calc(100% - 48px));
-  max-width: 100%;
+  width: calc(100% - 28px);
+  max-width: none;
   min-width: 0;
   margin: 0 auto;
-  padding: 32px 0 56px;
+  padding: 24px 0 48px;
 }
 
 /* ---------- FIGHTER CARD HEADER ---------- */
@@ -450,7 +451,7 @@ h4 {
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
   gap: 18px;
 }
 
@@ -2329,9 +2330,9 @@ h4 {
 
 .workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.75fr);
-  gap: 18px;
-  margin-top: 18px;
+  grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.8fr);
+  gap: 22px;
+  margin-top: 22px;
 }
 
 .workspace.single-column {
@@ -2461,7 +2462,7 @@ label {
   gap: 8px;
   margin-bottom: 14px;
   color: var(--muted);
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -2470,12 +2471,13 @@ input,
 select,
 textarea {
   width: 100%;
+  min-height: 48px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--bg);
   color: var(--muted-strong);
-  padding: 12px 13px;
-  font-size: 0.92rem;
+  padding: 12px 14px;
+  font-size: 0.98rem;
   font-weight: 600;
   outline: none;
   text-transform: none;
@@ -2498,9 +2500,9 @@ textarea:focus {
 .icon-button {
   border: 0;
   border-radius: 6px;
-  min-height: 40px;
-  padding: 0 14px;
-  font-size: 0.78rem;
+  min-height: 46px;
+  padding: 0 16px;
+  font-size: 0.92rem;
   font-weight: 900;
   text-transform: uppercase;
 }
@@ -3226,12 +3228,12 @@ textarea:focus {
 .history-meta,
 .detail-meta {
   color: var(--muted);
-  font-size: 0.86rem;
+  font-size: 0.94rem;
 }
 
 .empty-state {
   color: var(--muted);
-  font-size: 0.98rem;
+  font-size: 1.06rem;
   line-height: 1.5;
 }
 
@@ -3620,14 +3622,14 @@ textarea:focus {
 .page-subtitle {
   margin: 10px 0 0;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.94rem;
 }
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  margin-bottom: 26px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
 }
 
 .summary-card {
@@ -3823,10 +3825,10 @@ textarea:focus {
 
 .toolbar-panel {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
   align-items: end;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: rgba(22, 27, 34, 0.94);
@@ -3850,11 +3852,11 @@ textarea:focus {
 
 .toolbar-panel input,
 .toolbar-panel select {
-  min-height: 44px;
+  min-height: 48px;
 }
 
 .toolbar-panel .button {
-  min-height: 44px;
+  min-height: 48px;
   align-self: end;
   justify-self: start;
 }
@@ -3943,7 +3945,7 @@ textarea:focus {
   display: block;
   margin-top: 5px;
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   font-weight: 600;
   line-height: 1.45;
 }
@@ -4338,7 +4340,7 @@ textarea:focus {
   gap: 6px;
   padding-left: 18px;
   color: var(--muted-strong);
-  font-size: 0.82rem;
+  font-size: 0.92rem;
 }
 
 .exercise-library-card {
@@ -4544,6 +4546,10 @@ textarea:focus {
 }
 
 @media (max-width: 620px) {
+  html {
+    font-size: 16px;
+  }
+
   .app-shell {
     width: calc(100% - 20px);
     padding-top: 10px;
