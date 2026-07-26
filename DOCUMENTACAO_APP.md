@@ -1202,9 +1202,13 @@ Campos da v1:
 ```text
 data
 peso
+pescoco
+ombros
 peito
 braco direito
 braco esquerdo
+antebraco direito
+antebraco esquerdo
 cintura
 abdomen
 quadril
@@ -1225,6 +1229,8 @@ Interface:
 - resumo do ciclo atual da jornada;
 - historico com editar/excluir;
 - exibicao em ordem corporal, com pares direito/esquerdo na mesma linha;
+- mapa visual apenas em telas de computador;
+- pescoco, ombros e antebracos ficam fora do mapa visual para nao poluir a leitura;
 - conquista anual `Primeira Medicao`.
 
 ### Documentacao

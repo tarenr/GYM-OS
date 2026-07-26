@@ -2,9 +2,13 @@ import mongoose from 'mongoose';
 import { BodyMeasurement } from '../models/BodyMeasurement.js';
 
 const measurementFields = [
+  'neck',
+  'shoulders',
   'chest',
   'rightArm',
   'leftArm',
+  'rightForearm',
+  'leftForearm',
   'waist',
   'abdomen',
   'hips',
@@ -38,7 +42,7 @@ function validateBodyMeasurementPayload(payload) {
   const errors = [];
 
   if (!payload.measuredAt) {
-    errors.push('A data da medicao e obrigatoria.');
+    errors.push('Measurement date is required.');
   }
 
   if (Number(payload.weightKg || 0) < 0) {
@@ -52,7 +56,7 @@ function validateBodyMeasurementPayload(payload) {
   });
 
   if (String(payload.notes || '').length > 500) {
-    errors.push('As observacoes devem ter no maximo 500 caracteres.');
+    errors.push('Notes must be 500 characters or fewer.');
   }
 
   return errors;

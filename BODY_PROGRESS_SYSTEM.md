@@ -33,10 +33,13 @@ Descanso: domingo
 Para este objetivo, as metricas mais uteis sao:
 
 - peso;
+- pescoco;
+- ombros;
 - cintura;
 - abdomen;
 - peito;
 - bracos;
+- antebracos;
 - coxas;
 - quadril;
 - panturrilhas;
@@ -49,9 +52,13 @@ Primeira entrega recomendada:
 ```text
 data da medicao
 peso
+pescoco
+ombros
 peito
 braco direito
 braco esquerdo
+antebraco direito
+antebraco esquerdo
 cintura
 abdomen
 quadril
@@ -96,12 +103,16 @@ const BodyMeasurementSchema = new mongoose.Schema(
     },
 
     measurementsCm: {
+      neck: Number,
+      shoulders: Number,
       waist: Number,
       abdomen: Number,
       chest: Number,
       hips: Number,
       rightArm: Number,
       leftArm: Number,
+      rightForearm: Number,
+      leftForearm: Number,
       rightThigh: Number,
       leftThigh: Number,
       rightCalf: Number,
@@ -164,6 +175,35 @@ Primeira versao deve mostrar:
 - diferenca de cintura;
 - ultima medicao;
 - historico de medicoes.
+
+## Mapa Visual
+
+O `BODY_SCAN.visual` deve continuar focado nas medidas principais para nao poluir a leitura:
+
+```text
+peito
+bracos
+cintura
+abdomen
+quadril
+coxas
+panturrilhas
+```
+
+As medidas avancadas ficam fora do mapa visual:
+
+```text
+pescoco
+ombros
+antebracos
+```
+
+Regra de interface:
+
+```text
+O mapa visual deve aparecer somente em telas de computador.
+Em telas menores, o formulario, historico e indicadores continuam disponiveis.
+```
 
 ## Graficos
 

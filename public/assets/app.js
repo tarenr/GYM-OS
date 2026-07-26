@@ -222,12 +222,16 @@ const bodyProgressSummaryCards = document.querySelector('#body-progress-summary-
 const bodyMeasurementForm = document.querySelector('#body-measurement-form');
 const bodyMeasuredAtInput = document.querySelector('#body-measured-at');
 const bodyWeightKgInput = document.querySelector('#body-weight-kg');
+const bodyNeckInput = document.querySelector('#body-neck');
+const bodyShouldersInput = document.querySelector('#body-shoulders');
 const bodyWaistInput = document.querySelector('#body-waist');
 const bodyAbdomenInput = document.querySelector('#body-abdomen');
 const bodyChestInput = document.querySelector('#body-chest');
 const bodyHipsInput = document.querySelector('#body-hips');
 const bodyRightArmInput = document.querySelector('#body-right-arm');
 const bodyLeftArmInput = document.querySelector('#body-left-arm');
+const bodyRightForearmInput = document.querySelector('#body-right-forearm');
+const bodyLeftForearmInput = document.querySelector('#body-left-forearm');
 const bodyRightThighInput = document.querySelector('#body-right-thigh');
 const bodyLeftThighInput = document.querySelector('#body-left-thigh');
 const bodyRightCalfInput = document.querySelector('#body-right-calf');
@@ -3871,7 +3875,7 @@ function renderDashboardEvolutionSubtab() {
         tone: 'green'
       },
       {
-        icon: 'CIN',
+        icon: 'WST',
         label: 'Waist',
         value: formatMeasurementValue(latestValues.waist, ' cm'),
         detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} since start` : 'main measurement',
@@ -5367,9 +5371,13 @@ function getBodyMeasurementPayload() {
     measuredAt: bodyMeasuredAtInput.value,
     weightKg: Number(bodyWeightKgInput.value || 0),
     measurementsCm: {
+      neck: Number(bodyNeckInput.value || 0),
+      shoulders: Number(bodyShouldersInput.value || 0),
       chest: Number(bodyChestInput.value || 0),
       rightArm: Number(bodyRightArmInput.value || 0),
       leftArm: Number(bodyLeftArmInput.value || 0),
+      rightForearm: Number(bodyRightForearmInput.value || 0),
+      leftForearm: Number(bodyLeftForearmInput.value || 0),
       waist: Number(bodyWaistInput.value || 0),
       abdomen: Number(bodyAbdomenInput.value || 0),
       hips: Number(bodyHipsInput.value || 0),
@@ -5410,12 +5418,16 @@ function fillBodyMeasurementForm(measurement) {
   state.bodyMeasurementEditingId = measurement._id;
   bodyMeasuredAtInput.value = getBodyMeasurementDateKey(measurement);
   bodyWeightKgInput.value = measurement.weightKg || '';
+  bodyNeckInput.value = values.neck || '';
+  bodyShouldersInput.value = values.shoulders || '';
   bodyWaistInput.value = values.waist || '';
   bodyAbdomenInput.value = values.abdomen || '';
   bodyChestInput.value = values.chest || '';
   bodyHipsInput.value = values.hips || '';
   bodyRightArmInput.value = values.rightArm || '';
   bodyLeftArmInput.value = values.leftArm || '';
+  bodyRightForearmInput.value = values.rightForearm || '';
+  bodyLeftForearmInput.value = values.leftForearm || '';
   bodyRightThighInput.value = values.rightThigh || '';
   bodyLeftThighInput.value = values.leftThigh || '';
   bodyRightCalfInput.value = values.rightCalf || '';
@@ -5475,7 +5487,7 @@ function getBodyInsight(measurements, daysSinceLast) {
 
   if (Math.abs(weightDelta) <= 1 && (waistDelta < 0 || abdomenDelta < 0)) {
     return {
-      title: 'Recomposicao positiva',
+      title: 'Positive recomposition',
       detail: `Stable weight and core measurements decreasing: waist ${formatBodyDelta(waistDelta, ' cm')} | abdomen ${formatBodyDelta(abdomenDelta, ' cm')}.`,
       tone: 'ok'
     };
@@ -5491,7 +5503,7 @@ function getBodyInsight(measurements, daysSinceLast) {
 
   if (waistDelta < 0 || abdomenDelta < 0) {
     return {
-      title: 'Medidas centrais melhorando',
+      title: 'Core measurements improving',
       detail: `Waist ${formatBodyDelta(waistDelta, ' cm')} | abdomen ${formatBodyDelta(abdomenDelta, ' cm')} since start.`,
       tone: 'ok'
     };
@@ -5589,12 +5601,24 @@ function renderBodyProgressCharts(measurements) {
 function getBodyMeasurementLines(values = {}) {
   return [
     {
+      label: 'Neck',
+      value: formatMeasurementValue(values.neck, ' cm')
+    },
+    {
+      label: 'Shoulders',
+      value: formatMeasurementValue(values.shoulders, ' cm')
+    },
+    {
       label: 'Chest',
       value: formatMeasurementValue(values.chest, ' cm')
     },
     {
       label: 'Arms',
-      value: `Dir ${formatMeasurementValue(values.rightArm, ' cm')} | Esq ${formatMeasurementValue(values.leftArm, ' cm')}`
+      value: `Right ${formatMeasurementValue(values.rightArm, ' cm')} | Left ${formatMeasurementValue(values.leftArm, ' cm')}`
+    },
+    {
+      label: 'Forearms',
+      value: `Right ${formatMeasurementValue(values.rightForearm, ' cm')} | Left ${formatMeasurementValue(values.leftForearm, ' cm')}`
     },
     {
       label: 'Waist',
@@ -5610,11 +5634,11 @@ function getBodyMeasurementLines(values = {}) {
     },
     {
       label: 'Thighs',
-      value: `Dir ${formatMeasurementValue(values.rightThigh, ' cm')} | Esq ${formatMeasurementValue(values.leftThigh, ' cm')}`
+      value: `Right ${formatMeasurementValue(values.rightThigh, ' cm')} | Left ${formatMeasurementValue(values.leftThigh, ' cm')}`
     },
     {
       label: 'Calves',
-      value: `Dir ${formatMeasurementValue(values.rightCalf, ' cm')} | Esq ${formatMeasurementValue(values.leftCalf, ' cm')}`
+      value: `Right ${formatMeasurementValue(values.rightCalf, ' cm')} | Left ${formatMeasurementValue(values.leftCalf, ' cm')}`
     }
   ];
 }
@@ -5708,7 +5732,7 @@ function renderBodyProgress() {
       tone: 'green'
     },
     {
-      icon: 'CIN',
+      icon: 'WST',
       label: 'Waist',
       value: formatMeasurementValue(latestValues.waist, ' cm'),
       detail: first && latest ? `${formatBodyDelta(Number(latestValues.waist || 0) - Number(firstValues.waist || 0), ' cm')} since start` : 'main recomposition measurement',
@@ -5718,7 +5742,7 @@ function renderBodyProgress() {
       icon: 'ABD',
       label: 'Abdomen',
       value: formatMeasurementValue(latestValues.abdomen, ' cm'),
-      detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} since start` : 'acompanhe a tendencia',
+      detail: first && latest ? `${formatBodyDelta(Number(latestValues.abdomen || 0) - Number(firstValues.abdomen || 0), ' cm')} since start` : 'track the trend',
       tone: 'orange'
     },
     {
@@ -7846,7 +7870,7 @@ progressAchievementStatusFilter?.addEventListener('change', () => {
 
 bodyMeasurementForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
-  setBodyProgressStatus('Salvando...');
+  setBodyProgressStatus('Saving...');
 
   try {
     const payload = getBodyMeasurementPayload();
