@@ -5636,6 +5636,21 @@ function getBodyScanCallouts(measurement) {
   ];
 }
 
+function getBodyScanLines() {
+  return [
+    { key: 'chest', label: 'Chest', side: 'front', tone: 'red', x: 18, y: 28, width: 12 },
+    { key: 'rightArm', label: 'Right Arm', side: 'front', tone: 'red', x: 12, y: 35, width: 6 },
+    { key: 'leftArm', label: 'Left Arm', side: 'front', tone: 'red', x: 30, y: 35, width: 6 },
+    { key: 'waist', label: 'Waist', side: 'front', tone: 'orange', x: 18, y: 45, width: 12 },
+    { key: 'abdomen', label: 'Abdomen', side: 'front', tone: 'green', x: 18, y: 50, width: 12 },
+    { key: 'hips', label: 'Hips', side: 'back', tone: 'purple', x: 66, y: 53, width: 12 },
+    { key: 'rightThigh', label: 'Right Thigh', side: 'front', tone: 'blue', x: 14, y: 69, width: 7 },
+    { key: 'leftThigh', label: 'Left Thigh', side: 'front', tone: 'blue', x: 28, y: 69, width: 7 },
+    { key: 'rightCalf', label: 'Right Calf', side: 'back', tone: 'cyan', x: 63, y: 82, width: 6 },
+    { key: 'leftCalf', label: 'Left Calf', side: 'back', tone: 'cyan', x: 76, y: 82, width: 6 }
+  ];
+}
+
 function renderBodyScanVisual(measurements) {
   if (!bodyScanVisual) {
     return;
@@ -5643,12 +5658,18 @@ function renderBodyScanVisual(measurements) {
 
   const latest = measurements[measurements.length - 1];
   const callouts = getBodyScanCallouts(latest);
+  const lines = getBodyScanLines();
   const latestDate = latest ? formatDate(getBodyMeasurementDateKey(latest)) : 'No scan logged';
   const latestWeight = formatMeasurementValue(latest?.weightKg, ' kg');
 
   bodyScanVisual.innerHTML = `
     <div class="body-scan-stage">
       <img src="/assets/body/gym-os-body-scan-slayer.png" alt="GYM-OS body scan armored front and back reference" />
+      <div class="body-scan-lines" aria-hidden="true">
+        ${lines.map((item) => `
+          <span class="body-scan-line ${escapeHtml(item.side)} ${escapeHtml(item.tone)}" style="--x:${item.x}%; --y:${item.y}%; --w:${item.width}%;" title="${escapeHtml(item.label)}"></span>
+        `).join('')}
+      </div>
       <div class="body-scan-overlay" aria-hidden="true">
         ${callouts.map((item) => `
           <div class="body-scan-callout ${escapeHtml(item.side)}" style="--x:${item.x}%; --y:${item.y}%;">

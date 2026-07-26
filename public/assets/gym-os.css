@@ -2154,6 +2154,70 @@ h4 {
   inset: 0;
 }
 
+.body-scan-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.body-scan-line {
+  --line-color: var(--phosphor);
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  height: 0;
+  border-top: 2px dashed var(--line-color);
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--line-color) 70%, transparent));
+}
+
+.body-scan-line::before,
+.body-scan-line::after {
+  position: absolute;
+  top: -5px;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--line-color);
+  border-radius: 999px;
+  background: rgba(3, 10, 8, 0.86);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--line-color) 62%, transparent);
+  content: "";
+}
+
+.body-scan-line::before {
+  left: -4px;
+}
+
+.body-scan-line::after {
+  right: -4px;
+}
+
+.body-scan-line.red {
+  --line-color: #f85149;
+}
+
+.body-scan-line.orange {
+  --line-color: var(--orange);
+}
+
+.body-scan-line.green {
+  --line-color: var(--phosphor);
+}
+
+.body-scan-line.purple {
+  --line-color: #bc8cff;
+}
+
+.body-scan-line.blue {
+  --line-color: var(--blue);
+}
+
+.body-scan-line.cyan {
+  --line-color: #56d4dd;
+}
+
 .body-scan-callout {
   position: absolute;
   left: var(--x);
@@ -5354,6 +5418,10 @@ textarea:focus {
   }
 
   .body-scan-callout {
+    display: none;
+  }
+
+  .body-scan-lines {
     display: none;
   }
 
