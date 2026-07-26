@@ -5547,7 +5547,7 @@ textarea:focus {
 }
 
 .exercise-spec-panel div:only-child,
-.exercise-spec-panel div:nth-child(3) {
+.exercise-spec-prescription {
   grid-column: 1 / -1;
 }
 
@@ -5569,8 +5569,11 @@ textarea:focus {
   white-space: nowrap;
 }
 
-.exercise-spec-panel div:nth-child(2) strong {
+.exercise-spec-prescription strong {
   color: var(--orange);
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .mini-meter {

@@ -6953,11 +6953,11 @@ function renderExercisePage() {
               <span>Load type</span>
               <strong>${escapeHtml(loadMeta.fieldLabel)}</strong>
             </div>
-            <div>
+            ${equipmentMarkup}
+            <div class="exercise-spec-prescription">
               <span>Prescription</span>
               <strong>${escapeHtml(formatExercisePrescription(exercise))}</strong>
             </div>
-            ${equipmentMarkup}
           </div>
         </div>
         <div class="exercise-library-tip">
