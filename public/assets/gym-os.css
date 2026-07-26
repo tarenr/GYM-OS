@@ -554,16 +554,20 @@ h4 {
   margin-top: 18px;
 }
 
+.dashboard-subtab#dash-subtab-operations {
+  --operations-panel-gap: 18px;
+}
+
 .journey-overview-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: var(--operations-panel-gap);
   align-items: stretch;
 }
 
 .journey-overview-grid > .panel {
-  margin-top: 18px;
-  height: calc(100% - 18px);
+  margin-top: var(--operations-panel-gap);
+  height: calc(100% - var(--operations-panel-gap));
 }
 
 .journey-overview-grid .journey-command-panel {
@@ -856,6 +860,7 @@ h4 {
 }
 
 .operations-grid {
+  gap: var(--operations-panel-gap);
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: stretch;
 }
