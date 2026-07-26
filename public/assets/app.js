@@ -6302,6 +6302,14 @@ function getContextSubcategories({ category = 'all', modality = 'all' } = {}) {
     .sort();
 }
 
+function getContextCategories({ modality = 'all' } = {}) {
+  return [...new Set(state.exercises
+    .filter((exercise) => modality === 'all' || (exercise.modality || 'strength') === modality)
+    .map((exercise) => exercise.category)
+    .filter(Boolean))]
+    .sort();
+}
+
 function refreshCatalogSubcategoryOptions(currentValue = catalogSubcategoryFilter.value) {
   const subcategories = getContextSubcategories({
     category: catalogCategoryFilter.value,
@@ -6318,6 +6326,14 @@ function refreshExercisePageSubcategoryOptions(currentValue = exercisePageSubcat
   });
 
   setSelectOptions(exercisePageSubcategoryFilter, subcategories, currentValue);
+}
+
+function refreshExercisePageCategoryOptions(currentValue = exercisePageCategoryFilter.value) {
+  const categories = getContextCategories({
+    modality: exercisePageModalityFilter.value
+  });
+
+  setSelectOptions(exercisePageCategoryFilter, categories, currentValue);
 }
 
 function setTemplateWorkoutTypeByCode(code) {
@@ -6359,7 +6375,6 @@ function renderCategoryOptions() {
   const currentExerciseSubcategory = exercisePageSubcategoryFilter.value;
   const currentExerciseModality = exercisePageModalityFilter.value;
   const currentExerciseMeasurement = exercisePageMeasurementFilter.value;
-  const categories = [...new Set(state.exercises.map((exercise) => exercise.category))].sort();
   const modalities = [...new Set(state.exercises.map((exercise) => exercise.modality || 'strength'))].sort();
   const measurementTypes = [...new Set(state.exercises.map((exercise) => exercise.measurementType || 'sets_reps_weight'))].sort();
   const selectedTemplateTypeCode = getSelectedTemplateWorkoutType().code;
@@ -6380,10 +6395,6 @@ function renderCategoryOptions() {
     '<option value="all">All</option>',
     ...catalogCategories.map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
   ].join('');
-  const exercisePageCategoryOptions = [
-    '<option value="all">All</option>',
-    ...categories.map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
-  ].join('');
   const modalityOptions = [
     '<option value="all">All</option>',
     ...modalities.map((modality) => `<option value="${escapeHtml(modality)}">${escapeHtml(getWorkoutTypeName(modality))}</option>`)
@@ -6395,16 +6406,15 @@ function renderCategoryOptions() {
 
   catalogTypeFilter.innerHTML = catalogTypeOptions;
   catalogCategoryFilter.innerHTML = catalogCategoryOptions;
-  exercisePageCategoryFilter.innerHTML = exercisePageCategoryOptions;
   exercisePageModalityFilter.innerHTML = modalityOptions;
   exercisePageMeasurementFilter.innerHTML = measurementOptions;
 
   catalogTypeFilter.value = catalogType;
   catalogCategoryFilter.value = [...catalogCategoryFilter.options].some((option) => option.value === currentCatalogCategory) ? currentCatalogCategory : 'all';
-  exercisePageCategoryFilter.value = [...exercisePageCategoryFilter.options].some((option) => option.value === currentExerciseCategory) ? currentExerciseCategory : 'all';
   exercisePageModalityFilter.value = [...exercisePageModalityFilter.options].some((option) => option.value === currentExerciseModality) ? currentExerciseModality : 'all';
   exercisePageMeasurementFilter.value = [...exercisePageMeasurementFilter.options].some((option) => option.value === currentExerciseMeasurement) ? currentExerciseMeasurement : 'all';
   refreshCatalogSubcategoryOptions(currentCatalogSubcategory);
+  refreshExercisePageCategoryOptions(currentExerciseCategory);
   refreshExercisePageSubcategoryOptions(currentExerciseSubcategory);
 }
 
@@ -6530,6 +6540,7 @@ function getExerciseMediaActionsMarkup(exercise) {
 }
 
 function renderExercisePage() {
+  refreshExercisePageCategoryOptions();
   refreshExercisePageSubcategoryOptions();
   const modality = exercisePageModalityFilter.value;
   const category = exercisePageCategoryFilter.value;
@@ -8070,8 +8081,16 @@ workoutExercisePickerList.addEventListener('click', (event) => {
   setStatus(`${exercise.name} added to workout.`);
   renderWorkoutExercisePicker();
 });
-exercisePageModalityFilter.addEventListener('change', renderExercisePage);
-exercisePageCategoryFilter.addEventListener('change', renderExercisePage);
+exercisePageModalityFilter.addEventListener('change', () => {
+  exercisePageCategoryFilter.value = 'all';
+  exercisePageSubcategoryFilter.value = 'all';
+  refreshExercisePageCategoryOptions();
+  renderExercisePage();
+});
+exercisePageCategoryFilter.addEventListener('change', () => {
+  exercisePageSubcategoryFilter.value = 'all';
+  renderExercisePage();
+});
 exercisePageSubcategoryFilter.addEventListener('change', renderExercisePage);
 exercisePageMeasurementFilter.addEventListener('change', renderExercisePage);
 exercisePageSearch.addEventListener('input', renderExercisePage);
