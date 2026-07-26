@@ -1882,6 +1882,7 @@ function getMuscleRadarData(entries) {
     { label: 'Back', keys: ['costas', 'back', 'dorsal', 'latissimo', 'trapezio'] },
     { label: 'Biceps', keys: ['biceps', 'bicep', 'braco'] },
     { label: 'Triceps', keys: ['triceps', 'tricep'] },
+    { label: 'Core', keys: ['core', 'abdomen', 'abdominal', 'abdominais', 'abs', 'crunch', 'prancha', 'plank'] },
     { label: 'Shoulders', keys: ['ombro', 'ombros', 'deltoides', 'shoulder'] },
     { label: 'Legs', keys: ['perna', 'pernas', 'quadriceps', 'gluteo', 'leg', 'panturrilha'] }
   ];
