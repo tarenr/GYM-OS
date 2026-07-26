@@ -2754,13 +2754,14 @@ h4 {
 }
 
 .heatmap-grid {
-  --heat-cell-size: 24px;
-  --heat-cell-gap: 6px;
+  --heat-cell-size: clamp(24px, 1.45vw, 32px);
+  --heat-cell-gap: clamp(5px, 0.35vw, 8px);
   display: grid;
   grid-template-columns: repeat(16, var(--heat-cell-size));
   gap: var(--heat-cell-gap);
   width: max-content;
   min-width: 0;
+  margin-inline: auto;
 }
 
 .heat-week {
@@ -5120,7 +5121,7 @@ textarea:focus {
   }
 
   .heatmap-grid {
-    --heat-cell-size: 20px;
+    --heat-cell-size: clamp(20px, 2.1vw, 26px);
     --heat-cell-gap: 5px;
   }
 
@@ -5354,6 +5355,7 @@ textarea:focus {
   .heatmap-grid {
     --heat-cell-size: 16px;
     --heat-cell-gap: 4px;
+    margin-inline: 0;
   }
 
   .heatmap-legend {
