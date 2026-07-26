@@ -880,11 +880,11 @@ function getWorkoutTags(workout) {
 function getMuscleClass(muscle = '') {
   const normalized = muscle.toLowerCase();
 
-  if (normalized.includes('peito')) return 'chest';
-  if (normalized.includes('costa') || normalized.includes('dorsal')) return 'back';
-  if (normalized.includes('perna') || normalized.includes('quadr') || normalized.includes('glut') || normalized.includes('panturr')) return 'legs';
-  if (normalized.includes('ombro') || normalized.includes('trap')) return 'shoulders';
-  if (normalized.includes('triceps') || normalized.includes('biceps') || normalized.includes('bra')) return 'arms';
+  if (normalized.includes('peito') || normalized.includes('chest')) return 'chest';
+  if (normalized.includes('costa') || normalized.includes('dorsal') || normalized.includes('back')) return 'back';
+  if (normalized.includes('perna') || normalized.includes('quadr') || normalized.includes('glut') || normalized.includes('panturr') || normalized.includes('leg') || normalized.includes('calf')) return 'legs';
+  if (normalized.includes('ombro') || normalized.includes('trap') || normalized.includes('shoulder')) return 'shoulders';
+  if (normalized.includes('triceps') || normalized.includes('biceps') || normalized.includes('bra') || normalized.includes('arm')) return 'arms';
 
   return 'core';
 }
@@ -2252,7 +2252,7 @@ function getWorkoutTypeByCode(code) {
 }
 
 function getWorkoutTypeName(code) {
-  return state.workoutTypes.find((type) => type.code === code)?.name || code || 'Musculacao';
+  return state.workoutTypes.find((type) => type.code === code)?.name || code || 'Strength';
 }
 
 function getMeasurementLabel(measurementType) {
@@ -2378,6 +2378,139 @@ function formatExerciseGroup(exercise = {}) {
   }
 
   return `${category} > ${subcategory}`;
+}
+
+function getExerciseEquipmentDisplay(exercise = {}, loadMode = getExerciseLoadMode(exercise)) {
+  const hiddenByLoadMode = {
+    dumbbell_each: ['dumbbell', 'dumbbells'],
+    bodyweight: ['bodyweight'],
+    bar_total: ['barbell', 'bar', 'short-bar', 'barra', 'barra curta'],
+    machine_stack: ['machine', 'cable'],
+    non_weight: ['bodyweight']
+  };
+  const hidden = hiddenByLoadMode[loadMode] || [];
+  const equipment = (exercise.equipment || [])
+    .map((item) => String(item || '').trim())
+    .filter(Boolean)
+    .filter((item) => !hidden.includes(item.toLowerCase()));
+
+  return equipment.join(', ');
+}
+
+function getExerciseSecondaryGroups(exercise = {}) {
+  const primary = exercise.category || exercise.muscleGroup || '';
+  const name = String(exercise.name || '').toLowerCase();
+  const subcategory = String(exercise.subcategory || '').toLowerCase();
+  const text = `${name} ${subcategory}`;
+  const groups = [];
+
+  const addGroup = (group) => {
+    if (group && group.toLowerCase() !== primary.toLowerCase() && !groups.includes(group)) {
+      groups.push(group);
+    }
+  };
+
+  if (text.includes('bench press') || text.includes('squeeze press') || text.includes('skull crusher') || text.includes('shoulder press')) {
+    addGroup('Triceps');
+  }
+
+  if (text.includes('row') || text.includes('pullover')) {
+    addGroup('Biceps');
+  }
+
+  if (text.includes('pullover')) {
+    addGroup(primary.toLowerCase() === 'chest' ? 'Back' : 'Chest');
+  }
+
+  if (text.includes('squat') || text.includes('lunge') || text.includes('deadlift') || text.includes('hip thrust') || text.includes('mountain climber')) {
+    addGroup('Core');
+  }
+
+  if (text.includes('reverse fly')) {
+    addGroup(primary.toLowerCase() === 'back' ? 'Shoulders' : 'Back');
+  }
+
+  return groups.slice(0, 2);
+}
+
+function renderExerciseBadges(exercise = {}) {
+  const primary = exercise.category || exercise.muscleGroup || 'Exercise';
+  const secondaryGroups = getExerciseSecondaryGroups(exercise);
+  const modality = getWorkoutTypeName(exercise.modality || 'strength');
+  const badges = [
+    { label: primary, className: getMuscleClass(primary) },
+    ...secondaryGroups.map((group) => ({ label: group, className: `${getMuscleClass(group)} secondary` })),
+    { label: modality, className: 'type' }
+  ];
+
+  return `
+    <div class="exercise-badges" aria-label="Exercise badges">
+      ${badges.map((badge) => `<span class="row-tag ${escapeHtml(badge.className)}">${escapeHtml(badge.label)}</span>`).join('')}
+    </div>
+  `;
+}
+
+function getExerciseProfile(exercise = {}) {
+  const category = String(exercise.category || exercise.muscleGroup || '').toLowerCase();
+  const name = String(exercise.name || '').toLowerCase();
+  const measurementType = exercise.measurementType || 'sets_reps_weight';
+  const loadMode = getExerciseLoadMode(exercise);
+  let power = loadMode === 'bodyweight' || loadMode === 'non_weight' ? 34 : 74;
+  let control = 52;
+  let conditioning = 32;
+
+  if (category.includes('core')) {
+    power = name.includes('dumbbell') ? 46 : 28;
+    control = 88;
+    conditioning = name.includes('mountain') || name.includes('bicycle') ? 86 : 58;
+  }
+
+  if (name.includes('press') || name.includes('squat') || name.includes('deadlift') || name.includes('thrust')) {
+    power = 88;
+    control = Math.max(control, 62);
+  }
+
+  if (name.includes('fly') || name.includes('raise') || name.includes('kickback') || name.includes('pullover')) {
+    power = Math.min(power, 62);
+    control = Math.max(control, 78);
+  }
+
+  if (name.includes('lunge') || name.includes('mountain') || measurementType.startsWith('rounds')) {
+    conditioning = 82;
+    control = Math.max(control, 72);
+  }
+
+  if (name.includes('plank')) {
+    power = 24;
+    control = 92;
+    conditioning = 60;
+  }
+
+  return { power, control, conditioning };
+}
+
+function renderExerciseProfileMeter(exercise = {}) {
+  const profile = getExerciseProfile(exercise);
+  const title = `POWER ${profile.power}% | CONTROL ${profile.control}% | CONDITIONING ${profile.conditioning}%`;
+
+  return `
+    <div class="mini-meter" title="${escapeHtml(title)}" aria-label="${escapeHtml(title)}">
+      <span style="--meter-value:${profile.power}%"></span>
+      <span style="--meter-value:${profile.control}%"></span>
+      <span style="--meter-value:${profile.conditioning}%"></span>
+    </div>
+  `;
+}
+
+function renderExerciseProfileLegend() {
+  return `
+    <div class="exercise-profile-legend">
+      <strong>EXERCISE_PROFILE</strong>
+      <span><i class="legend-dot power"></i>POWER</span>
+      <span><i class="legend-dot control"></i>CONTROL</span>
+      <span><i class="legend-dot conditioning"></i>CONDITIONING</span>
+    </div>
+  `;
 }
 
 function formatExercisePrescription(exercise) {
@@ -6799,34 +6932,34 @@ function renderExercisePage() {
   }
 
   exerciseSubtitle.textContent = `// ${filteredExercises.length} exercises in catalog | active filters applied in real time`;
-  exercisePageList.innerHTML = filteredExercises.map((exercise) => {
-    const isRoundBased = (exercise.measurementType || 'sets_reps_weight').startsWith('rounds');
-    const loadMeta = getLoadModeMeta(getExerciseLoadMode(exercise));
+  const exerciseCardsMarkup = filteredExercises.map((exercise) => {
+    const loadMode = getExerciseLoadMode(exercise);
+    const loadMeta = getLoadModeMeta(loadMode);
+    const equipmentDisplay = getExerciseEquipmentDisplay(exercise, loadMode);
+    const supportLine = [loadMeta.fieldLabel, equipmentDisplay].filter(Boolean).join(' | ');
 
     return `
       <article class="exercise-library-card" data-exercise-id="${exercise._id}">
         <header>
-          <span class="row-tag ${getMuscleClass(exercise.category)}">${escapeHtml(exercise.category)}</span>
+          ${renderExerciseBadges(exercise)}
           <strong>${escapeHtml(formatExercisePrescription(exercise))}</strong>
         </header>
         ${getExerciseImageMarkup(exercise, 'library')}
         <div class="exercise-library-main">
           <h3>${escapeHtml(exercise.name)}</h3>
-          <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(getMeasurementLabel(exercise.measurementType || 'sets_reps_weight'))}${isRoundBased ? '' : ` | ${escapeHtml(loadMeta.label)}`}</div>
-          <div class="equipment-line">${escapeHtml(exercise.equipment.join(', '))}</div>
+          <div class="equipment-line">${escapeHtml(supportLine)}</div>
         </div>
         <div class="exercise-library-tip">
-          ${isRoundBased ? '' : `<p class="load-mode-meta compact"><strong>${escapeHtml(loadMeta.fieldLabel)}</strong></p>`}
           ${getExerciseInstructionMarkup(exercise)}
         </div>
         ${getExerciseMediaActionsMarkup(exercise)}
         <div class="exercise-media-results" data-results-for="${exercise._id}"></div>
-        <div class="mini-meter">
-          <span></span><span></span><span></span>
-        </div>
+        ${renderExerciseProfileMeter(exercise)}
       </article>
     `;
   }).join('');
+
+  exercisePageList.innerHTML = `${renderExerciseProfileLegend()}${exerciseCardsMarkup}`;
 }
 
 async function syncExerciseMedia(exerciseId) {

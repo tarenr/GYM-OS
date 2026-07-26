@@ -5006,6 +5006,12 @@ textarea:focus {
   text-transform: uppercase;
 }
 
+.row-tag.chest {
+  border-color: rgba(0, 255, 65, 0.22);
+  background: rgba(0, 255, 65, 0.1);
+  color: var(--green);
+}
+
 .row-tag.back {
   border-color: rgba(88, 166, 255, 0.24);
   background: rgba(88, 166, 255, 0.12);
@@ -5034,6 +5040,16 @@ textarea:focus {
   border-color: rgba(57, 197, 207, 0.26);
   background: rgba(57, 197, 207, 0.12);
   color: #39c5cf;
+}
+
+.row-tag.secondary {
+  opacity: 0.86;
+}
+
+.row-tag.type {
+  border-color: rgba(139, 148, 158, 0.36);
+  background: rgba(139, 148, 158, 0.1);
+  color: var(--muted-strong);
 }
 
 .row-tag.mission {
@@ -5382,20 +5398,25 @@ textarea:focus {
 
 .exercise-library-card {
   display: grid;
-  grid-template-rows: 52px 168px 126px minmax(46px, auto) auto minmax(0, auto) 6px;
+  grid-template-rows: 58px 168px 112px minmax(32px, auto) auto minmax(0, auto) 8px;
   gap: 14px;
   padding: 18px 20px;
-  min-height: 530px;
+  min-height: 520px;
 }
 
 .exercise-library-card header {
   margin: -18px -20px 16px;
   padding-bottom: 12px;
+  align-items: flex-start;
 }
 
 .exercise-library-card header strong {
   color: var(--orange);
   font-size: 0.76rem;
+  line-height: 1.35;
+  min-width: fit-content;
+  padding-top: 3px;
+  text-align: right;
 }
 
 .exercise-library-card .exercise-media-frame.library {
@@ -5420,6 +5441,13 @@ textarea:focus {
   -webkit-line-clamp: 2;
 }
 
+.exercise-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
 .exercise-library-card .history-meta,
 .exercise-library-card .equipment-line {
   display: -webkit-box;
@@ -5435,6 +5463,52 @@ textarea:focus {
 .exercise-library-card .equipment-line {
   min-height: 1.2em;
   -webkit-line-clamp: 1;
+}
+
+.exercise-profile-legend {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border: 1px solid rgba(0, 255, 65, 0.16);
+  border-left: 3px solid var(--green);
+  border-radius: 8px;
+  background: rgba(0, 255, 65, 0.05);
+  padding: 10px 12px;
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.exercise-profile-legend strong {
+  color: var(--text);
+  margin-right: 4px;
+}
+
+.exercise-profile-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.44);
+}
+
+.legend-dot.control {
+  background: var(--blue);
+  box-shadow: 0 0 10px rgba(88, 166, 255, 0.44);
+}
+
+.legend-dot.conditioning {
+  background: var(--orange);
+  box-shadow: 0 0 10px rgba(210, 153, 34, 0.44);
 }
 
 .exercise-library-tip {
@@ -5463,6 +5537,7 @@ textarea:focus {
 
 .exercise-library-card .mini-meter {
   align-self: end;
+  margin-top: 0;
 }
 
 .equipment-line {
@@ -5480,15 +5555,18 @@ textarea:focus {
 .mini-meter span {
   flex: 1;
   border-radius: 999px;
-  background: var(--green);
+  background:
+    linear-gradient(90deg, var(--green) var(--meter-value, 100%), rgba(0, 255, 65, 0.14) 0);
 }
 
 .mini-meter span:nth-child(2) {
-  background: var(--blue);
+  background:
+    linear-gradient(90deg, var(--blue) var(--meter-value, 100%), rgba(88, 166, 255, 0.14) 0);
 }
 
 .mini-meter span:nth-child(3) {
-  background: var(--orange);
+  background:
+    linear-gradient(90deg, var(--orange) var(--meter-value, 100%), rgba(210, 153, 34, 0.16) 0);
 }
 
 @media (max-width: 1180px) {
