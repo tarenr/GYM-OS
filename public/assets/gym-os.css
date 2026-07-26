@@ -2153,13 +2153,100 @@ h4 {
 .body-scan-overlay {
   position: absolute;
   inset: 0;
+  z-index: 3;
+}
+
+.body-scan-map {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.body-scan-map-group {
+  --scan-tone: var(--phosphor);
+  color: var(--scan-tone);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--scan-tone) 58%, transparent));
+}
+
+.body-scan-map-group.red {
+  --scan-tone: #ff5147;
+}
+
+.body-scan-map-group.orange {
+  --scan-tone: var(--orange);
+}
+
+.body-scan-map-group.green {
+  --scan-tone: var(--phosphor);
+}
+
+.body-scan-map-group.blue {
+  --scan-tone: var(--blue);
+}
+
+.body-scan-map-group.cyan {
+  --scan-tone: #34d8ff;
+}
+
+.body-scan-map-group.purple {
+  --scan-tone: #e252ff;
+}
+
+.body-scan-map-box,
+.body-scan-map-slot {
+  fill: rgba(2, 7, 6, 0.78);
+  stroke: currentColor;
+}
+
+.body-scan-map-box {
+  stroke-width: 2.5;
+}
+
+.body-scan-map-slot {
+  fill: rgba(0, 0, 0, 0.72);
+  stroke-width: 1.2;
+}
+
+.body-scan-map-label {
+  fill: currentColor;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+
+.body-scan-map-lead,
+.body-scan-map-band {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+
+.body-scan-map-lead {
+  stroke-width: 3;
+}
+
+.body-scan-map-band {
+  stroke-width: 3.5;
+  stroke-dasharray: 11 8;
+}
+
+.body-scan-map-dot {
+  fill: currentColor;
+  stroke: rgba(255, 255, 255, 0.35);
+  stroke-width: 2;
 }
 
 .body-scan-callout {
   position: absolute;
   left: var(--x);
   top: var(--y);
-  z-index: 2;
+  z-index: 4;
   min-width: clamp(56px, 6.6vw, 118px);
   padding: clamp(2px, 0.32vw, 6px) clamp(5px, 0.7vw, 10px);
   transform: translate(-50%, -50%);

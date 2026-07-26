@@ -5623,17 +5623,141 @@ function getBodyScanCallouts(measurement) {
   const values = measurement?.measurementsCm || {};
 
   return [
-    { key: 'chest', label: 'Chest', value: formatMeasurementValue(values.chest, ' cm'), x: 10.4, y: 18.8 },
-    { key: 'rightArm', label: 'Right Arm', value: formatMeasurementValue(values.rightArm, ' cm'), x: 7.5, y: 31.3 },
-    { key: 'leftArm', label: 'Left Arm', value: formatMeasurementValue(values.leftArm, ' cm'), x: 46.3, y: 31.8 },
-    { key: 'waist', label: 'Waist', value: formatMeasurementValue(values.waist, ' cm'), x: 8.1, y: 43.6 },
-    { key: 'abdomen', label: 'Abdomen', value: formatMeasurementValue(values.abdomen, ' cm'), x: 8.1, y: 56.2 },
-    { key: 'hips', label: 'Hips', value: formatMeasurementValue(values.hips, ' cm'), x: 91.7, y: 51.0 },
-    { key: 'rightThigh', label: 'Right Thigh', value: formatMeasurementValue(values.rightThigh, ' cm'), x: 7.7, y: 68.7 },
-    { key: 'leftThigh', label: 'Left Thigh', value: formatMeasurementValue(values.leftThigh, ' cm'), x: 46.9, y: 68.9 },
-    { key: 'rightCalf', label: 'Right Calf', value: formatMeasurementValue(values.rightCalf, ' cm'), x: 7.7, y: 82.4 },
-    { key: 'leftCalf', label: 'Left Calf', value: formatMeasurementValue(values.leftCalf, ' cm'), x: 46.8, y: 82.6 }
+    {
+      key: 'chest',
+      label: 'Chest',
+      value: formatMeasurementValue(values.chest, ' cm'),
+      tone: 'red',
+      box: { x: 92, y: 118, w: 166, h: 82 },
+      valuePoint: { x: 175, y: 174 },
+      lead: '258,159 310,210 352,230',
+      bands: [{ x1: 352, y1: 230, x2: 636, y2: 230 }],
+      dots: [{ x: 352, y: 230 }, { x: 636, y: 230 }]
+    },
+    {
+      key: 'rightArm',
+      label: 'Right Arm',
+      value: formatMeasurementValue(values.rightArm, ' cm'),
+      tone: 'red',
+      box: { x: 38, y: 248, w: 166, h: 82 },
+      valuePoint: { x: 121, y: 304 },
+      lead: '204,289 250,295 286,295',
+      bands: [{ x1: 286, y1: 295, x2: 370, y2: 295 }],
+      dots: [{ x: 286, y: 295 }]
+    },
+    {
+      key: 'leftArm',
+      label: 'Left Arm',
+      value: formatMeasurementValue(values.leftArm, ' cm'),
+      tone: 'red',
+      box: { x: 696, y: 248, w: 166, h: 82 },
+      valuePoint: { x: 779, y: 304 },
+      lead: '696,289 645,295 560,295',
+      bands: [{ x1: 560, y1: 295, x2: 645, y2: 295 }],
+      dots: [{ x: 645, y: 295 }]
+    },
+    {
+      key: 'waist',
+      label: 'Waist',
+      value: formatMeasurementValue(values.waist, ' cm'),
+      tone: 'orange',
+      box: { x: 38, y: 365, w: 188, h: 88 },
+      valuePoint: { x: 132, y: 424 },
+      lead: '226,396 262,352 286,338',
+      bands: [{ x1: 286, y1: 338, x2: 662, y2: 338 }]
+    },
+    {
+      key: 'abdomen',
+      label: 'Abdomen',
+      value: formatMeasurementValue(values.abdomen, ' cm'),
+      tone: 'green',
+      box: { x: 38, y: 478, w: 188, h: 88 },
+      valuePoint: { x: 132, y: 537 },
+      lead: '226,510 258,432 272,392',
+      bands: [{ x1: 272, y1: 392, x2: 670, y2: 392 }]
+    },
+    {
+      key: 'hips',
+      label: 'Hips',
+      value: formatMeasurementValue(values.hips, ' cm'),
+      tone: 'purple',
+      box: { x: 1444, y: 408, w: 184, h: 88 },
+      valuePoint: { x: 1536, y: 466 },
+      lead: '1444,452 1408,452 1388,450',
+      bands: [{ x1: 1042, y1: 450, x2: 1406, y2: 450 }],
+      dots: [{ x: 1042, y: 450 }, { x: 1406, y: 450 }]
+    },
+    {
+      key: 'rightThigh',
+      label: 'Right Thigh',
+      value: formatMeasurementValue(values.rightThigh, ' cm'),
+      tone: 'blue',
+      box: { x: 38, y: 590, w: 184, h: 88 },
+      valuePoint: { x: 130, y: 650 },
+      lead: '222,632 288,565 336,538',
+      bands: [{ x1: 336, y1: 538, x2: 456, y2: 538 }, { x1: 1068, y1: 552, x2: 1185, y2: 552 }],
+      dots: [{ x: 336, y: 538 }]
+    },
+    {
+      key: 'leftThigh',
+      label: 'Left Thigh',
+      value: formatMeasurementValue(values.leftThigh, ' cm'),
+      tone: 'blue',
+      box: { x: 704, y: 590, w: 184, h: 88 },
+      valuePoint: { x: 796, y: 650 },
+      lead: '704,632 648,565 620,538',
+      bands: [{ x1: 500, y1: 538, x2: 620, y2: 538 }, { x1: 1238, y1: 552, x2: 1356, y2: 552 }],
+      dots: [{ x: 620, y: 538 }]
+    },
+    {
+      key: 'rightCalf',
+      label: 'Right Calf',
+      value: formatMeasurementValue(values.rightCalf, ' cm'),
+      tone: 'cyan',
+      box: { x: 38, y: 720, w: 184, h: 88 },
+      valuePoint: { x: 130, y: 780 },
+      lead: '222,762 285,702 324,700',
+      bands: [{ x1: 324, y1: 700, x2: 432, y2: 700 }, { x1: 1068, y1: 700, x2: 1165, y2: 700 }],
+      dots: [{ x: 324, y: 700 }]
+    },
+    {
+      key: 'leftCalf',
+      label: 'Left Calf',
+      value: formatMeasurementValue(values.leftCalf, ' cm'),
+      tone: 'cyan',
+      box: { x: 704, y: 720, w: 184, h: 88 },
+      valuePoint: { x: 796, y: 780 },
+      lead: '704,762 640,702 605,700',
+      bands: [{ x1: 510, y1: 700, x2: 605, y2: 700 }, { x1: 1240, y1: 700, x2: 1342, y2: 700 }],
+      dots: [{ x: 605, y: 700 }]
+    }
   ];
+}
+
+function bodyScanPercent(point, axis) {
+  const total = axis === 'x' ? 1672 : 941;
+  return `${((point / total) * 100).toFixed(3)}%`;
+}
+
+function renderBodyScanMarkerSvg(items) {
+  return `
+    <svg class="body-scan-map" viewBox="0 0 1672 941" aria-hidden="true" focusable="false">
+      ${items.map((item) => `
+        <g class="body-scan-map-group ${escapeHtml(item.tone)}">
+          <rect class="body-scan-map-box" x="${item.box.x}" y="${item.box.y}" width="${item.box.w}" height="${item.box.h}" rx="10"></rect>
+          <rect class="body-scan-map-slot" x="${item.box.x + 16}" y="${item.box.y + 37}" width="${item.box.w - 32}" height="42" rx="5"></rect>
+          <text class="body-scan-map-label" x="${item.box.x + item.box.w / 2}" y="${item.box.y + 29}">${escapeHtml(item.label).toUpperCase()}</text>
+          <polyline class="body-scan-map-lead" points="${item.lead}"></polyline>
+          ${item.bands.map((band) => `
+            <line class="body-scan-map-band" x1="${band.x1}" y1="${band.y1}" x2="${band.x2}" y2="${band.y2}"></line>
+          `).join('')}
+          ${(item.dots || []).map((dot) => `
+            <circle class="body-scan-map-dot" cx="${dot.x}" cy="${dot.y}" r="6"></circle>
+          `).join('')}
+        </g>
+      `).join('')}
+    </svg>
+  `;
 }
 
 function renderBodyScanVisual(measurements) {
@@ -5648,10 +5772,11 @@ function renderBodyScanVisual(measurements) {
 
   bodyScanVisual.innerHTML = `
     <div class="body-scan-stage">
-      <img src="/assets/body/gym-os-body-scan-slayer-map.png" alt="GYM-OS body scan measurement map" />
+      <img src="/assets/body/gym-os-body-scan-slayer.png" alt="GYM-OS body scan armored front and back reference" />
+      ${renderBodyScanMarkerSvg(callouts)}
       <div class="body-scan-overlay" aria-label="Latest body scan values">
         ${callouts.map((item) => `
-          <div class="body-scan-callout" style="--x:${item.x}%; --y:${item.y}%;">
+          <div class="body-scan-callout" style="--x:${bodyScanPercent(item.valuePoint.x, 'x')}; --y:${bodyScanPercent(item.valuePoint.y, 'y')};">
             <span>${escapeHtml(item.label)}</span>
             <strong>${escapeHtml(item.value)}</strong>
           </div>
