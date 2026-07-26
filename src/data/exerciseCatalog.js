@@ -64,7 +64,9 @@ export const exerciseCatalog = [
       { name: 'Plank', equipment: ['Bodyweight'], defaultSets: 3, defaultReps: '30-60 seconds' },
       { name: 'Crunch', equipment: ['Bodyweight'], defaultSets: 3, defaultReps: '15-25' },
       { name: 'Leg raise', equipment: ['Bodyweight'], defaultSets: 3, defaultReps: '10-15' },
-      { name: 'Dumbbell Russian twist', equipment: ['Dumbbell'], defaultSets: 3, defaultReps: '20 alternating' }
+      { name: 'Dumbbell Russian twist', equipment: ['Dumbbell'], defaultSets: 3, defaultReps: '20 alternating' },
+      { name: 'Bicycle crunch', equipment: ['Bodyweight'], defaultSets: 3, defaultReps: '20 alternating' },
+      { name: 'Mountain climber', equipment: ['Bodyweight'], defaultSets: 3, defaultReps: '30-45 seconds' }
     ]
   }
 ];

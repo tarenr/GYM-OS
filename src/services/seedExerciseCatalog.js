@@ -38,7 +38,9 @@ const strengthSubcategories = new Map([
   ['Plank', 'Core stability'],
   ['Crunch', 'Upper abs'],
   ['Leg raise', 'Lower abs'],
-  ['Dumbbell Russian twist', 'Obliques']
+  ['Dumbbell Russian twist', 'Obliques'],
+  ['Bicycle crunch', 'Obliques'],
+  ['Mountain climber', 'Core conditioning']
 ]);
 
 export function getStrengthSubcategory(exerciseName, category) {
@@ -57,7 +59,13 @@ function inferLoadMode(exercise = {}) {
   if ((exercise.measurementType || '').startsWith('rounds')) return 'non_weight';
   if (text.includes('barbell') || text.includes('short-bar')) return 'bar_total';
   if (text.includes('machine') || text.includes('cable')) return 'machine_stack';
-  if (text.includes('bodyweight') || text.includes('plank') || text.includes('crunch') || text.includes('leg raise')) return 'bodyweight';
+  if (
+    text.includes('bodyweight')
+    || text.includes('plank')
+    || text.includes('crunch')
+    || text.includes('leg raise')
+    || text.includes('mountain climber')
+  ) return 'bodyweight';
 
   return 'dumbbell_each';
 }
