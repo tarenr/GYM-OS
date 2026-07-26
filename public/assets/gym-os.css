@@ -2754,8 +2754,8 @@ h4 {
 }
 
 .heatmap-grid {
-  --heat-cell-size: 18px;
-  --heat-cell-gap: 5px;
+  --heat-cell-size: 24px;
+  --heat-cell-gap: 6px;
   display: grid;
   grid-template-columns: repeat(16, var(--heat-cell-size));
   gap: var(--heat-cell-gap);
@@ -5120,8 +5120,8 @@ textarea:focus {
   }
 
   .heatmap-grid {
-    --heat-cell-size: 16px;
-    --heat-cell-gap: 4px;
+    --heat-cell-size: 20px;
+    --heat-cell-gap: 5px;
   }
 
   .weekly-summary-grid {
@@ -5352,7 +5352,7 @@ textarea:focus {
   }
 
   .heatmap-grid {
-    --heat-cell-size: 14px;
+    --heat-cell-size: 16px;
     --heat-cell-gap: 4px;
   }
 
