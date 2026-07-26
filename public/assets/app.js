@@ -6942,12 +6942,12 @@ function renderExercisePage() {
       <article class="exercise-library-card" data-exercise-id="${exercise._id}">
         <header>
           ${renderExerciseBadges(exercise)}
-          <strong>${escapeHtml(formatExercisePrescription(exercise))}</strong>
         </header>
         ${getExerciseImageMarkup(exercise, 'library')}
         <div class="exercise-library-main">
           <h3>${escapeHtml(exercise.name)}</h3>
           <div class="equipment-line">${escapeHtml(supportLine)}</div>
+          <strong class="exercise-load-line">${escapeHtml(formatExercisePrescription(exercise))}</strong>
         </div>
         <div class="exercise-library-tip">
           ${getExerciseInstructionMarkup(exercise)}

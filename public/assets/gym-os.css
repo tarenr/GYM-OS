@@ -5398,7 +5398,7 @@ textarea:focus {
 
 .exercise-library-card {
   display: grid;
-  grid-template-rows: 58px 168px 112px minmax(32px, auto) auto minmax(0, auto) 8px;
+  grid-template-rows: 52px 168px 118px minmax(32px, auto) auto minmax(0, auto) 8px;
   gap: 14px;
   padding: 18px 20px;
   min-height: 520px;
@@ -5408,15 +5408,6 @@ textarea:focus {
   margin: -18px -20px 16px;
   padding-bottom: 12px;
   align-items: flex-start;
-}
-
-.exercise-library-card header strong {
-  color: var(--orange);
-  font-size: 0.76rem;
-  line-height: 1.35;
-  min-width: fit-content;
-  padding-top: 3px;
-  text-align: right;
 }
 
 .exercise-library-card .exercise-media-frame.library {
@@ -5463,6 +5454,14 @@ textarea:focus {
 .exercise-library-card .equipment-line {
   min-height: 1.2em;
   -webkit-line-clamp: 1;
+}
+
+.exercise-load-line {
+  color: var(--orange);
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .exercise-profile-legend {
