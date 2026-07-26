@@ -4968,6 +4968,10 @@ function getAchievementPercent(achievement) {
   return Math.min(100, Math.round((achievement.rawProgress / achievement.target) * 100));
 }
 
+function formatAchievementProgressLabel(achievement) {
+  return `${formatCompactNumber(achievement.progress)}/${formatCompactNumber(achievement.target)}`;
+}
+
 function getFilteredAnnualAchievements(achievements) {
   return achievements
     .filter((achievement) => (
@@ -5022,9 +5026,7 @@ function renderAchievementCategorySummary(achievements) {
 
 function renderAnnualAchievementCard(achievement) {
   const achievementPercent = getAchievementPercent(achievement);
-  const progressLabel = achievement.rawProgress > achievement.target
-    ? `${formatCompactNumber(achievement.rawProgress)}/${formatCompactNumber(achievement.target)}`
-    : `${formatCompactNumber(achievement.progress)}/${formatCompactNumber(achievement.target)}`;
+  const progressLabel = formatAchievementProgressLabel(achievement);
 
   return `
     <article class="progress-achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'} ${escapeHtml(achievement.tier)}">
@@ -5872,9 +5874,7 @@ function renderAchievements(items, exerciseEntries) {
 
   achievementList.innerHTML = visibleAchievements.map((achievement) => {
     const percent = getAchievementPercent(achievement);
-    const progressLabel = achievement.rawProgress > achievement.target
-      ? `${formatCompactNumber(achievement.rawProgress)}/${formatCompactNumber(achievement.target)}`
-      : `${formatCompactNumber(achievement.progress)}/${formatCompactNumber(achievement.target)}`;
+    const progressLabel = formatAchievementProgressLabel(achievement);
 
     return `
       <article class="achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}">
