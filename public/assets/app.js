@@ -2532,6 +2532,22 @@ function hasExerciseMedia(exercise = {}) {
   return Boolean(exercise.imageUrl);
 }
 
+function getExerciseImageVersion(exercise = {}) {
+  const rawVersion = exercise.mediaSyncedAt || exercise.updatedAt || exercise.imageUrl || 'media';
+
+  return encodeURIComponent(String(rawVersion).replace(/[^a-zA-Z0-9_-]+/g, '-'));
+}
+
+function getExerciseImageSource(exercise = {}) {
+  if (!exercise.imageUrl) {
+    return '';
+  }
+
+  const separator = exercise.imageUrl.includes('?') ? '&' : '?';
+
+  return `${exercise.imageUrl}${separator}v=${getExerciseImageVersion(exercise)}`;
+}
+
 function getExerciseImageMarkup(exercise = {}, size = 'compact') {
   if (!hasExerciseMedia(exercise)) {
     return `
@@ -2541,16 +2557,18 @@ function getExerciseImageMarkup(exercise = {}, size = 'compact') {
     `;
   }
 
+  const imageSource = getExerciseImageSource(exercise);
+
   return `
     <figure
       class="exercise-media-frame ${size} has-preview"
       role="button"
       tabindex="0"
       aria-label="Expand image of ${escapeHtml(exercise.name || 'exercise')}"
-      data-preview-image="${escapeHtml(exercise.imageUrl)}"
+      data-preview-image="${escapeHtml(imageSource)}"
       data-preview-alt="${escapeHtml(exercise.imageAlt || `Execution of ${exercise.name || 'exercise'}`)}"
     >
-      <img src="${escapeHtml(exercise.imageUrl)}" alt="${escapeHtml(exercise.imageAlt || `Execution of ${exercise.name || 'exercise'}`)}" loading="lazy" />
+      <img src="${escapeHtml(imageSource)}" alt="${escapeHtml(exercise.imageAlt || `Execution of ${exercise.name || 'exercise'}`)}" loading="lazy" />
       <figcaption>${escapeHtml(exercise.mediaProvider || 'media')}</figcaption>
     </figure>
   `;

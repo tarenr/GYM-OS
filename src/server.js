@@ -288,6 +288,18 @@ function renderDocumentationPage(markdown) {
 
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
+app.use(
+  '/assets/doom-exercises',
+  express.static(path.join(publicPath, 'assets', 'doom-exercises'), {
+    etag: false,
+    lastModified: false,
+    setHeaders: (response) => {
+      response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      response.setHeader('Pragma', 'no-cache');
+      response.setHeader('Expires', '0');
+    }
+  })
+);
 app.use(express.static(publicPath));
 
 app.use('/api/exercises', exerciseRoutes);
