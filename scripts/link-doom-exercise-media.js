@@ -16,7 +16,7 @@ const mediaRoot = path.join(projectRoot, 'public', 'assets', 'doom-exercises');
 const publicMediaRoot = '/assets/doom-exercises';
 
 const aliasByName = new Map([
-  ['dumbbell or short-bar curl', { category: 'Biceps', slug: 'dumbbell-curl' }],
+  ['dumbbell or short-bar curl', { category: 'Biceps', slug: 'dumbbell-or-short-bar-curl' }],
   ['dumbbell or short-bar skull crusher', { category: 'Triceps', slug: 'dumbbell-skull-crusher' }],
   ['goblet squat with kettlebell or dumbbell', { category: 'Legs', slug: 'goblet-squat' }],
   ['dumbbell pullover on flat bench', { category: 'Chest', slug: 'dumbbell-pullover-on-flat-bench' }],
