@@ -584,15 +584,30 @@ h4 {
 
 .journey-overview-grid .heatmap-scroll {
   display: grid;
-  place-items: center;
+  align-items: stretch;
   min-height: 0;
   height: 100%;
   padding: 18px;
+  overflow: hidden;
 }
 
 .journey-overview-grid .heatmap-grid {
-  --heat-cell-size: clamp(24px, 1.35vw, 32px);
   --heat-cell-gap: clamp(5px, 0.35vw, 8px);
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  width: 100%;
+  height: 100%;
+  margin-inline: 0;
+}
+
+.journey-overview-grid .heat-week {
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  min-width: 0;
+  height: 100%;
+}
+
+.journey-overview-grid .heat-cell {
+  min-width: 0;
+  aspect-ratio: auto;
 }
 
 .journey-overview-grid .heatmap-legend {
@@ -5111,6 +5126,29 @@ textarea:focus {
 
   .journey-overview-grid {
     grid-template-columns: 1fr;
+  }
+
+  .journey-overview-grid .heatmap-scroll {
+    place-items: center;
+    height: auto;
+    overflow-x: auto;
+  }
+
+  .journey-overview-grid .heatmap-grid {
+    grid-template-columns: repeat(16, var(--heat-cell-size));
+    width: max-content;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .journey-overview-grid .heat-week {
+    grid-template-rows: repeat(7, var(--heat-cell-size));
+    height: auto;
+  }
+
+  .journey-overview-grid .heat-cell {
+    min-width: var(--heat-cell-size);
+    aspect-ratio: 1;
   }
 
   .journey-command-grid {
