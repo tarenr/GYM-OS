@@ -5647,8 +5647,8 @@ function getBodyScanCallouts(measurement) {
   const values = measurement?.measurementsCm || {};
 
   return [
-    { key: 'chest', label: 'Chest', value: formatMeasurementValue(values.chest, ' cm'), valuePoint: { x: 708, y: 142 } },
-    { key: 'rightArm', label: 'Right Arm', value: formatMeasurementValue(values.rightArm, ' cm'), valuePoint: { x: 164, y: 276 } },
+    { key: 'chest', label: 'Chest', value: formatMeasurementValue(values.chest, ' cm'), valuePoint: { x: 708, y: 137 } },
+    { key: 'rightArm', label: 'Right Arm', value: formatMeasurementValue(values.rightArm, ' cm'), valuePoint: { x: 164, y: 270 } },
     { key: 'leftArm', label: 'Left Arm', value: formatMeasurementValue(values.leftArm, ' cm'), valuePoint: { x: 776, y: 282 } },
     { key: 'waist', label: 'Waist', value: formatMeasurementValue(values.waist, ' cm'), valuePoint: { x: 164, y: 393 } },
     { key: 'abdomen', label: 'Abdomen', value: formatMeasurementValue(values.abdomen, ' cm'), valuePoint: { x: 164, y: 491 } },
