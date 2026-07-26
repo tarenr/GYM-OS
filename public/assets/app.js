@@ -89,6 +89,7 @@ const templateCodeInput = document.querySelector('#template-code');
 const templateNameInput = document.querySelector('#template-name');
 const templateWorkoutTypeInput = document.querySelector('#template-workout-type');
 const templateStatusMessage = document.querySelector('#template-status-message');
+const catalogTypeFilter = document.querySelector('#catalog-type-filter');
 const catalogCategoryFilter = document.querySelector('#catalog-category-filter');
 const catalogSubcategoryFilter = document.querySelector('#catalog-subcategory-filter');
 const catalogSearch = document.querySelector('#catalog-search');
@@ -2224,6 +2225,11 @@ function getStrengthWorkoutType() {
 
 function getSelectedTemplateWorkoutType() {
   return state.workoutTypes.find((type) => type._id === templateWorkoutTypeInput.value) || getStrengthWorkoutType();
+}
+
+function getWorkoutTypeByCode(code) {
+  return state.workoutTypes.find((type) => type.code === code)
+    || (code === 'strength' ? getStrengthWorkoutType() : null);
 }
 
 function getWorkoutTypeName(code) {
@@ -6297,10 +6303,9 @@ function getContextSubcategories({ category = 'all', modality = 'all' } = {}) {
 }
 
 function refreshCatalogSubcategoryOptions(currentValue = catalogSubcategoryFilter.value) {
-  const selectedWorkoutType = getSelectedTemplateWorkoutType();
   const subcategories = getContextSubcategories({
     category: catalogCategoryFilter.value,
-    modality: selectedWorkoutType.code
+    modality: catalogTypeFilter.value
   });
 
   setSelectOptions(catalogSubcategoryFilter, subcategories, currentValue);
@@ -6315,7 +6320,39 @@ function refreshExercisePageSubcategoryOptions(currentValue = exercisePageSubcat
   setSelectOptions(exercisePageSubcategoryFilter, subcategories, currentValue);
 }
 
+function setTemplateWorkoutTypeByCode(code) {
+  const workoutType = getWorkoutTypeByCode(code);
+
+  if (workoutType?._id) {
+    templateWorkoutTypeInput.value = workoutType._id;
+  }
+}
+
+function syncCatalogTypeWithTemplate() {
+  const selectedWorkoutType = getSelectedTemplateWorkoutType();
+
+  if ([...catalogTypeFilter.options].some((option) => option.value === selectedWorkoutType.code)) {
+    catalogTypeFilter.value = selectedWorkoutType.code;
+  }
+}
+
+function keepSelectedTemplateExercisesForType(typeCode) {
+  const previousCount = state.selectedTemplateExercises.length;
+
+  state.selectedTemplateExercises = state.selectedTemplateExercises.filter((exercise) => (
+    (exercise.modality || 'strength') === typeCode
+  ));
+
+  const removedCount = previousCount - state.selectedTemplateExercises.length;
+
+  if (removedCount > 0) {
+    renderSelectedTemplateExercises();
+    setTemplateStatus(`${removedCount} incompatible exercise${removedCount === 1 ? '' : 's'} removed for ${getWorkoutTypeName(typeCode)}.`);
+  }
+}
+
 function renderCategoryOptions() {
+  const currentCatalogType = catalogTypeFilter.value || getSelectedTemplateWorkoutType().code;
   const currentCatalogCategory = catalogCategoryFilter.value;
   const currentCatalogSubcategory = catalogSubcategoryFilter.value;
   const currentExerciseCategory = exercisePageCategoryFilter.value;
@@ -6325,7 +6362,25 @@ function renderCategoryOptions() {
   const categories = [...new Set(state.exercises.map((exercise) => exercise.category))].sort();
   const modalities = [...new Set(state.exercises.map((exercise) => exercise.modality || 'strength'))].sort();
   const measurementTypes = [...new Set(state.exercises.map((exercise) => exercise.measurementType || 'sets_reps_weight'))].sort();
-  const options = [
+  const selectedTemplateTypeCode = getSelectedTemplateWorkoutType().code;
+  const catalogType = modalities.includes(currentCatalogType)
+    ? currentCatalogType
+    : modalities.includes(selectedTemplateTypeCode)
+      ? selectedTemplateTypeCode
+      : modalities[0] || 'strength';
+  const catalogTypeOptions = modalities.map((modality) => (
+    `<option value="${escapeHtml(modality)}">${escapeHtml(getWorkoutTypeName(modality))}</option>`
+  )).join('');
+  const catalogCategories = [...new Set(state.exercises
+    .filter((exercise) => (exercise.modality || 'strength') === catalogType)
+    .map((exercise) => exercise.category)
+    .filter(Boolean))]
+    .sort();
+  const catalogCategoryOptions = [
+    '<option value="all">All</option>',
+    ...catalogCategories.map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
+  ].join('');
+  const exercisePageCategoryOptions = [
     '<option value="all">All</option>',
     ...categories.map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
   ].join('');
@@ -6338,11 +6393,13 @@ function renderCategoryOptions() {
     ...measurementTypes.map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(getMeasurementLabel(type))}</option>`)
   ].join('');
 
-  catalogCategoryFilter.innerHTML = options;
-  exercisePageCategoryFilter.innerHTML = options;
+  catalogTypeFilter.innerHTML = catalogTypeOptions;
+  catalogCategoryFilter.innerHTML = catalogCategoryOptions;
+  exercisePageCategoryFilter.innerHTML = exercisePageCategoryOptions;
   exercisePageModalityFilter.innerHTML = modalityOptions;
   exercisePageMeasurementFilter.innerHTML = measurementOptions;
 
+  catalogTypeFilter.value = catalogType;
   catalogCategoryFilter.value = [...catalogCategoryFilter.options].some((option) => option.value === currentCatalogCategory) ? currentCatalogCategory : 'all';
   exercisePageCategoryFilter.value = [...exercisePageCategoryFilter.options].some((option) => option.value === currentExerciseCategory) ? currentExerciseCategory : 'all';
   exercisePageModalityFilter.value = [...exercisePageModalityFilter.options].some((option) => option.value === currentExerciseModality) ? currentExerciseModality : 'all';
@@ -6353,15 +6410,19 @@ function renderCategoryOptions() {
 
 function renderCatalog() {
   refreshCatalogSubcategoryOptions();
+  const typeCode = catalogTypeFilter.value || getSelectedTemplateWorkoutType().code;
   const category = catalogCategoryFilter.value;
   const subcategory = catalogSubcategoryFilter.value;
   const search = catalogSearch.value.trim().toLowerCase();
-  const selectedWorkoutType = getSelectedTemplateWorkoutType();
+  const selectedWorkoutType = getWorkoutTypeByCode(typeCode) || {
+    code: typeCode,
+    name: getWorkoutTypeName(typeCode)
+  };
   const selectedIds = new Set(state.selectedTemplateExercises.map((exercise) => exercise.exerciseId));
   const filteredExercises = state.exercises.filter((exercise) => {
     const matchesCategory = category === 'all' || exercise.category === category;
     const matchesSubcategory = subcategory === 'all' || exercise.subcategory === subcategory;
-    const matchesModality = (exercise.modality || 'strength') === selectedWorkoutType.code;
+    const matchesModality = (exercise.modality || 'strength') === typeCode;
     const searchableText = [exercise.name, exercise.category, exercise.subcategory].filter(Boolean).join(' ').toLowerCase();
     const matchesSearch = !search || searchableText.includes(search);
     return matchesCategory && matchesSubcategory && matchesModality && matchesSearch;
@@ -6384,7 +6445,7 @@ function renderCatalog() {
           <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(formatExercisePrescription(exercise))}${escapeHtml(loadLabel)} | ${escapeHtml(exercise.equipment.join(', '))}</div>
         </div>
         <button class="button ${isSelected ? 'button-ghost' : 'button-secondary'}" type="button" data-catalog-id="${exercise._id}" ${isSelected ? 'disabled' : ''}>
-          ${isSelected ? 'Adicionado' : 'Add'}
+          ${isSelected ? 'Added' : 'Add'}
         </button>
       </article>
     `;
@@ -6813,6 +6874,7 @@ function renderWorkoutTypeOptions() {
   ].join('');
 
   templateWorkoutTypeInput.value = currentValue || strengthType._id || '';
+  syncCatalogTypeWithTemplate();
 }
 
 function getFilteredWorkoutTypes() {
@@ -7069,6 +7131,10 @@ function resetTemplateForm() {
   templateFormTitle.textContent = 'NEW_TEMPLATE.exe';
   templateForm.reset();
   templateWorkoutTypeInput.value = getStrengthWorkoutType()._id || '';
+  syncCatalogTypeWithTemplate();
+  catalogCategoryFilter.value = 'all';
+  catalogSubcategoryFilter.value = 'all';
+  renderCategoryOptions();
   renderSelectedTemplateExercises();
   renderCatalog();
   setTemplateStatus('');
@@ -7129,6 +7195,10 @@ function fillTemplateForm(template) {
     instructions: [],
     tips: exercise.tips || []
   }));
+  syncCatalogTypeWithTemplate();
+  catalogCategoryFilter.value = 'all';
+  catalogSubcategoryFilter.value = 'all';
+  renderCategoryOptions();
   renderSelectedTemplateExercises();
   renderCatalog();
   document.querySelector('[data-tab="template-create"]').click();
@@ -7955,10 +8025,28 @@ document.addEventListener('keydown', (event) => {
 window.addEventListener('scroll', hideMediaHoverPreview, { passive: true });
 window.addEventListener('resize', hideMediaHoverPreview);
 
-catalogCategoryFilter.addEventListener('change', renderCatalog);
+catalogTypeFilter.addEventListener('change', () => {
+  setTemplateWorkoutTypeByCode(catalogTypeFilter.value);
+  keepSelectedTemplateExercisesForType(catalogTypeFilter.value);
+  catalogCategoryFilter.value = 'all';
+  catalogSubcategoryFilter.value = 'all';
+  renderCategoryOptions();
+  renderCatalog();
+});
+catalogCategoryFilter.addEventListener('change', () => {
+  catalogSubcategoryFilter.value = 'all';
+  renderCatalog();
+});
 catalogSubcategoryFilter.addEventListener('change', renderCatalog);
 catalogSearch.addEventListener('input', renderCatalog);
-templateWorkoutTypeInput.addEventListener('change', renderCatalog);
+templateWorkoutTypeInput.addEventListener('change', () => {
+  syncCatalogTypeWithTemplate();
+  keepSelectedTemplateExercisesForType(catalogTypeFilter.value);
+  catalogCategoryFilter.value = 'all';
+  catalogSubcategoryFilter.value = 'all';
+  renderCategoryOptions();
+  renderCatalog();
+});
 workoutExerciseCategoryFilter.addEventListener('change', renderWorkoutExercisePicker);
 workoutExerciseSubcategoryFilter.addEventListener('change', renderWorkoutExercisePicker);
 workoutExerciseSearch.addEventListener('input', renderWorkoutExercisePicker);
@@ -8033,6 +8121,14 @@ templateForm.addEventListener('submit', async (event) => {
 
     if (!payload.exercises.length) {
       throw new Error('Choose at least one exercise for the template.');
+    }
+
+    const incompatibleExercise = payload.exercises.find((exercise) => (
+      (exercise.modality || 'strength') !== payload.workoutTypeCode
+    ));
+
+    if (incompatibleExercise) {
+      throw new Error(`Exercise ${incompatibleExercise.name} does not match ${getWorkoutTypeName(payload.workoutTypeCode)}.`);
     }
 
     const url = state.templateEditingId ? `/api/templates/${state.templateEditingId}` : '/api/templates';
