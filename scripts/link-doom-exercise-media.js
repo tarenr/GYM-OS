@@ -19,7 +19,7 @@ const aliasByName = new Map([
   ['dumbbell or short-bar curl', { category: 'Biceps', slug: 'dumbbell-or-short-bar-curl' }],
   ['dumbbell or short-bar skull crusher', { category: 'Triceps', slug: 'dumbbell-skull-crusher' }],
   ['goblet squat with kettlebell or dumbbell', { category: 'Legs', slug: 'goblet-squat' }],
-  ['dumbbell pullover on bench', { category: 'Chest', slug: 'dumbbell-pullover-on-bench' }],
+  ['dumbbell pullover on bench', { category: 'Back', slug: 'dumbbell-pullover' }],
   ['reverse-grip dumbbell bench press', { category: 'Chest', slug: 'reverse-grip-dumbbell-bench-press' }],
   ['close-grip dumbbell bench press', { category: 'Chest', slug: 'close-grip-dumbbell-bench-press' }]
 ]);
