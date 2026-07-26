@@ -7,7 +7,6 @@ const strengthSubcategories = new Map([
   ['Reverse-grip dumbbell bench press', 'Upper chest'],
   ['Flat dumbbell fly', 'Chest fly'],
   ['Dumbbell pullover on bench', 'Chest and serratus'],
-  ['Dumbbell pullover on flat bench', 'Chest and serratus'],
   ['Dumbbell squeeze press', 'Inner chest'],
   ['Close-grip dumbbell bench press', 'Inner chest and triceps'],
   ['Bent-over dumbbell row', 'Back'],

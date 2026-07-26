@@ -3,6 +3,7 @@ export const exerciseCatalog = [
     category: 'Chest',
     exercises: [
       { name: 'Flat dumbbell bench press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 4, defaultReps: '8-12' },
+      { name: 'Reverse-grip dumbbell bench press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '8-12' },
       { name: 'Flat dumbbell fly', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '10-15' },
       { name: 'Dumbbell pullover on bench', equipment: ['Flat bench', 'Dumbbell'], defaultSets: 3, defaultReps: '10-15' },
       { name: 'Dumbbell squeeze press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '10-15' },

@@ -33,14 +33,7 @@ const mediaByExerciseName = new Map([
     'dumbbell pullover on bench',
     {
       imageUrl: '/assets/exercises/template-a/pullover-com-halter-no-banco-reto.png',
-      imageAlt: 'Start and end movement of dumbbell pullover on flat bench'
-    }
-  ],
-  [
-    'dumbbell pullover on flat bench',
-    {
-      imageUrl: '/assets/exercises/template-a/pullover-com-halter-no-banco-reto.png',
-      imageAlt: 'Start and end movement of dumbbell pullover on flat bench'
+      imageAlt: 'Start and end movement of dumbbell pullover on bench'
     }
   ],
   [
