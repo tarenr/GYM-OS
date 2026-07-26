@@ -6,8 +6,7 @@ export const exerciseCatalog = [
       { name: 'Reverse-grip dumbbell bench press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '8-12' },
       { name: 'Flat dumbbell fly', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '10-15' },
       { name: 'Dumbbell pullover on bench', equipment: ['Flat bench', 'Dumbbell'], defaultSets: 3, defaultReps: '10-15' },
-      { name: 'Dumbbell squeeze press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '10-15' },
-      { name: 'Close-grip dumbbell bench press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '8-12' }
+      { name: 'Dumbbell squeeze press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '10-15' }
     ]
   },
   {
@@ -34,7 +33,6 @@ export const exerciseCatalog = [
     exercises: [
       { name: 'Overhead dumbbell triceps extension', equipment: ['Dumbbell'], defaultSets: 3, defaultReps: '10-12' },
       { name: 'Dumbbell skull crusher', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '10-12' },
-      { name: 'Close-grip dumbbell bench press', equipment: ['Flat bench', 'Dumbbells'], defaultSets: 3, defaultReps: '8-12' },
       { name: 'Dumbbell triceps kickback', equipment: ['Dumbbell'], defaultSets: 3, defaultReps: '12-15 each arm' }
     ]
   },

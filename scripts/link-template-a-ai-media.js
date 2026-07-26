@@ -56,13 +56,6 @@ const mediaByExerciseName = new Map([
       imageUrl: '/assets/exercises/template-a/triceps-testa-com-halteres.png',
       imageAlt: 'Start and end movement of dumbbell skull crusher'
     }
-  ],
-  [
-    'dumbbell or short-bar skull crusher',
-    {
-      imageUrl: '/assets/exercises/template-a/triceps-testa-com-halteres.png',
-      imageAlt: 'Start and end movement of dumbbell skull crusher'
-    }
   ]
 ]);
 
