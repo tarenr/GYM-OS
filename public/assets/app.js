@@ -5623,31 +5623,16 @@ function getBodyScanCallouts(measurement) {
   const values = measurement?.measurementsCm || {};
 
   return [
-    { key: 'chest', label: 'Chest', value: formatMeasurementValue(values.chest, ' cm'), side: 'front', x: 18, y: 22 },
-    { key: 'rightArm', label: 'Right Arm', value: formatMeasurementValue(values.rightArm, ' cm'), side: 'front', x: 6, y: 34 },
-    { key: 'leftArm', label: 'Left Arm', value: formatMeasurementValue(values.leftArm, ' cm'), side: 'front', x: 39, y: 34 },
-    { key: 'waist', label: 'Waist', value: formatMeasurementValue(values.waist, ' cm'), side: 'front', x: 18, y: 47 },
-    { key: 'abdomen', label: 'Abdomen', value: formatMeasurementValue(values.abdomen, ' cm'), side: 'front', x: 17, y: 53 },
-    { key: 'hips', label: 'Hips', value: formatMeasurementValue(values.hips, ' cm'), side: 'back', x: 66, y: 53 },
-    { key: 'rightThigh', label: 'Right Thigh', value: formatMeasurementValue(values.rightThigh, ' cm'), side: 'front', x: 10, y: 71 },
-    { key: 'leftThigh', label: 'Left Thigh', value: formatMeasurementValue(values.leftThigh, ' cm'), side: 'front', x: 37, y: 71 },
-    { key: 'rightCalf', label: 'Right Calf', value: formatMeasurementValue(values.rightCalf, ' cm'), side: 'back', x: 58, y: 85 },
-    { key: 'leftCalf', label: 'Left Calf', value: formatMeasurementValue(values.leftCalf, ' cm'), side: 'back', x: 87, y: 85 }
-  ];
-}
-
-function getBodyScanLines() {
-  return [
-    { key: 'chest', label: 'Chest', side: 'front', tone: 'red', x: 27, y: 28, width: 15 },
-    { key: 'rightArm', label: 'Right Arm', side: 'front', tone: 'red', x: 17, y: 35, width: 6 },
-    { key: 'leftArm', label: 'Left Arm', side: 'front', tone: 'red', x: 37, y: 35, width: 6 },
-    { key: 'waist', label: 'Waist', side: 'front', tone: 'orange', x: 27, y: 47, width: 12 },
-    { key: 'abdomen', label: 'Abdomen', side: 'front', tone: 'green', x: 27, y: 52, width: 13 },
-    { key: 'hips', label: 'Hips', side: 'back', tone: 'purple', x: 74, y: 55, width: 17 },
-    { key: 'rightThigh', label: 'Right Thigh', side: 'front', tone: 'blue', x: 22, y: 70, width: 6 },
-    { key: 'leftThigh', label: 'Left Thigh', side: 'front', tone: 'blue', x: 32, y: 70, width: 6 },
-    { key: 'rightCalf', label: 'Right Calf', side: 'back', tone: 'cyan', x: 69, y: 85, width: 5 },
-    { key: 'leftCalf', label: 'Left Calf', side: 'back', tone: 'cyan', x: 80, y: 85, width: 5 }
+    { key: 'chest', label: 'Chest', value: formatMeasurementValue(values.chest, ' cm'), x: 10.4, y: 18.8 },
+    { key: 'rightArm', label: 'Right Arm', value: formatMeasurementValue(values.rightArm, ' cm'), x: 7.5, y: 31.3 },
+    { key: 'leftArm', label: 'Left Arm', value: formatMeasurementValue(values.leftArm, ' cm'), x: 46.3, y: 31.8 },
+    { key: 'waist', label: 'Waist', value: formatMeasurementValue(values.waist, ' cm'), x: 8.1, y: 43.6 },
+    { key: 'abdomen', label: 'Abdomen', value: formatMeasurementValue(values.abdomen, ' cm'), x: 8.1, y: 56.2 },
+    { key: 'hips', label: 'Hips', value: formatMeasurementValue(values.hips, ' cm'), x: 91.7, y: 51.0 },
+    { key: 'rightThigh', label: 'Right Thigh', value: formatMeasurementValue(values.rightThigh, ' cm'), x: 7.7, y: 68.7 },
+    { key: 'leftThigh', label: 'Left Thigh', value: formatMeasurementValue(values.leftThigh, ' cm'), x: 46.9, y: 68.9 },
+    { key: 'rightCalf', label: 'Right Calf', value: formatMeasurementValue(values.rightCalf, ' cm'), x: 7.7, y: 82.4 },
+    { key: 'leftCalf', label: 'Left Calf', value: formatMeasurementValue(values.leftCalf, ' cm'), x: 46.8, y: 82.6 }
   ];
 }
 
@@ -5658,21 +5643,15 @@ function renderBodyScanVisual(measurements) {
 
   const latest = measurements[measurements.length - 1];
   const callouts = getBodyScanCallouts(latest);
-  const lines = getBodyScanLines();
   const latestDate = latest ? formatDate(getBodyMeasurementDateKey(latest)) : 'No scan logged';
   const latestWeight = formatMeasurementValue(latest?.weightKg, ' kg');
 
   bodyScanVisual.innerHTML = `
     <div class="body-scan-stage">
-      <img src="/assets/body/gym-os-body-scan-slayer.png" alt="GYM-OS body scan armored front and back reference" />
-      <div class="body-scan-lines" aria-hidden="true">
-        ${lines.map((item) => `
-          <span class="body-scan-line ${escapeHtml(item.side)} ${escapeHtml(item.tone)}" style="--x:${item.x}%; --y:${item.y}%; --w:${item.width}%;" title="${escapeHtml(item.label)}"></span>
-        `).join('')}
-      </div>
-      <div class="body-scan-overlay" aria-hidden="true">
+      <img src="/assets/body/gym-os-body-scan-slayer-map.png" alt="GYM-OS body scan measurement map" />
+      <div class="body-scan-overlay" aria-label="Latest body scan values">
         ${callouts.map((item) => `
-          <div class="body-scan-callout ${escapeHtml(item.side)}" style="--x:${item.x}%; --y:${item.y}%;">
+          <div class="body-scan-callout" style="--x:${item.x}%; --y:${item.y}%;">
             <span>${escapeHtml(item.label)}</span>
             <strong>${escapeHtml(item.value)}</strong>
           </div>
