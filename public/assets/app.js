@@ -5630,9 +5630,9 @@ function getBodyScanCallouts(measurement) {
       tone: 'red',
       box: { x: 92, y: 118, w: 166, h: 82 },
       valuePoint: { x: 175, y: 174 },
-      lead: '258,159 310,210 352,230',
-      bands: [{ x1: 352, y1: 230, x2: 636, y2: 230 }],
-      dots: [{ x: 352, y: 230 }, { x: 636, y: 230 }]
+      lead: '258,159 316,210 386,232',
+      bands: [{ x1: 386, y1: 232, x2: 602, y2: 232 }],
+      dots: [{ x: 386, y: 232 }, { x: 602, y: 232 }]
     },
     {
       key: 'rightArm',
@@ -5641,9 +5641,9 @@ function getBodyScanCallouts(measurement) {
       tone: 'red',
       box: { x: 38, y: 248, w: 166, h: 82 },
       valuePoint: { x: 121, y: 304 },
-      lead: '204,289 250,295 286,295',
-      bands: [{ x1: 286, y1: 295, x2: 370, y2: 295 }],
-      dots: [{ x: 286, y: 295 }]
+      lead: '204,289 252,295 304,295',
+      bands: [{ x1: 304, y1: 295, x2: 370, y2: 295 }],
+      dots: [{ x: 304, y: 295 }]
     },
     {
       key: 'leftArm',
@@ -5652,9 +5652,9 @@ function getBodyScanCallouts(measurement) {
       tone: 'red',
       box: { x: 696, y: 248, w: 166, h: 82 },
       valuePoint: { x: 779, y: 304 },
-      lead: '696,289 645,295 560,295',
-      bands: [{ x1: 560, y1: 295, x2: 645, y2: 295 }],
-      dots: [{ x: 645, y: 295 }]
+      lead: '696,289 640,295 586,295',
+      bands: [{ x1: 586, y1: 295, x2: 648, y2: 295 }],
+      dots: [{ x: 648, y: 295 }]
     },
     {
       key: 'waist',
@@ -5663,8 +5663,8 @@ function getBodyScanCallouts(measurement) {
       tone: 'orange',
       box: { x: 38, y: 365, w: 188, h: 88 },
       valuePoint: { x: 132, y: 424 },
-      lead: '226,396 262,352 286,338',
-      bands: [{ x1: 286, y1: 338, x2: 662, y2: 338 }]
+      lead: '226,396 278,350 356,338',
+      bands: [{ x1: 356, y1: 338, x2: 574, y2: 338 }]
     },
     {
       key: 'abdomen',
@@ -5673,8 +5673,8 @@ function getBodyScanCallouts(measurement) {
       tone: 'green',
       box: { x: 38, y: 478, w: 188, h: 88 },
       valuePoint: { x: 132, y: 537 },
-      lead: '226,510 258,432 272,392',
-      bands: [{ x1: 272, y1: 392, x2: 670, y2: 392 }]
+      lead: '226,510 280,424 360,392',
+      bands: [{ x1: 360, y1: 392, x2: 578, y2: 392 }]
     },
     {
       key: 'hips',
@@ -5683,9 +5683,9 @@ function getBodyScanCallouts(measurement) {
       tone: 'purple',
       box: { x: 1444, y: 408, w: 184, h: 88 },
       valuePoint: { x: 1536, y: 466 },
-      lead: '1444,452 1408,452 1388,450',
-      bands: [{ x1: 1042, y1: 450, x2: 1406, y2: 450 }],
-      dots: [{ x: 1042, y: 450 }, { x: 1406, y: 450 }]
+      lead: '1444,452 1408,452 1314,450',
+      bands: [{ x1: 1112, y1: 450, x2: 1314, y2: 450 }],
+      dots: [{ x: 1112, y: 450 }, { x: 1314, y: 450 }]
     },
     {
       key: 'rightThigh',
@@ -5694,9 +5694,9 @@ function getBodyScanCallouts(measurement) {
       tone: 'blue',
       box: { x: 38, y: 590, w: 184, h: 88 },
       valuePoint: { x: 130, y: 650 },
-      lead: '222,632 288,565 336,538',
-      bands: [{ x1: 336, y1: 538, x2: 456, y2: 538 }, { x1: 1068, y1: 552, x2: 1185, y2: 552 }],
-      dots: [{ x: 336, y: 538 }]
+      lead: '222,632 292,565 352,538',
+      bands: [{ x1: 352, y1: 538, x2: 432, y2: 538 }, { x1: 1088, y1: 552, x2: 1160, y2: 552 }],
+      dots: [{ x: 352, y: 538 }]
     },
     {
       key: 'leftThigh',
@@ -5705,9 +5705,9 @@ function getBodyScanCallouts(measurement) {
       tone: 'blue',
       box: { x: 704, y: 590, w: 184, h: 88 },
       valuePoint: { x: 796, y: 650 },
-      lead: '704,632 648,565 620,538',
-      bands: [{ x1: 500, y1: 538, x2: 620, y2: 538 }, { x1: 1238, y1: 552, x2: 1356, y2: 552 }],
-      dots: [{ x: 620, y: 538 }]
+      lead: '704,632 648,565 600,538',
+      bands: [{ x1: 520, y1: 538, x2: 600, y2: 538 }, { x1: 1260, y1: 552, x2: 1332, y2: 552 }],
+      dots: [{ x: 600, y: 538 }]
     },
     {
       key: 'rightCalf',
@@ -5716,9 +5716,9 @@ function getBodyScanCallouts(measurement) {
       tone: 'cyan',
       box: { x: 38, y: 720, w: 184, h: 88 },
       valuePoint: { x: 130, y: 780 },
-      lead: '222,762 285,702 324,700',
-      bands: [{ x1: 324, y1: 700, x2: 432, y2: 700 }, { x1: 1068, y1: 700, x2: 1165, y2: 700 }],
-      dots: [{ x: 324, y: 700 }]
+      lead: '222,762 288,704 340,700',
+      bands: [{ x1: 340, y1: 700, x2: 410, y2: 700 }, { x1: 1088, y1: 700, x2: 1144, y2: 700 }],
+      dots: [{ x: 340, y: 700 }]
     },
     {
       key: 'leftCalf',
@@ -5727,9 +5727,9 @@ function getBodyScanCallouts(measurement) {
       tone: 'cyan',
       box: { x: 704, y: 720, w: 184, h: 88 },
       valuePoint: { x: 796, y: 780 },
-      lead: '704,762 640,702 605,700',
-      bands: [{ x1: 510, y1: 700, x2: 605, y2: 700 }, { x1: 1240, y1: 700, x2: 1342, y2: 700 }],
-      dots: [{ x: 605, y: 700 }]
+      lead: '704,762 640,704 584,700',
+      bands: [{ x1: 530, y1: 700, x2: 584, y2: 700 }, { x1: 1260, y1: 700, x2: 1320, y2: 700 }],
+      dots: [{ x: 584, y: 700 }]
     }
   ];
 }
