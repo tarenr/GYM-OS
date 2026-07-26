@@ -6936,7 +6936,9 @@ function renderExercisePage() {
     const loadMode = getExerciseLoadMode(exercise);
     const loadMeta = getLoadModeMeta(loadMode);
     const equipmentDisplay = getExerciseEquipmentDisplay(exercise, loadMode);
-    const supportLine = [loadMeta.fieldLabel, equipmentDisplay].filter(Boolean).join(' | ');
+    const equipmentMarkup = equipmentDisplay
+      ? `<div><span>Equipment</span><strong>${escapeHtml(equipmentDisplay)}</strong></div>`
+      : '';
 
     return `
       <article class="exercise-library-card" data-exercise-id="${exercise._id}">
@@ -6946,8 +6948,17 @@ function renderExercisePage() {
         ${getExerciseImageMarkup(exercise, 'library')}
         <div class="exercise-library-main">
           <h3>${escapeHtml(exercise.name)}</h3>
-          <div class="equipment-line">${escapeHtml(supportLine)}</div>
-          <strong class="exercise-load-line">${escapeHtml(formatExercisePrescription(exercise))}</strong>
+          <div class="exercise-spec-panel">
+            <div>
+              <span>Load type</span>
+              <strong>${escapeHtml(loadMeta.fieldLabel)}</strong>
+            </div>
+            <div>
+              <span>Prescription</span>
+              <strong>${escapeHtml(formatExercisePrescription(exercise))}</strong>
+            </div>
+            ${equipmentMarkup}
+          </div>
         </div>
         <div class="exercise-library-tip">
           ${getExerciseInstructionMarkup(exercise)}

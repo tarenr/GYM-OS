@@ -5398,10 +5398,10 @@ textarea:focus {
 
 .exercise-library-card {
   display: grid;
-  grid-template-rows: 52px 168px 118px minmax(32px, auto) auto minmax(0, auto) 8px;
-  gap: 14px;
+  grid-template-rows: 52px 168px auto minmax(0, auto) auto minmax(0, auto) 8px;
+  gap: 12px;
   padding: 18px 20px;
-  min-height: 520px;
+  min-height: 500px;
 }
 
 .exercise-library-card header {
@@ -5420,7 +5420,7 @@ textarea:focus {
 .exercise-library-main {
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: 10px;
   min-height: 0;
 }
 
@@ -5439,8 +5439,7 @@ textarea:focus {
   min-width: 0;
 }
 
-.exercise-library-card .history-meta,
-.exercise-library-card .equipment-line {
+.exercise-library-card .history-meta {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
@@ -5449,19 +5448,6 @@ textarea:focus {
 .exercise-library-card .history-meta {
   min-height: 3.5em;
   -webkit-line-clamp: 3;
-}
-
-.exercise-library-card .equipment-line {
-  min-height: 1.2em;
-  -webkit-line-clamp: 1;
-}
-
-.exercise-load-line {
-  color: var(--orange);
-  font-size: 0.78rem;
-  font-weight: 900;
-  line-height: 1.2;
-  text-transform: uppercase;
 }
 
 .exercise-profile-legend {
@@ -5513,7 +5499,7 @@ textarea:focus {
 .exercise-library-tip {
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: 6px;
 }
 
 .exercise-library-tip .load-mode-meta.compact {
@@ -5521,7 +5507,7 @@ textarea:focus {
 }
 
 .exercise-library-tip:empty {
-  min-height: 46px;
+  min-height: 0;
 }
 
 .exercise-library-card .media-actions {
@@ -5542,6 +5528,49 @@ textarea:focus {
 .equipment-line {
   color: var(--muted);
   font-size: 0.78rem;
+}
+
+.exercise-spec-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  border: 1px solid rgba(88, 166, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(88, 166, 255, 0.05);
+  padding: 10px;
+}
+
+.exercise-spec-panel div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.exercise-spec-panel div:only-child,
+.exercise-spec-panel div:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.exercise-spec-panel span {
+  color: var(--muted);
+  font-size: 0.58rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.exercise-spec-panel strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.exercise-spec-panel div:nth-child(2) strong {
+  color: var(--orange);
 }
 
 .mini-meter {
