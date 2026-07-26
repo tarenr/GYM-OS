@@ -476,90 +476,120 @@
         </div>
 
         <div class="progress-subtab" id="progress-subtab-body" data-progress-panel="body">
-          <section class="panel body-progress-panel">
-          <div class="panel-header">
-            <div class="panel-title">
-              <span class="panel-icon">KG</span>
-              <h2>BODY_PROGRESS.sys</h2>
-            </div>
-            <span class="panel-badge" id="body-progress-count">0 REG</span>
-          </div>
-          <section class="summary-grid page-summary compact-summary" id="body-progress-summary-cards" aria-label="Body evolution summary"></section>
-          <section class="body-progress-insight-grid">
-            <article class="body-progress-insight" id="body-progress-insight"></article>
-            <article class="body-progress-cycle" id="body-progress-cycle"></article>
-          </section>
-          <section class="body-progress-chart-grid" id="body-progress-chart-grid" aria-label="Body evolution charts"></section>
-          <section class="content-grid body-progress-grid">
-            <form class="body-progress-form" id="body-measurement-form">
-              <div class="body-measurement-grid">
-                <label class="body-measurement-field">
-                  DATE
-                  <input id="body-measured-at" type="date" required />
-                </label>
-                <label class="body-measurement-field">
-                  WEIGHT_KG
-                  <input id="body-weight-kg" type="number" min="0" step="0.1" placeholder="0.0" />
-                </label>
-                <label class="body-measurement-field full">
-                  CHEST_CM
-                  <input id="body-chest" type="number" min="0" step="0.1" placeholder="0.0" />
-                </label>
-                <div class="body-measurement-pair">
-                  <label class="body-measurement-field">
-                    RIGHT_ARM_CM
-                    <input id="body-right-arm" type="number" min="0" step="0.1" placeholder="0.0" />
-                  </label>
-                  <label class="body-measurement-field">
-                    LEFT_ARM_CM
-                    <input id="body-left-arm" type="number" min="0" step="0.1" placeholder="0.0" />
-                  </label>
+          <section class="body-panel-grid">
+            <section class="panel body-progress-panel body-status-panel">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <span class="panel-icon">KG</span>
+                  <h2>BODY_STATUS.sys</h2>
                 </div>
-                <label class="body-measurement-field full">
-                  WAIST_CM
-                  <input id="body-waist" type="number" min="0" step="0.1" placeholder="0.0" />
-                </label>
-                <label class="body-measurement-field full">
-                  ABDOMEN_CM
-                  <input id="body-abdomen" type="number" min="0" step="0.1" placeholder="0.0" />
-                </label>
-                <label class="body-measurement-field full">
-                  HIPS_CM
-                  <input id="body-hips" type="number" min="0" step="0.1" placeholder="0.0" />
-                </label>
-                <div class="body-measurement-pair">
-                  <label class="body-measurement-field">
-                    RIGHT_THIGH_CM
-                    <input id="body-right-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
-                  </label>
-                  <label class="body-measurement-field">
-                    LEFT_THIGH_CM
-                    <input id="body-left-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
-                  </label>
-                </div>
-                <div class="body-measurement-pair">
-                  <label class="body-measurement-field">
-                    RIGHT_CALF_CM
-                    <input id="body-right-calf" type="number" min="0" step="0.1" placeholder="0.0" />
-                  </label>
-                  <label class="body-measurement-field">
-                    LEFT_CALF_CM
-                    <input id="body-left-calf" type="number" min="0" step="0.1" placeholder="0.0" />
-                  </label>
-                </div>
+                <span class="panel-badge" id="body-progress-count">0 REG</span>
               </div>
-              <label>
-                NOTES
-                <textarea id="body-notes" rows="3" maxlength="500" placeholder="// measurement context"></textarea>
-              </label>
-              <div class="form-actions">
-                <span class="status-message" id="body-progress-status" role="status"></span>
-                <button class="button button-ghost" type="button" id="body-measurement-reset">CLEAR</button>
-                <button class="button button-primary" type="submit" id="body-measurement-submit">SAVE_MEASURE</button>
+              <section class="summary-grid page-summary compact-summary" id="body-progress-summary-cards" aria-label="Body evolution summary"></section>
+              <section class="body-progress-insight-grid">
+                <article class="body-progress-insight" id="body-progress-insight"></article>
+                <article class="body-progress-cycle" id="body-progress-cycle"></article>
+              </section>
+            </section>
+
+            <section class="panel body-progress-panel body-scan-panel">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <span class="panel-icon">IN</span>
+                  <h2>BODY_SCAN.input</h2>
+                </div>
+                <span class="panel-badge">LOG BODY</span>
               </div>
-            </form>
-            <div class="body-progress-history" id="body-progress-history"></div>
-          </section>
+              <form class="body-progress-form" id="body-measurement-form">
+                <div class="body-measurement-grid">
+                  <label class="body-measurement-field">
+                    DATE
+                    <input id="body-measured-at" type="date" required />
+                  </label>
+                  <label class="body-measurement-field">
+                    WEIGHT_KG
+                    <input id="body-weight-kg" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                  <label class="body-measurement-field full">
+                    CHEST_CM
+                    <input id="body-chest" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                  <div class="body-measurement-pair">
+                    <label class="body-measurement-field">
+                      RIGHT_ARM_CM
+                      <input id="body-right-arm" type="number" min="0" step="0.1" placeholder="0.0" />
+                    </label>
+                    <label class="body-measurement-field">
+                      LEFT_ARM_CM
+                      <input id="body-left-arm" type="number" min="0" step="0.1" placeholder="0.0" />
+                    </label>
+                  </div>
+                  <label class="body-measurement-field full">
+                    WAIST_CM
+                    <input id="body-waist" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                  <label class="body-measurement-field full">
+                    ABDOMEN_CM
+                    <input id="body-abdomen" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                  <label class="body-measurement-field full">
+                    HIPS_CM
+                    <input id="body-hips" type="number" min="0" step="0.1" placeholder="0.0" />
+                  </label>
+                  <div class="body-measurement-pair">
+                    <label class="body-measurement-field">
+                      RIGHT_THIGH_CM
+                      <input id="body-right-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
+                    </label>
+                    <label class="body-measurement-field">
+                      LEFT_THIGH_CM
+                      <input id="body-left-thigh" type="number" min="0" step="0.1" placeholder="0.0" />
+                    </label>
+                  </div>
+                  <div class="body-measurement-pair">
+                    <label class="body-measurement-field">
+                      RIGHT_CALF_CM
+                      <input id="body-right-calf" type="number" min="0" step="0.1" placeholder="0.0" />
+                    </label>
+                    <label class="body-measurement-field">
+                      LEFT_CALF_CM
+                      <input id="body-left-calf" type="number" min="0" step="0.1" placeholder="0.0" />
+                    </label>
+                  </div>
+                </div>
+                <label>
+                  NOTES
+                  <textarea id="body-notes" rows="3" maxlength="500" placeholder="// measurement context"></textarea>
+                </label>
+                <div class="form-actions">
+                  <span class="status-message" id="body-progress-status" role="status"></span>
+                  <button class="button button-ghost" type="button" id="body-measurement-reset">CLEAR</button>
+                  <button class="button button-primary" type="submit" id="body-measurement-submit">SAVE_MEASURE</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="panel body-progress-panel body-trends-panel">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <span class="panel-icon">~</span>
+                  <h2>BODY_TRENDS.chart</h2>
+                </div>
+                <span class="panel-badge">DELTA</span>
+              </div>
+              <section class="body-progress-chart-grid" id="body-progress-chart-grid" aria-label="Body evolution charts"></section>
+            </section>
+
+            <section class="panel body-progress-panel body-history-panel">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <span class="panel-icon">DB</span>
+                  <h2>BODY_HISTORY.db</h2>
+                </div>
+                <span class="panel-badge">LOGS</span>
+              </div>
+              <div class="body-progress-history" id="body-progress-history"></div>
+            </section>
           </section>
         </div>
 

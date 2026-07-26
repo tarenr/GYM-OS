@@ -2117,13 +2117,18 @@ h4 {
   margin-top: 28px;
 }
 
-.body-progress-panel {
+.body-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--panel-pair-gap, 18px);
+  align-items: stretch;
   margin: 28px 0;
 }
 
-.body-progress-grid {
-  align-items: start;
-  padding: 0 20px 20px;
+.body-progress-panel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
 }
 
 .body-progress-insight-grid,
@@ -2136,6 +2141,16 @@ h4 {
 
 .body-progress-chart-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  flex: 1;
+  align-content: stretch;
+}
+
+.body-trends-panel .body-progress-chart-grid {
+  grid-template-columns: 1fr;
+}
+
+.body-status-panel .summary-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .body-progress-insight,
@@ -2225,10 +2240,19 @@ h4 {
 }
 
 .body-progress-form {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: rgba(13, 17, 23, 0.42);
-  padding: 16px;
+  flex: 1;
+  align-content: start;
+  padding: 0 20px 20px;
+}
+
+.body-progress-history {
+  flex: 1;
+  align-content: start;
+  padding: 0 20px 20px;
+}
+
+.body-status-panel .compact-summary {
+  padding-bottom: 14px;
 }
 
 .body-measurement-grid,
@@ -5203,6 +5227,10 @@ textarea:focus {
   }
 
   .season-progress-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .body-panel-grid {
     grid-template-columns: 1fr;
   }
 
