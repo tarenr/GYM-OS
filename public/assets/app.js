@@ -216,6 +216,7 @@ const progressCompareCount = document.querySelector('#progress-compare-count');
 const progressExerciseCompare = document.querySelector('#progress-exercise-compare');
 const progressPrCount = document.querySelector('#progress-pr-count');
 const progressPrList = document.querySelector('#progress-pr-list');
+const bodyScanVisual = document.querySelector('#body-scan-visual');
 const bodyProgressCount = document.querySelector('#body-progress-count');
 const bodyProgressSummaryCards = document.querySelector('#body-progress-summary-cards');
 const bodyMeasurementForm = document.querySelector('#body-measurement-form');
@@ -5618,6 +5619,61 @@ function getBodyMeasurementLines(values = {}) {
   ];
 }
 
+function getBodyScanCallouts(measurement) {
+  const values = measurement?.measurementsCm || {};
+
+  return [
+    { key: 'chest', label: 'Chest', value: formatMeasurementValue(values.chest, ' cm'), side: 'front', x: 20, y: 22 },
+    { key: 'rightArm', label: 'Right Arm', value: formatMeasurementValue(values.rightArm, ' cm'), side: 'front', x: 6, y: 34 },
+    { key: 'leftArm', label: 'Left Arm', value: formatMeasurementValue(values.leftArm, ' cm'), side: 'front', x: 33, y: 34 },
+    { key: 'waist', label: 'Waist', value: formatMeasurementValue(values.waist, ' cm'), side: 'front', x: 21, y: 46 },
+    { key: 'abdomen', label: 'Abdomen', value: formatMeasurementValue(values.abdomen, ' cm'), side: 'front', x: 18, y: 53 },
+    { key: 'hips', label: 'Hips', value: formatMeasurementValue(values.hips, ' cm'), side: 'back', x: 68, y: 52 },
+    { key: 'rightThigh', label: 'Right Thigh', value: formatMeasurementValue(values.rightThigh, ' cm'), side: 'front', x: 12, y: 70 },
+    { key: 'leftThigh', label: 'Left Thigh', value: formatMeasurementValue(values.leftThigh, ' cm'), side: 'front', x: 31, y: 70 },
+    { key: 'rightCalf', label: 'Right Calf', value: formatMeasurementValue(values.rightCalf, ' cm'), side: 'back', x: 61, y: 83 },
+    { key: 'leftCalf', label: 'Left Calf', value: formatMeasurementValue(values.leftCalf, ' cm'), side: 'back', x: 76, y: 83 }
+  ];
+}
+
+function renderBodyScanVisual(measurements) {
+  if (!bodyScanVisual) {
+    return;
+  }
+
+  const latest = measurements[measurements.length - 1];
+  const callouts = getBodyScanCallouts(latest);
+  const latestDate = latest ? formatDate(getBodyMeasurementDateKey(latest)) : 'No scan logged';
+  const latestWeight = formatMeasurementValue(latest?.weightKg, ' kg');
+
+  bodyScanVisual.innerHTML = `
+    <div class="body-scan-stage">
+      <img src="/assets/body/gym-os-body-scan-slayer.png" alt="GYM-OS body scan armored front and back reference" />
+      <div class="body-scan-overlay" aria-hidden="true">
+        ${callouts.map((item) => `
+          <div class="body-scan-callout ${escapeHtml(item.side)}" style="--x:${item.x}%; --y:${item.y}%;">
+            <span>${escapeHtml(item.label)}</span>
+            <strong>${escapeHtml(item.value)}</strong>
+          </div>
+        `).join('')}
+      </div>
+      <div class="body-scan-meta">
+        <span>LATEST</span>
+        <strong>${escapeHtml(latestDate)}</strong>
+        <p>Weight ${escapeHtml(latestWeight)}</p>
+      </div>
+    </div>
+    <div class="body-scan-list" aria-label="Latest body scan measurements">
+      ${callouts.map((item) => `
+        <article>
+          <span>${escapeHtml(item.label)}</span>
+          <strong>${escapeHtml(item.value)}</strong>
+        </article>
+      `).join('')}
+    </div>
+  `;
+}
+
 function renderBodyProgress() {
   if (!bodyProgressSummaryCards || !bodyProgressHistory) {
     return;
@@ -5635,6 +5691,8 @@ function renderBodyProgress() {
   if (bodyProgressCount) {
     bodyProgressCount.textContent = `${measurements.length} REG`;
   }
+
+  renderBodyScanVisual(measurements);
 
   renderSummaryCards(bodyProgressSummaryCards, [
     {
