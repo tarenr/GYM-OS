@@ -12,6 +12,7 @@ ROADMAP_ACADEMY.md
 ACADEMY_PROGRESS_SYSTEM.md
 MISSION_GOAL_SYSTEM.md
 BODY_PROGRESS_SYSTEM.md
+EXERCISE_MEDIA_PACK.md
 ```
 
 ## Produto
@@ -74,11 +75,12 @@ O app ja permite:
 - Cadastro/listagem de fichas.
 - Cadastro/listagem de tipos de treino.
 - Catalogo de exercicios.
-- Imagens de exercicios.
+- Imagens de exercicios com pacote Doom padronizado.
 - Favicon.
 - Script `.bat` para iniciar o sistema.
 - Projeto movido para pasta propria `C:\xampp\htdocs\GYM-OS`.
 - Repositorio GitHub `GYM-OS`.
+- Script `npm run media:doom:sync` para vincular o pacote visual oficial aos exercicios de forca.
 
 ### Treinos E Fichas
 

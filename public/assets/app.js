@@ -271,6 +271,11 @@ const documentationDocs = {
     downloadUrl: '/BODY_PROGRESS_SYSTEM.md',
     downloadLabel: 'Download Evolution'
   },
+  exerciseMedia: {
+    title: 'EXERCISE_MEDIA_PACK.md',
+    downloadUrl: '/EXERCISE_MEDIA_PACK.md',
+    downloadLabel: 'Download Media'
+  },
   projectStatus: {
     title: 'PROJECT_STATUS.md',
     downloadUrl: '/PROJECT_STATUS.md',

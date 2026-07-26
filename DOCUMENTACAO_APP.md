@@ -58,6 +58,12 @@ Sistema de evolucao corporal:
 BODY_PROGRESS_SYSTEM.md
 ```
 
+Pacote oficial de imagens dos exercicios:
+
+```text
+EXERCISE_MEDIA_PACK.md
+```
+
 Status unificado do projeto:
 
 ```text
@@ -186,6 +192,7 @@ GYM-OS/
     clear-demo-workouts.js
     clear-exercise-media.js
     clear-prejourney-workouts.js
+    link-doom-exercise-media.js
     link-ficha-a-ai-media.js
     link-ficha-b-ai-media.js
     link-ficha-c-ai-media.js
@@ -193,6 +200,7 @@ GYM-OS/
     sync-wger-media.js
 
   BODY_PROGRESS_SYSTEM.md
+  EXERCISE_MEDIA_PACK.md
   MISSION_GOAL_SYSTEM.md
   PROJECT_STATUS.md
   package.json
@@ -1259,6 +1267,7 @@ Roadmap - ROADMAP_ACADEMY.md
 Progressao - ACADEMY_PROGRESS_SYSTEM.md
 Missoes - MISSION_GOAL_SYSTEM.md
 Corporal - BODY_PROGRESS_SYSTEM.md
+Media - EXERCISE_MEDIA_PACK.md
 Status - PROJECT_STATUS.md
 ```
 
@@ -1272,6 +1281,7 @@ GET /ROADMAP_ACADEMY.md
 GET /ACADEMY_PROGRESS_SYSTEM.md
 GET /MISSION_GOAL_SYSTEM.md
 GET /BODY_PROGRESS_SYSTEM.md
+GET /EXERCISE_MEDIA_PACK.md
 GET /PROJECT_STATUS.md
 ```
 
@@ -1283,6 +1293,7 @@ GET /api/documentation?doc=academy
 GET /api/documentation?doc=progressSystem
 GET /api/documentation?doc=missionGoal
 GET /api/documentation?doc=bodyProgress
+GET /api/documentation?doc=exerciseMedia
 GET /api/documentation?doc=projectStatus
 ```
 
@@ -1290,14 +1301,18 @@ GET /api/documentation?doc=projectStatus
 
 As imagens de exercicios foram tratadas assim:
 
+- pacote oficial Doom em `public/assets/doom-exercises/`;
 - imagens locais geradas por IA para fichas A, B e C;
 - algumas imagens podem vir do wger;
 - ExerciseDB foi removido como fonte de instrucoes porque o conteudo vinha em ingles;
 - o objetivo atual e usar imagem apenas como apoio visual, nao instrucoes em ingles.
 
+O pacote Doom e a fonte prioritaria para exercicios ativos de forca.
+
 Pastas:
 
 ```text
+public/assets/doom-exercises/
 public/assets/exercises/ficha-a/
 public/assets/exercises/ficha-b/
 public/assets/exercises/ficha-c/
@@ -1306,10 +1321,14 @@ public/assets/exercises/ficha-c/
 Scripts de vinculo:
 
 ```bash
+npm run media:doom:preview
+npm run media:doom:sync
 npm run media:ficha-a:sync
 npm run media:ficha-b:sync
 npm run media:ficha-c:sync
 ```
+
+O script `scripts/link-doom-exercise-media.js` vincula as imagens locais ao catalogo de exercicios e propaga o snapshot de midia para fichas e treinos.
 
 Funcionalidades visuais:
 
