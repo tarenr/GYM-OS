@@ -57,11 +57,11 @@ public/assets/doom-exercises/
 Back: 5
 Biceps: 5
 Chest: 4
-Core: 4
+Core: 6
 Legs: 6
 Shoulders: 5
 Triceps: 3
-Total: 32
+Total: 34
 ```
 
 ## Integracao Com O Banco
