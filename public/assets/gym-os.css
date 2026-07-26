@@ -2167,31 +2167,35 @@ h4 {
   left: var(--x);
   top: var(--y);
   width: var(--w);
-  height: 0;
+  height: 8px;
   border-top: 2px dashed var(--line-color);
+  border-bottom: 1px solid color-mix(in srgb, var(--line-color) 42%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--line-color) 18%, transparent), transparent);
   transform: translate(-50%, -50%);
-  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--line-color) 70%, transparent));
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--line-color) 58%, transparent));
+  opacity: 0.92;
 }
 
 .body-scan-line::before,
 .body-scan-line::after {
   position: absolute;
-  top: -5px;
-  width: 8px;
-  height: 8px;
-  border: 1px solid var(--line-color);
+  top: -3px;
+  width: 4px;
+  height: 12px;
+  border: 1px solid color-mix(in srgb, var(--line-color) 74%, transparent);
   border-radius: 999px;
-  background: rgba(3, 10, 8, 0.86);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--line-color) 62%, transparent);
+  background: color-mix(in srgb, var(--line-color) 30%, rgba(3, 10, 8, 0.74));
+  box-shadow: 0 0 6px color-mix(in srgb, var(--line-color) 48%, transparent);
   content: "";
 }
 
 .body-scan-line::before {
-  left: -4px;
+  left: -2px;
 }
 
 .body-scan-line::after {
-  right: -4px;
+  right: -2px;
 }
 
 .body-scan-line.red {

@@ -5623,31 +5623,31 @@ function getBodyScanCallouts(measurement) {
   const values = measurement?.measurementsCm || {};
 
   return [
-    { key: 'chest', label: 'Chest', value: formatMeasurementValue(values.chest, ' cm'), side: 'front', x: 20, y: 22 },
+    { key: 'chest', label: 'Chest', value: formatMeasurementValue(values.chest, ' cm'), side: 'front', x: 18, y: 22 },
     { key: 'rightArm', label: 'Right Arm', value: formatMeasurementValue(values.rightArm, ' cm'), side: 'front', x: 6, y: 34 },
-    { key: 'leftArm', label: 'Left Arm', value: formatMeasurementValue(values.leftArm, ' cm'), side: 'front', x: 33, y: 34 },
-    { key: 'waist', label: 'Waist', value: formatMeasurementValue(values.waist, ' cm'), side: 'front', x: 21, y: 46 },
-    { key: 'abdomen', label: 'Abdomen', value: formatMeasurementValue(values.abdomen, ' cm'), side: 'front', x: 18, y: 53 },
-    { key: 'hips', label: 'Hips', value: formatMeasurementValue(values.hips, ' cm'), side: 'back', x: 68, y: 52 },
-    { key: 'rightThigh', label: 'Right Thigh', value: formatMeasurementValue(values.rightThigh, ' cm'), side: 'front', x: 12, y: 70 },
-    { key: 'leftThigh', label: 'Left Thigh', value: formatMeasurementValue(values.leftThigh, ' cm'), side: 'front', x: 31, y: 70 },
-    { key: 'rightCalf', label: 'Right Calf', value: formatMeasurementValue(values.rightCalf, ' cm'), side: 'back', x: 61, y: 83 },
-    { key: 'leftCalf', label: 'Left Calf', value: formatMeasurementValue(values.leftCalf, ' cm'), side: 'back', x: 76, y: 83 }
+    { key: 'leftArm', label: 'Left Arm', value: formatMeasurementValue(values.leftArm, ' cm'), side: 'front', x: 39, y: 34 },
+    { key: 'waist', label: 'Waist', value: formatMeasurementValue(values.waist, ' cm'), side: 'front', x: 18, y: 47 },
+    { key: 'abdomen', label: 'Abdomen', value: formatMeasurementValue(values.abdomen, ' cm'), side: 'front', x: 17, y: 53 },
+    { key: 'hips', label: 'Hips', value: formatMeasurementValue(values.hips, ' cm'), side: 'back', x: 66, y: 53 },
+    { key: 'rightThigh', label: 'Right Thigh', value: formatMeasurementValue(values.rightThigh, ' cm'), side: 'front', x: 10, y: 71 },
+    { key: 'leftThigh', label: 'Left Thigh', value: formatMeasurementValue(values.leftThigh, ' cm'), side: 'front', x: 37, y: 71 },
+    { key: 'rightCalf', label: 'Right Calf', value: formatMeasurementValue(values.rightCalf, ' cm'), side: 'back', x: 58, y: 85 },
+    { key: 'leftCalf', label: 'Left Calf', value: formatMeasurementValue(values.leftCalf, ' cm'), side: 'back', x: 87, y: 85 }
   ];
 }
 
 function getBodyScanLines() {
   return [
-    { key: 'chest', label: 'Chest', side: 'front', tone: 'red', x: 18, y: 28, width: 12 },
-    { key: 'rightArm', label: 'Right Arm', side: 'front', tone: 'red', x: 12, y: 35, width: 6 },
-    { key: 'leftArm', label: 'Left Arm', side: 'front', tone: 'red', x: 30, y: 35, width: 6 },
-    { key: 'waist', label: 'Waist', side: 'front', tone: 'orange', x: 18, y: 45, width: 12 },
-    { key: 'abdomen', label: 'Abdomen', side: 'front', tone: 'green', x: 18, y: 50, width: 12 },
-    { key: 'hips', label: 'Hips', side: 'back', tone: 'purple', x: 66, y: 53, width: 12 },
-    { key: 'rightThigh', label: 'Right Thigh', side: 'front', tone: 'blue', x: 14, y: 69, width: 7 },
-    { key: 'leftThigh', label: 'Left Thigh', side: 'front', tone: 'blue', x: 28, y: 69, width: 7 },
-    { key: 'rightCalf', label: 'Right Calf', side: 'back', tone: 'cyan', x: 63, y: 82, width: 6 },
-    { key: 'leftCalf', label: 'Left Calf', side: 'back', tone: 'cyan', x: 76, y: 82, width: 6 }
+    { key: 'chest', label: 'Chest', side: 'front', tone: 'red', x: 27, y: 28, width: 15 },
+    { key: 'rightArm', label: 'Right Arm', side: 'front', tone: 'red', x: 17, y: 35, width: 6 },
+    { key: 'leftArm', label: 'Left Arm', side: 'front', tone: 'red', x: 37, y: 35, width: 6 },
+    { key: 'waist', label: 'Waist', side: 'front', tone: 'orange', x: 27, y: 47, width: 12 },
+    { key: 'abdomen', label: 'Abdomen', side: 'front', tone: 'green', x: 27, y: 52, width: 13 },
+    { key: 'hips', label: 'Hips', side: 'back', tone: 'purple', x: 74, y: 55, width: 17 },
+    { key: 'rightThigh', label: 'Right Thigh', side: 'front', tone: 'blue', x: 22, y: 70, width: 6 },
+    { key: 'leftThigh', label: 'Left Thigh', side: 'front', tone: 'blue', x: 32, y: 70, width: 6 },
+    { key: 'rightCalf', label: 'Right Calf', side: 'back', tone: 'cyan', x: 69, y: 85, width: 5 },
+    { key: 'leftCalf', label: 'Left Calf', side: 'back', tone: 'cyan', x: 80, y: 85, width: 5 }
   ];
 }
 
