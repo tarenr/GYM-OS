@@ -2575,9 +2575,57 @@ h4 {
 
 .progress-achievement-grid {
   display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 0 20px 20px;
+}
+
+.progress-achievement-group {
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(67, 214, 145, 0.26);
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(67, 214, 145, 0.08), rgba(0, 0, 0, 0.12)),
+    var(--bg-soft);
+  padding: 14px;
+}
+
+.progress-achievement-group-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 0.25fr);
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px dashed rgba(67, 214, 145, 0.24);
+  padding-bottom: 12px;
+}
+
+.progress-achievement-group-header div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: baseline;
+}
+
+.progress-achievement-group-header span {
+  color: var(--green);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.progress-achievement-group-header strong {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.progress-achievement-group-grid {
+  display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-  padding: 0 20px 20px;
 }
 
 .progress-achievement-card {
@@ -5343,7 +5391,7 @@ textarea:focus {
     min-height: auto;
   }
 
-  .progress-achievement-grid {
+  .progress-achievement-group-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -5434,7 +5482,7 @@ textarea:focus {
   .stats-bar,
   .summary-grid,
   .progress-achievement-category-list,
-  .progress-achievement-grid,
+  .progress-achievement-group-grid,
   .card-grid,
   .template-grid,
   .exercise-catalog-grid,
@@ -5609,11 +5657,15 @@ textarea:focus {
   .campaign-route-panel .daily-mission-list,
   .stats-bar,
   .summary-grid,
-  .progress-achievement-grid,
+  .progress-achievement-group-grid,
   .card-grid,
   .template-grid,
   .exercise-catalog-grid,
   .type-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-achievement-group-header {
     grid-template-columns: 1fr;
   }
 

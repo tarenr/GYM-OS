@@ -5020,6 +5020,27 @@ function renderAchievementCategorySummary(achievements) {
   }).join('');
 }
 
+function renderAnnualAchievementCard(achievement) {
+  const achievementPercent = getAchievementPercent(achievement);
+  const progressLabel = achievement.rawProgress > achievement.target
+    ? `${formatCompactNumber(achievement.rawProgress)}/${formatCompactNumber(achievement.target)}`
+    : `${formatCompactNumber(achievement.progress)}/${formatCompactNumber(achievement.target)}`;
+
+  return `
+    <article class="progress-achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'} ${escapeHtml(achievement.tier)}">
+      <header>
+        <span>${escapeHtml(achievement.category)}</span>
+        <strong>${achievement.unlocked ? 'UNLOCKED' : progressLabel}</strong>
+      </header>
+      <div class="achievement-tier">${escapeHtml(achievement.tier)}</div>
+      <h3>${escapeHtml(achievement.title)}</h3>
+      <p>${escapeHtml(achievement.description)}</p>
+      <div class="achievement-meter"><span style="width:${achievementPercent}%"></span></div>
+      <small>${progressLabel}</small>
+    </article>
+  `;
+}
+
 function renderAnnualAchievements(items, exerciseEntries) {
   if (!progressAchievementList || !progressAchievementCount) {
     return;
@@ -5079,24 +5100,29 @@ function renderAnnualAchievements(items, exerciseEntries) {
     return;
   }
 
-  progressAchievementList.innerHTML = filteredAchievements.map((achievement) => {
-    const achievementPercent = getAchievementPercent(achievement);
-    const progressLabel = achievement.rawProgress > achievement.target
-      ? `${formatCompactNumber(achievement.rawProgress)}/${formatCompactNumber(achievement.target)}`
-      : `${formatCompactNumber(achievement.progress)}/${formatCompactNumber(achievement.target)}`;
+  progressAchievementList.innerHTML = annualAchievementCategories.map((category) => {
+    const categoryAchievements = filteredAchievements.filter((achievement) => achievement.category === category);
+
+    if (!categoryAchievements.length) {
+      return '';
+    }
+
+    const categoryUnlocked = categoryAchievements.filter((achievement) => achievement.unlocked).length;
+    const categoryPercent = Math.round((categoryUnlocked / categoryAchievements.length) * 100);
 
     return `
-      <article class="progress-achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'} ${escapeHtml(achievement.tier)}">
-        <header>
-          <span>${escapeHtml(achievement.category)}</span>
-          <strong>${achievement.unlocked ? 'UNLOCKED' : progressLabel}</strong>
+      <section class="progress-achievement-group" aria-label="${escapeHtml(category)} achievements">
+        <header class="progress-achievement-group-header">
+          <div>
+            <span>${escapeHtml(category)}.category</span>
+            <strong>${categoryUnlocked}/${categoryAchievements.length} unlocked</strong>
+          </div>
+          <div class="achievement-meter"><span style="width:${categoryPercent}%"></span></div>
         </header>
-        <div class="achievement-tier">${escapeHtml(achievement.tier)}</div>
-        <h3>${escapeHtml(achievement.title)}</h3>
-        <p>${escapeHtml(achievement.description)}</p>
-        <div class="achievement-meter"><span style="width:${achievementPercent}%"></span></div>
-        <small>${progressLabel}</small>
-      </article>
+        <div class="progress-achievement-group-grid">
+          ${categoryAchievements.map(renderAnnualAchievementCard).join('')}
+        </div>
+      </section>
     `;
   }).join('');
 }
