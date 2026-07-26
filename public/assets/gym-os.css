@@ -554,6 +554,53 @@ h4 {
   margin-top: 18px;
 }
 
+.journey-overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(460px, 0.9fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.journey-overview-grid > .panel {
+  margin-top: 18px;
+}
+
+.journey-overview-grid .journey-command-panel {
+  display: grid;
+  align-content: start;
+}
+
+.journey-overview-grid .journey-command-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.journey-overview-grid .heatmap-panel {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.journey-overview-grid .heatmap-scroll {
+  display: grid;
+  place-items: center;
+  padding: 14px;
+}
+
+.journey-overview-grid .heatmap-grid {
+  --heat-cell-size: clamp(18px, 1vw, 24px);
+  --heat-cell-gap: 5px;
+}
+
+.journey-overview-grid .heatmap-legend {
+  gap: 7px;
+  font-size: 0.66rem;
+}
+
+.journey-overview-grid .heatmap-legend span {
+  min-height: 24px;
+  padding: 3px 7px;
+}
+
 .journey-command-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -5058,6 +5105,10 @@ textarea:focus {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .journey-overview-grid {
+    grid-template-columns: 1fr;
+  }
+
   .journey-command-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -5346,6 +5397,10 @@ textarea:focus {
 
   .heatmap-panel {
     gap: 12px;
+  }
+
+  .journey-overview-grid .journey-command-grid {
+    grid-template-columns: 1fr;
   }
 
   .heatmap-scroll {
