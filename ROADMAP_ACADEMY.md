@@ -1,6 +1,6 @@
 # Roadmap Estrategia Nerd Academy
 
-Ultima atualizacao: 2026-07-22
+Ultima atualizacao: 2026-07-26
 
 Este documento define a evolucao do projeto de um app local de treino para um modulo dentro da marca guarda-chuva **Estrategia Nerd Academy**.
 
@@ -187,7 +187,7 @@ Tela Evolucao tambem mostra historico por exercicio com resumo de maior carga, v
 Tela Evolucao marca PRs automaticos por exercicio e mostra PR_RECENT.log.
 Tela Evolucao compara carga, reps, volume, tempo ou golpes por exercicio.
 Tela Evolucao filtra evolucao por exercicio por periodo.
-Tela Evolucao mostra ACHIEVEMENTS.codex com 16 conquistas anuais iniciais.
+Tela Evolucao mostra ACHIEVEMENTS.codex com 82 conquistas anuais categorizadas.
 Dashboard ACHIEVEMENTS.sys usa o mesmo motor anual de conquistas.
 ```
 
@@ -239,7 +239,7 @@ Implementado nesta fase:
 ```text
 ACHIEVEMENTS.codex dentro de Evolucao.
 Motor frontend de conquistas anuais.
-16 conquistas iniciais.
+82 conquistas anuais em 10 categorias.
 Inicio oficial da jornada em 2026-07-22.
 Dados pre-jornada fora das conquistas anuais.
 Filtros por categoria/estado e resumo por categoria.

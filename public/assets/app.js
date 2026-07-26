@@ -57,6 +57,18 @@ const state = {
 
 let muscleRadarChart = null;
 let volumeTrendChart = null;
+const annualAchievementCategories = [
+  'Entry',
+  'Consistency',
+  'Campaign',
+  'Execution',
+  'Performance',
+  'Volume',
+  'Body',
+  'Level',
+  'Annual',
+  'Modality'
+];
 const sideNav = document.querySelector('.side-nav');
 const menuToggle = document.querySelector('.menu-toggle');
 const form = document.querySelector('#workout-form');
@@ -939,7 +951,7 @@ function getWorkoutExecutionQuality(workout) {
       skippedCount,
       extraCount,
       percent: 0,
-      label: 'So extra',
+      label: 'Extra only',
       className: 'extra',
       detail: `${extraCount} extra exercises`
     };
@@ -952,7 +964,7 @@ function getWorkoutExecutionQuality(workout) {
       skippedCount,
       extraCount,
       percent,
-      label: 'Completo',
+      label: 'Complete',
       className: 'complete',
       detail: `${executedCount}/${plannedCount} planned exercises`
     };
@@ -4738,6 +4750,7 @@ function getAnnualAchievementStats(items, exerciseEntries) {
   const level = calculateLevel(totalXp).level;
   const activeWeekDays = new Map();
   const campaignWeeks = new Map();
+  const activeDays = new Set();
   const blockTypes = journeyWorkouts.reduce((map, workout) => {
     const blockType = getWorkoutBlockType(workout);
     const current = map.get(blockType) || 0;
@@ -4762,8 +4775,10 @@ function getAnnualAchievementStats(items, exerciseEntries) {
     const weekKey = getJourneyWeekKey(workout.date);
     const daySet = activeWeekDays.get(weekKey) || new Set();
     const workoutSet = campaignWeeks.get(weekKey) || new Set();
+    const dayKey = toDateKey(workout.date);
 
-    daySet.add(toDateKey(workout.date));
+    daySet.add(dayKey);
+    activeDays.add(dayKey);
     workoutSet.add(workout._id);
     activeWeekDays.set(weekKey, daySet);
     campaignWeeks.set(weekKey, workoutSet);
@@ -4771,8 +4786,27 @@ function getAnnualAchievementStats(items, exerciseEntries) {
 
   const bestActiveWeekDays = Math.max(0, ...[...activeWeekDays.values()].map((set) => set.size));
   const completeCampaignWeeks = [...campaignWeeks.values()].filter((set) => set.size >= 6).length;
+  const qualities = journeyWorkouts.map(getWorkoutExecutionQuality);
+  const plannedQualities = qualities.filter((quality) => quality.plannedCount > 0);
+  const totalPlannedExercises = plannedQualities.reduce((total, quality) => total + quality.plannedCount, 0);
+  const totalExecutedExercises = plannedQualities.reduce((total, quality) => total + quality.executedCount, 0);
+  const completeBodyFields = [
+    'weight',
+    'chest',
+    'waist',
+    'abdomen',
+    'hips',
+    'rightArm',
+    'leftArm',
+    'rightThigh',
+    'leftThigh',
+    'rightCalf',
+    'leftCalf'
+  ];
+  const advancedBodyFields = ['neck', 'shoulders', 'rightForearm', 'leftForearm'];
   const prs = journeyExerciseEntries.flatMap((entry) => entry.personalRecords || []);
   const origins = journeyWorkouts.map(getWorkoutOriginInfo);
+  const journeyPosition = getJourneyPosition();
 
   return {
     journeyItems,
@@ -4780,7 +4814,16 @@ function getAnnualAchievementStats(items, exerciseEntries) {
     journeyExerciseEntries,
     totalXp,
     bodyMeasurements: journeyBodyMeasurements.length,
+    completeBodyMeasurements: journeyBodyMeasurements.filter((measurement) => {
+      return completeBodyFields.every((field) => Number(measurement[field] || 0) > 0);
+    }).length,
+    advancedBodyMeasurements: journeyBodyMeasurements.filter((measurement) => {
+      return advancedBodyFields.some((field) => Number(measurement[field] || 0) > 0);
+    }).length,
     level,
+    journeyDay: journeyPosition.journeyDay,
+    activeWeeks: activeWeekDays.size,
+    activeDays: activeDays.size,
     completedWorkouts: journeyWorkouts.length,
     strengthWorkouts: blockTypes.get('strength') || 0,
     combatWorkouts: blockTypes.get('combat') || 0,
@@ -4788,6 +4831,15 @@ function getAnnualAchievementStats(items, exerciseEntries) {
     kickboxingSessions: modalities.get('kickboxing') || 0,
     extraWorkouts: origins.filter((origin) => origin.className === 'extra').length,
     substitutions: origins.filter((origin) => origin.className === 'substitution').length,
+    completeWorkouts: qualities.filter((quality) => quality.plannedCount > 0 && quality.percent === 100).length,
+    quality90Workouts: qualities.filter((quality) => quality.plannedCount > 0 && quality.percent >= 90).length,
+    okWorkouts: qualities.filter((quality) => quality.plannedCount > 0 && quality.percent >= 60).length,
+    partialWorkouts: qualities.filter((quality) => quality.plannedCount > 0 && quality.percent < 60).length,
+    adaptedWorkouts: qualities.filter((quality) => quality.plannedCount > 0 && quality.skippedCount > 0 && quality.percent >= 60).length,
+    skippedExercises: qualities.reduce((total, quality) => total + quality.skippedCount, 0),
+    extraExercises: qualities.reduce((total, quality) => total + quality.extraCount, 0),
+    executionAverage: totalPlannedExercises ? Math.round((totalExecutedExercises / totalPlannedExercises) * 100) : 0,
+    totalVolume: journeyWorkouts.reduce((total, workout) => total + calculateWorkoutVolume(workout), 0),
     bestActiveWeekDays,
     completeCampaignWeeks,
     totalPrs: prs.length,
@@ -4813,151 +4865,103 @@ function makeAnnualAchievement({ id, category, tier = 'bronze', title, descripti
 }
 
 function getAnnualAchievements(stats) {
-  return [
-    makeAnnualAchievement({
-      id: 'first-workout-annual',
-      category: 'Entry',
-      title: 'Primeiro Passo',
-      description: 'Log the first workout of the annual journey.',
-      progress: stats.completedWorkouts,
-      target: 1
-    }),
-    makeAnnualAchievement({
-      id: 'first-active-week',
-      category: 'Consistency',
-      title: 'First Active Week',
-      description: 'Have at least 3 active days in one journey week.',
-      progress: stats.bestActiveWeekDays,
-      target: 3
-    }),
-    makeAnnualAchievement({
-      id: 'first-pr-annual',
-      category: 'Performance',
-      title: 'Primeiro PR',
-      description: 'Set the first personal record inside the journey.',
-      progress: stats.totalPrs,
-      target: 1
-    }),
-    makeAnnualAchievement({
-      id: 'first-body-measurement',
-      category: 'Body',
-      title: 'First Measurement',
-      description: 'Log the first body assessment of the journey.',
-      progress: stats.bodyMeasurements,
-      target: 1
-    }),
-    makeAnnualAchievement({
-      id: 'first-strength',
-      category: 'Modality',
-      title: 'Strength Started',
-      description: 'Complete the first strength workout of the journey.',
-      progress: stats.strengthWorkouts,
-      target: 1
-    }),
-    makeAnnualAchievement({
-      id: 'first-combat',
-      category: 'Modality',
-      title: 'Combatente Iniciado',
-      description: 'Complete the first combat workout of the journey.',
-      progress: stats.combatWorkouts,
-      target: 1
-    }),
-    makeAnnualAchievement({
-      id: 'first-extra',
-      category: 'Entry',
-      title: 'Extra Workout Logged',
-      description: 'Log a workout outside today campaign.',
-      progress: stats.extraWorkouts,
-      target: 1
-    }),
-    makeAnnualAchievement({
-      id: 'smart-substitution',
-      category: 'Campaign',
-      title: 'Substituicao Inteligente',
-      description: 'Correctly replace a pending block with the same workout type.',
-      progress: stats.substitutions,
-      target: 1
-    }),
-    makeAnnualAchievement({
-      id: 'workouts-10',
-      category: 'Consistency',
-      title: '10 Workouts Completed',
-      description: 'Complete 10 valid workouts in the annual journey.',
-      progress: stats.completedWorkouts,
-      target: 10
-    }),
-    makeAnnualAchievement({
-      id: 'workouts-25',
-      category: 'Consistency',
-      tier: 'silver',
-      title: '25 Workouts Completed',
-      description: 'Complete 25 valid workouts in the annual journey.',
-      progress: stats.completedWorkouts,
-      target: 25
-    }),
-    makeAnnualAchievement({
-      id: 'workouts-50',
-      category: 'Consistency',
-      tier: 'gold',
-      title: '50 Workouts Completed',
-      description: 'Complete 50 valid workouts in the annual journey.',
-      progress: stats.completedWorkouts,
-      target: 50
-    }),
-    makeAnnualAchievement({
-      id: 'prs-5',
-      category: 'Performance',
-      tier: 'silver',
-      title: '5 PRs Registrados',
-      description: 'Beat 5 personal records after the journey start.',
-      progress: stats.totalPrs,
-      target: 5
-    }),
-    makeAnnualAchievement({
-      id: 'prs-10',
-      category: 'Performance',
-      tier: 'gold',
-      title: '10 PRs Registrados',
-      description: 'Beat 10 personal records after the journey start.',
-      progress: stats.totalPrs,
-      target: 10
-    }),
-    makeAnnualAchievement({
-      id: 'weekly-campaign-complete',
-      category: 'Campaign',
-      title: 'Weekly Campaign Complete',
-      description: 'Complete 6 valid workouts in the same journey week.',
-      progress: stats.completeCampaignWeeks,
-      target: 1
-    }),
-    makeAnnualAchievement({
-      id: 'active-weeks-4',
-      category: 'Consistency',
-      tier: 'silver',
-      title: '4 Active Weeks',
-      description: 'Complete 4 weeks with at least one valid workout.',
-      progress: stats.journeyWorkouts.length ? new Set(stats.journeyWorkouts.map((workout) => getJourneyWeekKey(workout.date))).size : 0,
-      target: 4
-    }),
-    makeAnnualAchievement({
-      id: 'level-10',
-      category: 'Level',
-      tier: 'silver',
-      title: 'LV 10 Academy',
-      description: 'Alcancar o nivel 10 dentro of annual journey.',
-      progress: stats.level,
-      target: 10
-    }),
-    makeAnnualAchievement({
-      id: 'level-25',
-      category: 'Level',
-      tier: 'gold',
-      title: 'LV 25 Academy',
-      description: 'Alcancar o nivel 25 dentro of annual journey.',
-      progress: stats.level,
-      target: 25
-    })
+  const achievements = [
+    ['first-workout-annual', 'Entry', 'bronze', 'First Step', 'Log the first workout of the annual journey.', stats.completedWorkouts, 1],
+    ['first-strength', 'Entry', 'bronze', 'Strength Boot', 'Complete the first strength workout of the journey.', stats.strengthWorkouts, 1],
+    ['first-complete-protocol', 'Entry', 'bronze', 'Protocol Complete', 'Finish the first workout with 100% planned execution.', stats.completeWorkouts, 1],
+    ['first-extra', 'Entry', 'bronze', 'Extra Logged', 'Log the first extra workout outside the campaign.', stats.extraWorkouts, 1],
+    ['first-substitution', 'Entry', 'bronze', 'Smart Swap', 'Replace one campaign block with the correct workout type.', stats.substitutions, 1],
+    ['first-pr-annual', 'Entry', 'bronze', 'First PR', 'Set the first personal record inside the journey.', stats.totalPrs, 1],
+    ['first-body-measurement', 'Entry', 'bronze', 'First Measurement', 'Log the first body assessment of the journey.', stats.bodyMeasurements, 1],
+    ['first-advanced-scan', 'Entry', 'bronze', 'Advanced Scan Online', 'Log at least one advanced body measurement field.', stats.advancedBodyMeasurements, 1],
+
+    ['workouts-3', 'Consistency', 'bronze', '3 Workouts Completed', 'Complete 3 valid workouts in the annual journey.', stats.completedWorkouts, 3],
+    ['workouts-10', 'Consistency', 'bronze', '10 Workouts Completed', 'Complete 10 valid workouts in the annual journey.', stats.completedWorkouts, 10],
+    ['workouts-25', 'Consistency', 'silver', '25 Workouts Completed', 'Complete 25 valid workouts in the annual journey.', stats.completedWorkouts, 25],
+    ['workouts-50', 'Consistency', 'silver', '50 Workouts Completed', 'Complete 50 valid workouts in the annual journey.', stats.completedWorkouts, 50],
+    ['workouts-75', 'Consistency', 'silver', '75 Workouts Completed', 'Complete 75 valid workouts in the annual journey.', stats.completedWorkouts, 75],
+    ['workouts-100', 'Consistency', 'gold', '100 Workouts Completed', 'Complete 100 valid workouts in the annual journey.', stats.completedWorkouts, 100],
+    ['workouts-150', 'Consistency', 'gold', '150 Workouts Completed', 'Complete 150 valid workouts in the annual journey.', stats.completedWorkouts, 150],
+    ['workouts-200', 'Consistency', 'gold', '200 Workouts Completed', 'Complete 200 valid workouts in the annual journey.', stats.completedWorkouts, 200],
+    ['active-weeks-4', 'Consistency', 'bronze', '4 Active Weeks', 'Complete workouts across 4 different journey weeks.', stats.activeWeeks, 4],
+    ['active-weeks-12', 'Consistency', 'silver', '12 Active Weeks', 'Complete workouts across 12 different journey weeks.', stats.activeWeeks, 12],
+    ['active-weeks-24', 'Consistency', 'gold', '24 Active Weeks', 'Complete workouts across 24 different journey weeks.', stats.activeWeeks, 24],
+    ['active-weeks-48', 'Consistency', 'gold', '48 Active Weeks', 'Complete workouts across 48 different journey weeks.', stats.activeWeeks, 48],
+    ['best-week-3-days', 'Consistency', 'bronze', '3-Day Week', 'Reach 3 active days in one journey week.', stats.bestActiveWeekDays, 3],
+    ['best-week-6-days', 'Consistency', 'gold', '6-Day Week', 'Reach 6 active days in one journey week.', stats.bestActiveWeekDays, 6],
+
+    ['weekly-campaign-complete', 'Campaign', 'bronze', 'Weekly Campaign Complete', 'Complete 6 valid workouts in the same journey week.', stats.completeCampaignWeeks, 1],
+    ['campaign-weeks-4', 'Campaign', 'bronze', '4 Full Campaign Weeks', 'Complete 4 full campaign weeks.', stats.completeCampaignWeeks, 4],
+    ['campaign-weeks-8', 'Campaign', 'silver', '8 Full Campaign Weeks', 'Complete 8 full campaign weeks.', stats.completeCampaignWeeks, 8],
+    ['campaign-weeks-12', 'Campaign', 'silver', '12 Full Campaign Weeks', 'Complete 12 full campaign weeks.', stats.completeCampaignWeeks, 12],
+    ['campaign-weeks-24', 'Campaign', 'gold', '24 Full Campaign Weeks', 'Complete 24 full campaign weeks.', stats.completeCampaignWeeks, 24],
+    ['campaign-weeks-36', 'Campaign', 'gold', '36 Full Campaign Weeks', 'Complete 36 full campaign weeks.', stats.completeCampaignWeeks, 36],
+    ['substitutions-3', 'Campaign', 'bronze', '3 Smart Swaps', 'Register 3 valid campaign substitutions.', stats.substitutions, 3],
+    ['substitutions-6', 'Campaign', 'silver', '6 Smart Swaps', 'Register 6 valid campaign substitutions.', stats.substitutions, 6],
+
+    ['execution-90-first', 'Execution', 'bronze', '90% Protocol', 'Complete one workout with at least 90% planned execution.', stats.quality90Workouts, 1],
+    ['execution-90-10', 'Execution', 'silver', '10 High-Quality Protocols', 'Complete 10 workouts with at least 90% planned execution.', stats.quality90Workouts, 10],
+    ['execution-90-25', 'Execution', 'gold', '25 High-Quality Protocols', 'Complete 25 workouts with at least 90% planned execution.', stats.quality90Workouts, 25],
+    ['complete-workouts-5', 'Execution', 'bronze', '5 Perfect Protocols', 'Complete 5 workouts with 100% planned execution.', stats.completeWorkouts, 5],
+    ['complete-workouts-20', 'Execution', 'silver', '20 Perfect Protocols', 'Complete 20 workouts with 100% planned execution.', stats.completeWorkouts, 20],
+    ['complete-workouts-50', 'Execution', 'gold', '50 Perfect Protocols', 'Complete 50 workouts with 100% planned execution.', stats.completeWorkouts, 50],
+    ['adapted-workout-1', 'Execution', 'bronze', 'No Quit Protocol', 'Skip at least one planned exercise but finish with 60% or more execution.', stats.adaptedWorkouts, 1],
+    ['adapted-workout-10', 'Execution', 'silver', '10 Adaptive Wins', 'Complete 10 adapted workouts with 60% or more execution.', stats.adaptedWorkouts, 10],
+    ['extra-exercises-5', 'Execution', 'bronze', '5 Bonus Exercises', 'Add 5 extra exercises after planned workouts.', stats.extraExercises, 5],
+    ['extra-exercises-20', 'Execution', 'silver', '20 Bonus Exercises', 'Add 20 extra exercises after planned workouts.', stats.extraExercises, 20],
+
+    ['prs-5', 'Performance', 'bronze', '5 PRs Registered', 'Beat 5 personal records after the journey start.', stats.totalPrs, 5],
+    ['prs-10', 'Performance', 'silver', '10 PRs Registered', 'Beat 10 personal records after the journey start.', stats.totalPrs, 10],
+    ['prs-25', 'Performance', 'silver', '25 PRs Registered', 'Beat 25 personal records after the journey start.', stats.totalPrs, 25],
+    ['prs-50', 'Performance', 'gold', '50 PRs Registered', 'Beat 50 personal records after the journey start.', stats.totalPrs, 50],
+    ['prs-75', 'Performance', 'gold', '75 PRs Registered', 'Beat 75 personal records after the journey start.', stats.totalPrs, 75],
+    ['unique-pr-3', 'Performance', 'bronze', '3 PR Exercises', 'Set PRs in 3 different exercises.', stats.uniquePrExercises, 3],
+    ['unique-pr-6', 'Performance', 'silver', '6 PR Exercises', 'Set PRs in 6 different exercises.', stats.uniquePrExercises, 6],
+    ['unique-pr-10', 'Performance', 'gold', '10 PR Exercises', 'Set PRs in 10 different exercises.', stats.uniquePrExercises, 10],
+
+    ['volume-10k', 'Volume', 'bronze', '10K Volume', 'Accumulate 10,000 kg of logged strength volume.', stats.totalVolume, 10000],
+    ['volume-25k', 'Volume', 'bronze', '25K Volume', 'Accumulate 25,000 kg of logged strength volume.', stats.totalVolume, 25000],
+    ['volume-50k', 'Volume', 'silver', '50K Volume', 'Accumulate 50,000 kg of logged strength volume.', stats.totalVolume, 50000],
+    ['volume-100k', 'Volume', 'silver', '100K Volume', 'Accumulate 100,000 kg of logged strength volume.', stats.totalVolume, 100000],
+    ['volume-250k', 'Volume', 'gold', '250K Volume', 'Accumulate 250,000 kg of logged strength volume.', stats.totalVolume, 250000],
+    ['volume-500k', 'Volume', 'gold', '500K Volume', 'Accumulate 500,000 kg of logged strength volume.', stats.totalVolume, 500000],
+    ['volume-1m', 'Volume', 'gold', '1M Volume', 'Accumulate 1,000,000 kg of logged strength volume.', stats.totalVolume, 1000000],
+
+    ['body-measurements-3', 'Body', 'bronze', '3 Body Scans', 'Log 3 body measurements in the journey.', stats.bodyMeasurements, 3],
+    ['body-measurements-6', 'Body', 'silver', '6 Body Scans', 'Log 6 body measurements in the journey.', stats.bodyMeasurements, 6],
+    ['body-measurements-12', 'Body', 'silver', '12 Body Scans', 'Log 12 body measurements in the journey.', stats.bodyMeasurements, 12],
+    ['body-measurements-24', 'Body', 'gold', '24 Body Scans', 'Log 24 body measurements in the journey.', stats.bodyMeasurements, 24],
+    ['complete-body-scan-1', 'Body', 'bronze', 'Complete Body Baseline', 'Log one complete body scan with all core fields.', stats.completeBodyMeasurements, 1],
+    ['complete-body-scan-6', 'Body', 'silver', '6 Complete Body Scans', 'Log 6 complete body scans with all core fields.', stats.completeBodyMeasurements, 6],
+    ['advanced-body-scan-3', 'Body', 'silver', '3 Advanced Scans', 'Log 3 scans with advanced body fields.', stats.advancedBodyMeasurements, 3],
+    ['advanced-body-scan-6', 'Body', 'gold', '6 Advanced Scans', 'Log 6 scans with advanced body fields.', stats.advancedBodyMeasurements, 6],
+
+    ['level-2', 'Level', 'bronze', 'LV 2 Academy', 'Reach level 2 inside the annual journey.', stats.level, 2],
+    ['level-5', 'Level', 'bronze', 'LV 5 Academy', 'Reach level 5 inside the annual journey.', stats.level, 5],
+    ['level-10', 'Level', 'silver', 'LV 10 Academy', 'Reach level 10 inside the annual journey.', stats.level, 10],
+    ['level-15', 'Level', 'silver', 'LV 15 Academy', 'Reach level 15 inside the annual journey.', stats.level, 15],
+    ['level-25', 'Level', 'gold', 'LV 25 Academy', 'Reach level 25 inside the annual journey.', stats.level, 25],
+    ['level-35', 'Level', 'gold', 'LV 35 Academy', 'Reach level 35 inside the annual journey.', stats.level, 35],
+    ['level-50', 'Level', 'gold', 'LV 50 Academy', 'Reach level 50 inside the annual journey.', stats.level, 50],
+
+    ['journey-day-30', 'Annual', 'bronze', '30-Day Journey', 'Reach day 30 of the annual journey.', stats.journeyDay, 30],
+    ['journey-day-60', 'Annual', 'bronze', '60-Day Journey', 'Reach day 60 of the annual journey.', stats.journeyDay, 60],
+    ['journey-day-90', 'Annual', 'silver', '90-Day Journey', 'Reach day 90 of the annual journey.', stats.journeyDay, 90],
+    ['journey-day-180', 'Annual', 'silver', '180-Day Journey', 'Reach day 180 of the annual journey.', stats.journeyDay, 180],
+    ['journey-day-270', 'Annual', 'gold', '270-Day Journey', 'Reach day 270 of the annual journey.', stats.journeyDay, 270],
+    ['journey-day-365', 'Annual', 'gold', 'Annual Campaign Clear', 'Reach the final day of the annual journey.', stats.journeyDay, 365],
+    ['annual-workouts-250', 'Annual', 'gold', '250 Annual Workouts', 'Complete 250 workouts before the annual journey ends.', stats.completedWorkouts, 250],
+
+    ['strength-workouts-10', 'Modality', 'bronze', '10 Strength Blocks', 'Complete 10 strength workouts.', stats.strengthWorkouts, 10],
+    ['strength-workouts-50', 'Modality', 'silver', '50 Strength Blocks', 'Complete 50 strength workouts.', stats.strengthWorkouts, 50],
+    ['strength-workouts-100', 'Modality', 'gold', '100 Strength Blocks', 'Complete 100 strength workouts.', stats.strengthWorkouts, 100],
+    ['first-combat', 'Modality', 'bronze', 'Combat Started', 'Complete the first combat workout of the journey.', stats.combatWorkouts, 1],
+    ['combat-workouts-10', 'Modality', 'silver', '10 Combat Blocks', 'Complete 10 combat workouts.', stats.combatWorkouts, 10]
   ];
+
+  return achievements.map(([id, category, tier, title, description, progress, target]) => {
+    return makeAnnualAchievement({ id, category, tier, title, description, progress, target });
+  });
 }
 
 function getAchievementPercent(achievement) {
@@ -4998,9 +5002,7 @@ function renderAchievementCategorySummary(achievements) {
     return;
   }
 
-  const categories = ['Entry', 'Consistency', 'Performance', 'Modality', 'Campaign', 'Body', 'Level'];
-
-  progressAchievementCategoryList.innerHTML = categories.map((category) => {
+  progressAchievementCategoryList.innerHTML = annualAchievementCategories.map((category) => {
     const categoryAchievements = achievements.filter((achievement) => achievement.category === category);
     const unlocked = categoryAchievements.filter((achievement) => achievement.unlocked).length;
     const total = categoryAchievements.length;
@@ -5049,16 +5051,16 @@ function renderAnnualAchievements(items, exerciseEntries) {
     },
     {
       icon: 'DONE',
-      label: 'Desbloqueadas',
+      label: 'Unlocked',
       value: `${unlocked.length}/${achievements.length}`,
-      detail: 'initial annual achievements',
+      detail: 'annual achievement archive',
       tone: 'blue'
     },
     {
       icon: 'XP',
       label: 'XP Journey',
       value: String(stats.totalXp),
-      detail: `LV ${stats.level} desde o marco zero`,
+      detail: `LV ${stats.level} from day zero`,
       tone: 'orange'
     },
     {

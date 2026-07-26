@@ -2540,7 +2540,7 @@ h4 {
 
 .progress-achievement-category-list {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 10px;
   padding: 0 20px 20px;
 }

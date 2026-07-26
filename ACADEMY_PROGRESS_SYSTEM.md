@@ -1,6 +1,6 @@
 # Sistema De Progressao Anual Da Academy
 
-Ultima atualizacao: 2026-07-22
+Ultima atualizacao: 2026-07-26
 
 Este documento define o planejamento de longo prazo para XP, niveis, ranks, temporadas, ciclos e conquistas do produto **GYM-OS** dentro da **Estrategia Nerd Academy**.
 
@@ -351,30 +351,46 @@ Ciclo de 4 semanas concluido
 Jornada anual concluida
 ```
 
-## Catalogo Inicial Recomendado
+## Catalogo Anual Implementado
 
-Primeira versao implementavel:
+Status atual:
 
 ```text
-01. Primeiro Treino
-02. Primeira Semana Ativa
-03. Primeiro PR
-04. Primeiro Treino de Forca
-05. Primeiro Treino de Luta
-06. Treino Extra Registrado
-07. Substituicao Inteligente
-08. 10 Treinos Realizados
-09. 25 Treinos Realizados
-10. 50 Treinos Realizados
-11. 5 PRs Registrados
-12. 10 PRs Registrados
-13. Campanha Semanal Completa
-14. 4 Semanas Ativas
-15. LV 10 Academy
-16. LV 25 Academy
+82 conquistas anuais calculadas em tempo real.
+10 categorias filtraveis em ACHIEVEMENTS.codex.
+Resumo visual por categoria.
+Dashboard sincronizado com o mesmo motor anual.
 ```
 
-Nao implementar todas as conquistas anuais de uma vez. O app deve ganhar a primeira camada e depois expandir por temporada.
+Categorias atuais:
+
+```text
+Entry
+Consistency
+Campaign
+Execution
+Performance
+Volume
+Body
+Level
+Annual
+Modality
+```
+
+Escala coberta:
+
+```text
+Entrada: primeiros marcos da jornada.
+Consistencia: treinos totais, semanas ativas e melhor semana.
+Campanha: semanas completas e substituicoes inteligentes.
+Execucao: treinos completos, 90%+, adaptacoes e exercicios extras.
+Performance: PRs totais e PRs por exercicios diferentes.
+Volume: carga acumulada anual.
+Body: scans corporais simples, completos e avancados.
+Level: niveis principais do jogador.
+Annual: marcos de 30 a 365 dias.
+Modality: blocos de forca e combate.
+```
 
 ## Persistencia
 
@@ -476,11 +492,11 @@ Implementado:
 ```text
 ACHIEVEMENTS.codex na tela Evolucao.
 ACHIEVEMENTS.sys no Dashboard consumindo o mesmo motor anual.
-16 conquistas iniciais calculadas em tempo real.
+82 conquistas anuais calculadas em tempo real.
 Inicio da jornada fixado em 2026-07-22.
 Treinos anteriores ficam fora da progressao anual.
 Filtros por categoria e estado.
-Resumo por categoria.
+Resumo por 10 categorias.
 Sem persistencia de desbloqueio ainda.
 ```
 
