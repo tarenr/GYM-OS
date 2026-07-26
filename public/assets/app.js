@@ -217,6 +217,7 @@ const progressAchievementCount = document.querySelector('#progress-achievement-c
 const progressAchievementCategoryFilter = document.querySelector('#progress-achievement-category-filter');
 const progressAchievementStatusFilter = document.querySelector('#progress-achievement-status-filter');
 const progressAchievementSummaryCards = document.querySelector('#progress-achievement-summary-cards');
+const progressNextUnlocks = document.querySelector('#progress-next-unlocks');
 const progressAchievementCategoryList = document.querySelector('#progress-achievement-category-list');
 const progressAchievementList = document.querySelector('#progress-achievement-list');
 const progressExerciseSelect = document.querySelector('#progress-exercise-select');
@@ -4972,6 +4973,71 @@ function formatAchievementProgressLabel(achievement) {
   return `${formatCompactNumber(achievement.progress)}/${formatCompactNumber(achievement.target)}`;
 }
 
+function formatAchievementRemainingLabel(achievement) {
+  const remaining = Math.max(0, achievement.target - achievement.progress);
+
+  if (achievement.category === 'Volume') {
+    return `${formatCompactNumber(remaining)} kg left`;
+  }
+
+  if (achievement.category === 'Annual') {
+    return `${formatCompactNumber(remaining)} days left`;
+  }
+
+  if (achievement.category === 'Level') {
+    return `${formatCompactNumber(remaining)} levels left`;
+  }
+
+  if (achievement.category === 'Performance') {
+    return achievement.id.startsWith('unique-pr')
+      ? `${formatCompactNumber(remaining)} exercises left`
+      : `${formatCompactNumber(remaining)} PRs left`;
+  }
+
+  if (achievement.category === 'Body') {
+    return `${formatCompactNumber(remaining)} scans left`;
+  }
+
+  if (achievement.category === 'Execution') {
+    return achievement.id.startsWith('extra-exercises')
+      ? `${formatCompactNumber(remaining)} exercises left`
+      : `${formatCompactNumber(remaining)} protocols left`;
+  }
+
+  if (achievement.category === 'Campaign') {
+    return achievement.id.startsWith('substitutions')
+      ? `${formatCompactNumber(remaining)} swaps left`
+      : `${formatCompactNumber(remaining)} weeks left`;
+  }
+
+  if (achievement.category === 'Consistency') {
+    return achievement.id.startsWith('active-weeks')
+      ? `${formatCompactNumber(remaining)} weeks left`
+      : `${formatCompactNumber(remaining)} workouts left`;
+  }
+
+  if (achievement.category === 'Modality') {
+    return `${formatCompactNumber(remaining)} blocks left`;
+  }
+
+  return `${formatCompactNumber(remaining)} left`;
+}
+
+function getNextUnlockAchievements(achievements) {
+  return achievements
+    .filter((achievement) => !achievement.unlocked)
+    .sort((a, b) => {
+      const percentDelta = getAchievementPercent(b) - getAchievementPercent(a);
+
+      if (percentDelta !== 0) {
+        return percentDelta;
+      }
+
+      return (a.target - a.progress) - (b.target - b.progress);
+    })
+    .slice(0, 3);
+}
+
 function getFilteredAnnualAchievements(achievements) {
   return achievements
     .filter((achievement) => (
@@ -5043,6 +5109,57 @@ function renderAnnualAchievementCard(achievement) {
   `;
 }
 
+function renderNextUnlocksQueue(achievements) {
+  if (!progressNextUnlocks) {
+    return;
+  }
+
+  const nextUnlocks = getNextUnlockAchievements(achievements);
+
+  if (!nextUnlocks.length) {
+    progressNextUnlocks.innerHTML = `
+      <header class="next-unlocks-header">
+        <div>
+          <span>NEXT_UNLOCKS.queue</span>
+          <strong>0 pending</strong>
+        </div>
+        <em>Annual archive cleared</em>
+      </header>
+    `;
+    return;
+  }
+
+  progressNextUnlocks.innerHTML = `
+    <header class="next-unlocks-header">
+      <div>
+        <span>NEXT_UNLOCKS.queue</span>
+        <strong>${nextUnlocks.length} nearest targets</strong>
+      </div>
+      <em>Closest locked achievements</em>
+    </header>
+    <div class="next-unlocks-grid">
+      ${nextUnlocks.map((achievement) => {
+        const percent = getAchievementPercent(achievement);
+        const progressLabel = formatAchievementProgressLabel(achievement);
+        const remainingLabel = formatAchievementRemainingLabel(achievement);
+
+        return `
+          <article class="next-unlock-card ${escapeHtml(achievement.tier)}">
+            <header>
+              <span>${escapeHtml(achievement.category)}</span>
+              <strong>${escapeHtml(remainingLabel)}</strong>
+            </header>
+            <h3>${escapeHtml(achievement.title)}</h3>
+            <p>${escapeHtml(achievement.description)}</p>
+            <div class="achievement-meter"><span style="width:${percent}%"></span></div>
+            <small>${progressLabel} | ${percent}%</small>
+          </article>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
 function renderAnnualAchievements(items, exerciseEntries) {
   if (!progressAchievementList || !progressAchievementCount) {
     return;
@@ -5095,6 +5212,7 @@ function renderAnnualAchievements(items, exerciseEntries) {
     }
   ]);
 
+  renderNextUnlocksQueue(achievements);
   renderAchievementCategorySummary(achievements);
 
   if (!filteredAchievements.length) {

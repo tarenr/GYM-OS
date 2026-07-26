@@ -2573,6 +2573,101 @@ h4 {
   color: var(--green);
 }
 
+.progress-next-unlocks {
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(88, 166, 255, 0.28);
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(88, 166, 255, 0.08), rgba(0, 0, 0, 0.1)),
+    var(--bg);
+  margin: 0 20px 20px;
+  padding: 14px;
+}
+
+.next-unlocks-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px dashed rgba(88, 166, 255, 0.24);
+  padding-bottom: 12px;
+}
+
+.next-unlocks-header div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: baseline;
+}
+
+.next-unlocks-header span {
+  color: var(--blue);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.next-unlocks-header strong,
+.next-unlocks-header em {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-style: normal;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.next-unlocks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.next-unlock-card {
+  display: grid;
+  gap: 9px;
+  border: 1px solid rgba(88, 166, 255, 0.26);
+  border-radius: 8px;
+  background: rgba(2, 7, 8, 0.74);
+  padding: 12px;
+  min-height: 138px;
+}
+
+.next-unlock-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.next-unlock-card header span,
+.next-unlock-card header strong,
+.next-unlock-card small {
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.next-unlock-card header strong {
+  color: var(--blue);
+}
+
+.next-unlock-card h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.86rem;
+}
+
+.next-unlock-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
 .progress-achievement-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -5395,6 +5490,10 @@ textarea:focus {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .next-unlocks-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .progress-achievement-category-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -5483,6 +5582,7 @@ textarea:focus {
   .summary-grid,
   .progress-achievement-category-list,
   .progress-achievement-group-grid,
+  .next-unlocks-grid,
   .card-grid,
   .template-grid,
   .exercise-catalog-grid,
@@ -5667,6 +5767,11 @@ textarea:focus {
 
   .progress-achievement-group-header {
     grid-template-columns: 1fr;
+  }
+
+  .next-unlocks-header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .heatmap-panel {
