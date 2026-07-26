@@ -585,12 +585,14 @@ h4 {
 .journey-overview-grid .heatmap-scroll {
   display: grid;
   place-items: center;
-  padding: 14px;
+  min-height: 0;
+  height: 100%;
+  padding: 18px;
 }
 
 .journey-overview-grid .heatmap-grid {
-  --heat-cell-size: clamp(18px, 1vw, 24px);
-  --heat-cell-gap: 5px;
+  --heat-cell-size: clamp(24px, 1.35vw, 32px);
+  --heat-cell-gap: clamp(5px, 0.35vw, 8px);
 }
 
 .journey-overview-grid .heatmap-legend {
