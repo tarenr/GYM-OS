@@ -5381,7 +5381,11 @@ textarea:focus {
 }
 
 .exercise-library-card {
+  display: grid;
+  grid-template-rows: 52px 168px 126px minmax(86px, auto) auto minmax(0, auto) 6px;
+  gap: 14px;
   padding: 18px 20px;
+  min-height: 570px;
 }
 
 .exercise-library-card header {
@@ -5392,6 +5396,73 @@ textarea:focus {
 .exercise-library-card header strong {
   color: var(--orange);
   font-size: 0.76rem;
+}
+
+.exercise-library-card .exercise-media-frame.library {
+  align-self: start;
+  justify-self: center;
+  width: min(100%, 236px);
+  margin: 0;
+}
+
+.exercise-library-main {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 0;
+}
+
+.exercise-library-card h3 {
+  display: -webkit-box;
+  min-height: 2.7em;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.exercise-library-card .history-meta,
+.exercise-library-card .equipment-line {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+
+.exercise-library-card .history-meta {
+  min-height: 3.5em;
+  -webkit-line-clamp: 3;
+}
+
+.exercise-library-card .equipment-line {
+  min-height: 1.2em;
+  -webkit-line-clamp: 1;
+}
+
+.exercise-library-tip {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.exercise-library-tip .load-mode-meta.compact {
+  margin: 0;
+}
+
+.exercise-library-tip:empty {
+  min-height: 86px;
+}
+
+.exercise-library-card .media-actions {
+  align-self: end;
+  margin: 0;
+}
+
+.exercise-library-card .exercise-media-results {
+  align-self: end;
+  margin: 0;
+}
+
+.exercise-library-card .mini-meter {
+  align-self: end;
 }
 
 .equipment-line {

@@ -6712,7 +6712,7 @@ function renderExerciseStats(exercises = state.exercises) {
     },
     {
       icon: 'STR',
-      label: 'Musculacao',
+      label: 'Strength',
       value: String(strengthExercises),
       detail: 'load exercises',
       tone: 'blue'
@@ -6721,21 +6721,21 @@ function renderExerciseStats(exercises = state.exercises) {
       icon: 'LUT',
       label: 'Combat',
       value: String(combatExercises),
-      detail: 'boxe e kickboxing',
+      detail: 'boxing and kickboxing',
       tone: 'red'
     },
     {
       icon: 'CAT',
       label: 'Categories',
       value: String(categories),
-      detail: 'grupos diferentes',
+      detail: 'different groups',
       tone: 'orange'
     },
     {
       icon: 'SUB',
       label: 'Subcategories',
       value: String(subcategories),
-      detail: 'recortes especificos',
+      detail: 'specific segments',
       tone: 'purple'
     }
   ]);
@@ -6811,11 +6811,15 @@ function renderExercisePage() {
           <strong>${escapeHtml(formatExercisePrescription(exercise))}</strong>
         </header>
         ${getExerciseImageMarkup(exercise, 'library')}
-        <h3>${escapeHtml(exercise.name)}</h3>
-        <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(getMeasurementLabel(exercise.measurementType || 'sets_reps_weight'))}${isRoundBased ? '' : ` | ${escapeHtml(loadMeta.label)}`}</div>
-        <div class="equipment-line">${escapeHtml(exercise.equipment.join(', '))}</div>
-        ${isRoundBased ? '' : `<p class="load-mode-meta compact"><strong>${escapeHtml(loadMeta.fieldLabel)}:</strong> ${escapeHtml(loadMeta.hint)}</p>`}
-        ${getExerciseInstructionMarkup(exercise)}
+        <div class="exercise-library-main">
+          <h3>${escapeHtml(exercise.name)}</h3>
+          <div class="history-meta">${escapeHtml(getWorkoutTypeName(exercise.modality || 'strength'))} | ${escapeHtml(formatExerciseGroup(exercise))} | ${escapeHtml(getMeasurementLabel(exercise.measurementType || 'sets_reps_weight'))}${isRoundBased ? '' : ` | ${escapeHtml(loadMeta.label)}`}</div>
+          <div class="equipment-line">${escapeHtml(exercise.equipment.join(', '))}</div>
+        </div>
+        <div class="exercise-library-tip">
+          ${isRoundBased ? '' : `<p class="load-mode-meta compact"><strong>${escapeHtml(loadMeta.fieldLabel)}:</strong> ${escapeHtml(loadMeta.hint)}</p>`}
+          ${getExerciseInstructionMarkup(exercise)}
+        </div>
         ${getExerciseMediaActionsMarkup(exercise)}
         <div class="exercise-media-results" data-results-for="${exercise._id}"></div>
         <div class="mini-meter">
@@ -6854,7 +6858,7 @@ async function syncExerciseMedia(exerciseId) {
         <div>
           <h4>Image linked automatically</h4>
           <p>${escapeHtml(media.name || result.exercise?.name || exercise.name)}</p>
-          ${result.exercise?.imageAuthor ? `<p>Autor: ${escapeHtml(result.exercise.imageAuthor)}</p>` : ''}
+          ${result.exercise?.imageAuthor ? `<p>Author: ${escapeHtml(result.exercise.imageAuthor)}</p>` : ''}
         </div>
       </article>
     `;
@@ -7030,7 +7034,7 @@ function renderTemplateStats(templates = state.templates) {
     },
     {
       icon: 'STR',
-      label: 'Musculacao',
+      label: 'Strength',
       value: String(strengthTemplates),
       detail: 'load protocols',
       tone: 'blue'
@@ -7039,7 +7043,7 @@ function renderTemplateStats(templates = state.templates) {
       icon: 'LUT',
       label: 'Combat',
       value: String(combatTemplates),
-      detail: 'boxe e kickboxing',
+      detail: 'boxing and kickboxing',
       tone: 'red'
     },
     {
