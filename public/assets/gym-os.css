@@ -5382,10 +5382,10 @@ textarea:focus {
 
 .exercise-library-card {
   display: grid;
-  grid-template-rows: 52px 168px 126px minmax(86px, auto) auto minmax(0, auto) 6px;
+  grid-template-rows: 52px 168px 126px minmax(46px, auto) auto minmax(0, auto) 6px;
   gap: 14px;
   padding: 18px 20px;
-  min-height: 570px;
+  min-height: 530px;
 }
 
 .exercise-library-card header {
@@ -5448,7 +5448,7 @@ textarea:focus {
 }
 
 .exercise-library-tip:empty {
-  min-height: 86px;
+  min-height: 46px;
 }
 
 .exercise-library-card .media-actions {

@@ -6817,7 +6817,7 @@ function renderExercisePage() {
           <div class="equipment-line">${escapeHtml(exercise.equipment.join(', '))}</div>
         </div>
         <div class="exercise-library-tip">
-          ${isRoundBased ? '' : `<p class="load-mode-meta compact"><strong>${escapeHtml(loadMeta.fieldLabel)}:</strong> ${escapeHtml(loadMeta.hint)}</p>`}
+          ${isRoundBased ? '' : `<p class="load-mode-meta compact"><strong>${escapeHtml(loadMeta.fieldLabel)}</strong></p>`}
           ${getExerciseInstructionMarkup(exercise)}
         </div>
         ${getExerciseMediaActionsMarkup(exercise)}
