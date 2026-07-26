@@ -6750,7 +6750,6 @@ function getExerciseMediaActionsMarkup(exercise) {
         <button class="button button-secondary sync-exercise-media" type="button" data-exercise-id="${exercise._id}">
           UPDATE IMAGE
         </button>
-        <span class="media-status">Linked image: ${escapeHtml(exercise.mediaProvider || 'media')}</span>
       </div>
     `;
   }
