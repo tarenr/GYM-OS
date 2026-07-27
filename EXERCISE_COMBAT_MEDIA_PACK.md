@@ -64,6 +64,13 @@ Kickboxing aplicar no banco:
 npm run media:kickboxing:sync
 ```
 
+Sincronizar midia do catalogo com fichas/templates ativos:
+
+```bash
+npm run media:templates:preview
+npm run media:templates:sync
+```
+
 O script usado e:
 
 ```text

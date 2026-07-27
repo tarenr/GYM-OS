@@ -47,7 +47,7 @@ http://localhost:3000/documentacao
 Na raiz do projeto, execute com dois cliques:
 
 ```text
-iniciar-treino.bat
+iniciar-gym-os.bat
 ```
 
 O app abre em:

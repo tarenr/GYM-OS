@@ -1,6 +1,6 @@
 # Sistema De Evolucao Corporal
 
-Ultima atualizacao: 2026-07-24
+Ultima atualizacao: 2026-07-27
 
 ## Objetivo
 
@@ -363,6 +363,7 @@ Primeira versao entregue:
 - Mensagens de tendencia implementadas.
 - Conquista `Primeira Medicao` implementada.
 - Metas corporais.
+  - Pendente.
 
 ### Fase 6 - Fotos
 
@@ -372,14 +373,15 @@ Primeira versao entregue:
 
 ## Proxima Implementacao Recomendada
 
-Depois de ajustar as missoes por objetivo, implementar:
+Proxima evolucao recomendada para o modulo corporal:
 
 ```text
-BodyMeasurement model + rotas basicas + formulario simples.
+metas corporais + comparacao por periodo + exportacao corporal
 ```
 
 Status:
 
 ```text
-Implementado na v1.
+V1 implementada.
+V2 pendente.
 ```

@@ -1,6 +1,6 @@
 # Documentacao do App GYM-OS
 
-Ultima atualizacao: 2026-07-24
+Ultima atualizacao: 2026-07-27
 
 ## Identidade Do Produto
 
@@ -183,23 +183,21 @@ GYM-OS/
       app.js
       gym-os.css
       style.css
-      exercises/
-        ficha-a/
-        ficha-b/
-        ficha-c/
+      doom-exercises/
+      combat-exercises/
 
   scripts/
     clear-demo-workouts.js
     clear-exercise-media.js
     clear-prejourney-workouts.js
+    link-combat-exercise-media.js
     link-doom-exercise-media.js
-    link-ficha-a-ai-media.js
-    link-ficha-b-ai-media.js
-    link-ficha-c-ai-media.js
     seed-demo-workouts.js
+    sync-template-exercise-media.js
     sync-wger-media.js
 
   BODY_PROGRESS_SYSTEM.md
+  EXERCISE_COMBAT_MEDIA_PACK.md
   EXERCISE_MEDIA_PACK.md
   MISSION_GOAL_SYSTEM.md
   PROJECT_STATUS.md
@@ -292,9 +290,14 @@ dns.setServers(['1.1.1.1', '8.8.8.8']);
   "xp:recalculate": "node scripts/recalculate-xp.js --write",
   "media:preview": "node scripts/sync-wger-media.js",
   "media:sync": "node scripts/sync-wger-media.js --write",
-  "media:ficha-a:sync": "node scripts/link-ficha-a-ai-media.js --write",
-  "media:ficha-b:sync": "node scripts/link-ficha-b-ai-media.js --write",
-  "media:ficha-c:sync": "node scripts/link-ficha-c-ai-media.js --write"
+  "media:doom:preview": "node scripts/link-doom-exercise-media.js",
+  "media:doom:sync": "node scripts/link-doom-exercise-media.js --write",
+  "media:boxing:preview": "node scripts/link-combat-exercise-media.js --modality=boxing",
+  "media:boxing:sync": "node scripts/link-combat-exercise-media.js --modality=boxing --write",
+  "media:kickboxing:preview": "node scripts/link-combat-exercise-media.js --modality=kickboxing",
+  "media:kickboxing:sync": "node scripts/link-combat-exercise-media.js --modality=kickboxing --write",
+  "media:templates:preview": "node scripts/sync-template-exercise-media.js",
+  "media:templates:sync": "node scripts/sync-template-exercise-media.js --write"
 }
 ```
 
@@ -306,7 +309,7 @@ Ao iniciar, o servidor:
 2. semeia tipos de treino;
 3. semeia catalogo de exercicios;
 4. semeia fichas de boxe/kickboxing;
-5. sincroniza subcategorias das fichas;
+5. sincroniza subcategorias, load mode e midia das fichas/templates;
 6. semeia missoes diarias;
 7. sobe Express em `PORT`, padrao `3000`.
 
@@ -1274,6 +1277,7 @@ Progressao - ACADEMY_PROGRESS_SYSTEM.md
 Missoes - MISSION_GOAL_SYSTEM.md
 Corporal - BODY_PROGRESS_SYSTEM.md
 Media - EXERCISE_MEDIA_PACK.md
+Combat Media - EXERCISE_COMBAT_MEDIA_PACK.md
 Status - PROJECT_STATUS.md
 ```
 
@@ -1288,6 +1292,7 @@ GET /ACADEMY_PROGRESS_SYSTEM.md
 GET /MISSION_GOAL_SYSTEM.md
 GET /BODY_PROGRESS_SYSTEM.md
 GET /EXERCISE_MEDIA_PACK.md
+GET /EXERCISE_COMBAT_MEDIA_PACK.md
 GET /PROJECT_STATUS.md
 ```
 
@@ -1300,6 +1305,7 @@ GET /api/documentation?doc=progressSystem
 GET /api/documentation?doc=missionGoal
 GET /api/documentation?doc=bodyProgress
 GET /api/documentation?doc=exerciseMedia
+GET /api/documentation?doc=exerciseCombatMedia
 GET /api/documentation?doc=projectStatus
 ```
 
@@ -1308,20 +1314,20 @@ GET /api/documentation?doc=projectStatus
 As imagens de exercicios foram tratadas assim:
 
 - pacote oficial Doom em `public/assets/doom-exercises/`;
-- imagens locais geradas por IA para fichas A, B e C;
+- pacote oficial Combat em `public/assets/combat-exercises/`;
 - algumas imagens podem vir do wger;
 - ExerciseDB foi removido como fonte de instrucoes porque o conteudo vinha em ingles;
 - o objetivo atual e usar imagem apenas como apoio visual, nao instrucoes em ingles.
 
 O pacote Doom e a fonte prioritaria para exercicios ativos de forca.
+O pacote Combat e a fonte prioritaria para exercicios ativos de boxing e kickboxing.
 
 Pastas:
 
 ```text
 public/assets/doom-exercises/
-public/assets/exercises/ficha-a/
-public/assets/exercises/ficha-b/
-public/assets/exercises/ficha-c/
+public/assets/combat-exercises/Boxing/
+public/assets/combat-exercises/Kickboxing/
 ```
 
 Scripts de vinculo:
@@ -1329,12 +1335,26 @@ Scripts de vinculo:
 ```bash
 npm run media:doom:preview
 npm run media:doom:sync
-npm run media:ficha-a:sync
-npm run media:ficha-b:sync
-npm run media:ficha-c:sync
+npm run media:boxing:preview
+npm run media:boxing:sync
+npm run media:kickboxing:preview
+npm run media:kickboxing:sync
+npm run media:templates:preview
+npm run media:templates:sync
 ```
 
 O script `scripts/link-doom-exercise-media.js` vincula as imagens locais ao catalogo de exercicios e propaga o snapshot de midia para fichas e treinos.
+O script `scripts/link-combat-exercise-media.js` faz o mesmo para modalidades de combate.
+O script `scripts/sync-template-exercise-media.js` audita e sincroniza snapshots de midia das fichas/templates a partir do catalogo ativo.
+
+Inventario atual:
+
+```text
+Forca: 35/35 exercicios ativos com imagem
+Boxing: 19/19 exercicios ativos com imagem
+Kickboxing: 18/18 exercicios ativos com imagem
+Templates ativos: 62/62 exercicios embutidos com imagem
+```
 
 Funcionalidades visuais:
 
@@ -1687,23 +1707,24 @@ Treinos pre-jornada encontrados: 0
 
 ### Alta prioridade
 
-1. Persistir conquistas desbloqueadas no MongoDB.
-2. Criar campanhas mensais ou ciclos de 8 semanas.
-3. Permitir configurar metas por exercicio.
+1. Transparencia de substituicao em heatmap, historico, feed e detalhe do treino.
+2. Persistir conquistas desbloqueadas no MongoDB.
+3. Criar campanhas mensais ou ciclos de 4/8 semanas.
+4. Permitir configurar metas por exercicio.
 
 ### Media prioridade
 
 1. Melhorar tela de detalhes dos treinos realizados.
-2. Permitir exportar comparativo de evolucao por exercicio.
-3. Criar ranking por modalidade.
-4. Melhorar analytics com dados reais.
+2. Aplicar Dashboard Visual Upgrade v1.
+3. Permitir exportar comparativo de evolucao por exercicio.
+4. Criar ranking por modalidade.
+5. Melhorar analytics com dados reais.
 
 ### Baixa prioridade
 
 1. Migrar CSS para Tailwind, se ainda fizer sentido.
-2. Melhorar imagens de boxe/kickboxing.
-3. Criar mais templates de treino.
-4. Melhorar exportacao CSV.
+2. Criar mais templates de treino.
+3. Melhorar exportacao CSV.
 
 ## Prompt Para Continuar Em Outro Chat
 
@@ -1722,5 +1743,5 @@ missoes diarias, XP, heatmap e imagens de exercicios.
 Nao saia implementando sem planejar quando eu pedir planejamento.
 Quando eu disser "pode fazer", implemente.
 
-Proxima fase provavel: XP v2 com breakdown por treino e missao.
+Proxima fase recomendada: Transparencia de substituicao em heatmap, historico, feed e detalhe do treino.
 ```

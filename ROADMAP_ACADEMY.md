@@ -1,6 +1,6 @@
 # Roadmap Estrategia Nerd Academy
 
-Ultima atualizacao: 2026-07-26
+Ultima atualizacao: 2026-07-27
 
 Este documento define a evolucao do projeto de um app local de treino para um modulo dentro da marca guarda-chuva **Estrategia Nerd Academy**.
 
@@ -111,7 +111,7 @@ Tarefas:
 
 ### Fase 2 - Narrativa De Jornada
 
-Status: em andamento.
+Status: implementada na campanha semanal atual, com melhoria visual pendente para transparencia de substituicao.
 
 Objetivo:
 
@@ -156,7 +156,7 @@ O detalhe do treino mostra o que era planejado e o que foi adicionado na hora.
 
 ### Fase 3 - XP v2
 
-Status: em andamento.
+Status: implementada.
 
 Objetivo:
 
@@ -193,7 +193,7 @@ Dashboard ACHIEVEMENTS.sys usa o mesmo motor anual de conquistas.
 
 ### Fase 4 - Progressao Do Atleta
 
-Status: planejada.
+Status: primeira versao implementada.
 
 Objetivo:
 
@@ -280,4 +280,12 @@ Nerdcademy Season
 
 ## Proxima Acao Recomendada
 
-Concluir a Fase 1 e, depois, iniciar a Fase 2 revisando os textos do Dashboard e da tela Missoes.
+Implementar a transparencia de substituicao:
+
+```text
+Missao planejada -> treino feito
+campanha vs substituicao vs extra
+parcialidade explicada em heatmap, feed, historico e detalhe
+```
+
+Depois disso, seguir para persistencia de conquistas ou Dashboard Visual Upgrade v1.

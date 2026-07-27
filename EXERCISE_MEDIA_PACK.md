@@ -1,6 +1,6 @@
 # Exercise Media Pack Doom
 
-Ultima atualizacao: 2026-07-26
+Ultima atualizacao: 2026-07-27
 
 ## Objetivo
 
@@ -42,13 +42,13 @@ Essa regra vale para supinos, pullovers, skull crusher, concentration curl, hip 
 
 ```text
 public/assets/doom-exercises/
-├─ Back/
-├─ Biceps/
-├─ Chest/
-├─ Core/
-├─ Legs/
-├─ Shoulders/
-└─ Triceps/
+|-- Back/
+|-- Biceps/
+|-- Chest/
+|-- Core/
+|-- Legs/
+|-- Shoulders/
+`-- Triceps/
 ```
 
 ## Inventario Atual
@@ -64,6 +64,8 @@ Triceps: 3
 Total: 34
 ```
 
+Observacao: os 34 arquivos cobrem 35 exercicios ativos de forca porque alguns movimentos compartilham imagem aprovada, como pullover e reverse fly.
+
 ## Integracao Com O Banco
 
 Preview:
@@ -76,6 +78,13 @@ Aplicar no banco:
 
 ```bash
 npm run media:doom:sync
+```
+
+Sincronizar midia do catalogo com fichas/templates ativos:
+
+```bash
+npm run media:templates:preview
+npm run media:templates:sync
 ```
 
 O script usado e:

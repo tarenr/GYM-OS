@@ -295,6 +295,11 @@ const documentationDocs = {
     downloadUrl: '/EXERCISE_MEDIA_PACK.md',
     downloadLabel: 'Download Media'
   },
+  exerciseCombatMedia: {
+    title: 'EXERCISE_COMBAT_MEDIA_PACK.md',
+    downloadUrl: '/EXERCISE_COMBAT_MEDIA_PACK.md',
+    downloadLabel: 'Download Combat Media'
+  },
   projectStatus: {
     title: 'PROJECT_STATUS.md',
     downloadUrl: '/PROJECT_STATUS.md',

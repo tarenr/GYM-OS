@@ -1,6 +1,6 @@
 # Sistema de Missoes Por Objetivo
 
-Ultima atualizacao: 2026-07-24
+Ultima atualizacao: 2026-07-27
 
 ## Objetivo
 
@@ -211,12 +211,15 @@ Pessoais:
 - Atualizar `src/data/weeklyDailyMissions.js`.
 - Remover blocos de combate da campanha ativa.
 - Configurar `A B C A B C DESC`.
+- Status: implementado.
 
 ### Fase 3 - Dashboard E Heatmap
 
 - Ajustar paineis para 1 bloco de forca por dia.
 - Esconder acoes de luta quando luta estiver pausada.
 - Manter hoje em aberto separado de atraso.
+- Status: implementado parcialmente.
+- Pendente: explicar melhor substituicoes, parciais e extras na UI.
 
 ### Fase 4 - XP E Conquistas
 
@@ -232,14 +235,14 @@ Pessoais:
 
 ## Proxima Implementacao Recomendada
 
-Primeiro codigo a alterar:
+Proxima melhoria recomendada:
 
 ```text
-src/data/weeklyDailyMissions.js
+Transparencia de substituicao
 ```
 
 Objetivo:
 
-```text
-Trocar a campanha atual para A/B/C/A/B/C/DESC somente com blocos de forca.
-```
+- deixar claro o bloco planejado e o treino feito;
+- diferenciar campanha, substituicao e extra;
+- melhorar heatmap, historico, feed e detalhe do treino.

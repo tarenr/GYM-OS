@@ -1,6 +1,6 @@
 # Status Unificado Do Projeto GYM-OS
 
-Ultima atualizacao: 2026-07-24
+Ultima atualizacao: 2026-07-27
 
 Este documento consolida o que ja foi feito, o que esta parcialmente feito e o que ainda falta fazer no GYM-OS.
 
@@ -61,6 +61,8 @@ O app ja permite:
 - registrar evolucao corporal com peso e medidas;
 - ver graficos simples de evolucao corporal;
 - consultar documentacao dentro do app.
+- usar imagens locais completas para forca, boxing e kickboxing;
+- manter midia do catalogo sincronizada com fichas/templates ativos.
 
 ## Implementado
 
@@ -75,12 +77,15 @@ O app ja permite:
 - Cadastro/listagem de fichas.
 - Cadastro/listagem de tipos de treino.
 - Catalogo de exercicios.
-- Imagens de exercicios com pacote Doom padronizado.
+- Imagens de exercicios com pacote Doom padronizado para forca.
+- Imagens de exercicios com pacote Combat padronizado para boxing/kickboxing.
 - Favicon.
 - Script `.bat` para iniciar o sistema.
 - Projeto movido para pasta propria `C:\xampp\htdocs\GYM-OS`.
 - Repositorio GitHub `GYM-OS`.
 - Script `npm run media:doom:sync` para vincular o pacote visual oficial aos exercicios de forca.
+- Scripts `npm run media:boxing:sync` e `npm run media:kickboxing:sync` para vincular o pacote visual de combate.
+- Script `npm run media:templates:sync` para sincronizar a midia do catalogo com fichas/templates ativos.
 
 ### Treinos E Fichas
 
@@ -94,6 +99,7 @@ O app ja permite:
 - Historico de treinos.
 - Detalhe de treino.
 - Exportacao CSV basica do historico.
+- Templates ativos com snapshots de midia sincronizados a partir do catalogo.
 
 ### Missoes Por Objetivo
 
@@ -122,6 +128,7 @@ Implementado:
 - blocos obrigatorios somente de forca;
 - domingo como descanso planejado;
 - boxe/kickboxing fora da cobranca atual;
+- boxe/kickboxing cadastrados como modalidades disponiveis para treinos extras e templates, mas fora da cobranca atual;
 - treino de forca substitui outro treino de forca;
 - treino extra continua permitido;
 - hoje em aberto nao conta como atraso;
@@ -240,6 +247,18 @@ Implementado:
 - endpoints para os documentos principais;
 - documentos separados por tema;
 - este status unificado.
+- pack de midia de forca documentado em `EXERCISE_MEDIA_PACK.md`;
+- pack de midia de combate documentado em `EXERCISE_COMBAT_MEDIA_PACK.md`.
+
+### Imagens E Midia
+
+Implementado:
+
+- forca: 35 exercicios ativos, 35 com imagem;
+- boxing: 19 exercicios ativos, 19 com imagem;
+- kickboxing: 18 exercicios ativos, 18 com imagem;
+- templates ativos: 62 exercicios embutidos, 62 com imagem sincronizada;
+- validacao de assets locais sem referencias quebradas.
 
 ## Parcialmente Implementado
 
@@ -424,7 +443,6 @@ Fotos nunca devem ser publicas por padrao.
 
 Falta para futuro:
 
-- melhorar imagens de boxe/kickboxing;
 - criar campanha hibrida quando luta voltar;
 - criar conquistas de luta pausadas/reativadas;
 - ranking por modalidade.
@@ -442,7 +460,7 @@ Falta:
 
 Falta:
 
-- revisar `DOCUMENTACAO_APP.md`;
+- manter `DOCUMENTACAO_APP.md` sincronizado apos mudancas grandes;
 - marcar trechos antigos como historico;
 - remover referencias antigas a forca + combate como campanha atual;
 - atualizar `ROADMAP_ACADEMY.md` com status real;
@@ -450,8 +468,8 @@ Falta:
 
 ## Ordem Recomendada
 
-1. Dashboard Visual Upgrade v1.
-2. Transparencia de substituicao.
+1. Transparencia de substituicao.
+2. Dashboard Visual Upgrade v1.
 3. Persistencia de conquistas.
 4. Balanceamento anual de XP.
 5. Motor de objetivos.
@@ -466,13 +484,12 @@ Falta:
 Implementar:
 
 ```text
-Dashboard Visual Upgrade v1
+Transparencia de substituicao
 ```
 
 Motivo:
 
-- melhora o uso diario;
-- nao muda banco;
-- nao muda regras sensiveis;
-- aproveita os dois HTMLs de referencia;
-- prepara a UI para as proximas etapas.
+- o dado de substituicao ja existe;
+- melhora leitura de campanha, historico e feed;
+- reduz ambiguidade entre treino planejado, substituido e extra;
+- prepara o app para ciclos e metas sem mexer na regra de XP.

@@ -29,6 +29,7 @@ const academyProgressSystemPath = path.resolve(__dirname, '../ACADEMY_PROGRESS_S
 const missionGoalSystemPath = path.resolve(__dirname, '../MISSION_GOAL_SYSTEM.md');
 const bodyProgressSystemPath = path.resolve(__dirname, '../BODY_PROGRESS_SYSTEM.md');
 const exerciseMediaPackPath = path.resolve(__dirname, '../EXERCISE_MEDIA_PACK.md');
+const exerciseCombatMediaPackPath = path.resolve(__dirname, '../EXERCISE_COMBAT_MEDIA_PACK.md');
 const projectStatusPath = path.resolve(__dirname, '../PROJECT_STATUS.md');
 const documentationFiles = {
   app: documentationPath,
@@ -37,6 +38,7 @@ const documentationFiles = {
   missionGoal: missionGoalSystemPath,
   bodyProgress: bodyProgressSystemPath,
   exerciseMedia: exerciseMediaPackPath,
+  exerciseCombatMedia: exerciseCombatMediaPackPath,
   projectStatus: projectStatusPath
 };
 
@@ -363,6 +365,15 @@ app.get('/EXERCISE_MEDIA_PACK.md', async (request, response, next) => {
   try {
     response.type('text/markdown; charset=utf-8');
     response.send(await readFile(exerciseMediaPackPath, 'utf8'));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/EXERCISE_COMBAT_MEDIA_PACK.md', async (request, response, next) => {
+  try {
+    response.type('text/markdown; charset=utf-8');
+    response.send(await readFile(exerciseCombatMediaPackPath, 'utf8'));
   } catch (error) {
     next(error);
   }
