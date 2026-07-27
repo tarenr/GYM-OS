@@ -9,6 +9,40 @@ function buildExerciseKeys(exercise) {
   ];
 }
 
+const mediaFields = [
+  'mediaProvider',
+  'externalExerciseId',
+  'imageUrl',
+  'imageAlt',
+  'imageLicense',
+  'imageLicenseUrl',
+  'imageAuthor',
+  'imageAuthorUrl',
+  'imageSourceUrl',
+  'instructions',
+  'tips'
+];
+
+function getCatalogMedia(exercise) {
+  return mediaFields.reduce((media, field) => {
+    media[field] = exercise?.[field] ?? (field === 'instructions' || field === 'tips' ? [] : '');
+    return media;
+  }, {});
+}
+
+function hasTemplateMediaChange(templateExercise, catalogMedia) {
+  return mediaFields.some((field) => {
+    const current = templateExercise[field];
+    const next = catalogMedia[field];
+
+    if (Array.isArray(current) || Array.isArray(next)) {
+      return JSON.stringify(current || []) !== JSON.stringify(next || []);
+    }
+
+    return String(current || '') !== String(next || '');
+  });
+}
+
 export async function syncTemplateExerciseSubcategories() {
   const exercises = await Exercise.find({ active: true });
   const exerciseByKey = new Map();
@@ -39,15 +73,21 @@ export async function syncTemplateExerciseSubcategories() {
         : templateExercise.loadMode && (templateExercise.loadMode !== 'dumbbell_each' || inferredLoadMode === 'dumbbell_each')
           ? templateExercise.loadMode
           : inferredLoadMode;
+      const catalogMedia = getCatalogMedia(catalogExercise);
 
-      if ((templateExercise.subcategory || '') !== subcategory || (templateExercise.loadMode || '') !== loadMode) {
+      if (
+        (templateExercise.subcategory || '') !== subcategory
+        || (templateExercise.loadMode || '') !== loadMode
+        || (catalogExercise && hasTemplateMediaChange(templateExercise, catalogMedia))
+      ) {
         changed = true;
       }
 
       return {
         ...templateExercise.toObject(),
         subcategory,
-        loadMode
+        loadMode,
+        ...(catalogExercise ? catalogMedia : {})
       };
     });
 

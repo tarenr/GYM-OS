@@ -31,6 +31,8 @@
     "media:boxing:sync": "node scripts/link-combat-exercise-media.js --modality=boxing --write",
     "media:kickboxing:preview": "node scripts/link-combat-exercise-media.js --modality=kickboxing",
     "media:kickboxing:sync": "node scripts/link-combat-exercise-media.js --modality=kickboxing --write",
+    "media:templates:preview": "node scripts/sync-template-exercise-media.js",
+    "media:templates:sync": "node scripts/sync-template-exercise-media.js --write",
     "media:template-a:preview": "node scripts/link-template-a-ai-media.js",
     "media:template-a:sync": "node scripts/link-template-a-ai-media.js --write",
     "media:template-b:preview": "node scripts/link-template-b-ai-media.js",

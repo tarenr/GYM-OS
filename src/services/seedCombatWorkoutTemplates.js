@@ -18,6 +18,17 @@ function buildTemplateExercise(exercise, plannedExercise, index) {
     plannedRounds: plannedExercise.rounds || exercise.defaultRounds || 0,
     plannedDurationSeconds: plannedExercise.durationSeconds || exercise.defaultDurationSeconds || 0,
     plannedRestSeconds: plannedExercise.restSeconds || exercise.defaultRestSeconds || 0,
+    mediaProvider: exercise.mediaProvider || '',
+    externalExerciseId: exercise.externalExerciseId || '',
+    imageUrl: exercise.imageUrl || '',
+    imageAlt: exercise.imageAlt || '',
+    imageLicense: exercise.imageLicense || '',
+    imageLicenseUrl: exercise.imageLicenseUrl || '',
+    imageAuthor: exercise.imageAuthor || '',
+    imageAuthorUrl: exercise.imageAuthorUrl || '',
+    imageSourceUrl: exercise.imageSourceUrl || '',
+    instructions: exercise.instructions || [],
+    tips: exercise.tips || [],
     order: index + 1
   };
 }
