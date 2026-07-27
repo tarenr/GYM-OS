@@ -27,6 +27,8 @@
     "media:sync:c": "node scripts/sync-wger-media.js --template=C --write",
     "media:doom:preview": "node scripts/link-doom-exercise-media.js",
     "media:doom:sync": "node scripts/link-doom-exercise-media.js --write",
+    "media:boxing:preview": "node scripts/link-combat-exercise-media.js --modality=boxing",
+    "media:boxing:sync": "node scripts/link-combat-exercise-media.js --modality=boxing --write",
     "media:template-a:preview": "node scripts/link-template-a-ai-media.js",
     "media:template-a:sync": "node scripts/link-template-a-ai-media.js --write",
     "media:template-b:preview": "node scripts/link-template-b-ai-media.js",
