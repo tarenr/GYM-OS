@@ -1,6 +1,6 @@
 # Exercise Combat Media Pack
 
-Ultima atualizacao: 2026-07-26
+Ultima atualizacao: 2026-07-27
 
 ## Objetivo
 
@@ -34,8 +34,8 @@ public/assets/combat-exercises/
 
 ```text
 Boxing: 19
-Kickboxing: 5
-Total: 24
+Kickboxing: 18
+Total: 37
 ```
 
 ## Integracao Com O Banco
