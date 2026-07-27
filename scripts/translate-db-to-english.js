@@ -121,7 +121,7 @@ const translations = [
   ['Triceps frances com halter', 'Overhead dumbbell triceps extension'],
   ['Triceps testa com halteres', 'Dumbbell skull crusher'],
   ['Coice de triceps com halter', 'Dumbbell triceps kickback'],
-  ['Agachamento goblet com kettlebell ou halter', 'Goblet squat with kettlebell or dumbbell'],
+  ['Agachamento goblet com kettlebell ou halter', 'Goblet squat'],
   ['Agachamento goblet', 'Goblet squat'],
   ['Afundo com halteres', 'Dumbbell lunge'],
   ['Stiff com halteres', 'Dumbbell Romanian deadlift'],

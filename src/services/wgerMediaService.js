@@ -22,7 +22,6 @@ const exerciseSearchAliases = new Map([
   ['crunch', 'crunch'],
   ['leg raise', 'leg raise'],
   ['dumbbell front raise', 'dumbbell front raise'],
-  ['goblet squat with kettlebell or dumbbell', 'goblet squat'],
   ['goblet squat', 'goblet squat'],
   ['dumbbell lunge', 'dumbbell lunge'],
   ['dumbbell romanian deadlift', 'dumbbell romanian deadlift'],

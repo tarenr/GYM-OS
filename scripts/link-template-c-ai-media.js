@@ -16,13 +16,6 @@ const mediaByExerciseName = new Map([
     }
   ],
   [
-    'goblet squat with kettlebell or dumbbell',
-    {
-      imageUrl: '/assets/exercises/template-c/agachamento-goblet-com-kettlebell-ou-halter.png',
-      imageAlt: 'Start and end movement of goblet squat with kettlebell or dumbbell'
-    }
-  ],
-  [
     'dumbbell lunge',
     {
       imageUrl: '/assets/exercises/template-c/afundo-com-halteres.png',

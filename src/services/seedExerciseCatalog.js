@@ -21,7 +21,6 @@ const strengthSubcategories = new Map([
   ['Overhead dumbbell triceps extension', 'Long head'],
   ['Dumbbell skull crusher', 'General triceps'],
   ['Dumbbell triceps kickback', 'Lateral triceps'],
-  ['Goblet squat with kettlebell or dumbbell', 'Quads and glutes'],
   ['Goblet squat', 'Quads and glutes'],
   ['Dumbbell lunge', 'Quads and glutes'],
   ['Dumbbell Romanian deadlift', 'Hamstrings'],
