@@ -26,28 +26,42 @@ public/assets/combat-exercises/
 
 ```text
 public/assets/combat-exercises/
-└─ Boxing/
+|-- Boxing/
+`-- Kickboxing/
 ```
 
 ## Inventario Atual
 
 ```text
 Boxing: 19
-Total: 19
+Kickboxing: 5
+Total: 24
 ```
 
 ## Integracao Com O Banco
 
-Preview:
+Boxing preview:
 
 ```bash
 npm run media:boxing:preview
 ```
 
-Aplicar no banco:
+Boxing aplicar no banco:
 
 ```bash
 npm run media:boxing:sync
+```
+
+Kickboxing preview:
+
+```bash
+npm run media:kickboxing:preview
+```
+
+Kickboxing aplicar no banco:
+
+```bash
+npm run media:kickboxing:sync
 ```
 
 O script usado e:
