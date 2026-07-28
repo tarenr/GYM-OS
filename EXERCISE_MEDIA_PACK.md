@@ -36,7 +36,7 @@ banco declinado
 maquina especifica
 ```
 
-Essa regra vale para supinos, pullovers, skull crusher, concentration curl, hip thrust e qualquer outro exercicio que use apoio.
+Essa regra vale para supinos, skull crusher, concentration curl, hip thrust e qualquer outro exercicio que use apoio.
 
 ## Estrutura
 
@@ -64,7 +64,7 @@ Triceps: 3
 Total: 34
 ```
 
-Observacao: os 34 arquivos cobrem 35 exercicios ativos de forca porque alguns movimentos compartilham imagem aprovada, como pullover e reverse fly.
+Observacao: os arquivos podem cobrir mais de um exercicio ativo de forca quando movimentos compartilham imagem aprovada, como variacoes de reverse fly.
 
 ## Integracao Com O Banco
 

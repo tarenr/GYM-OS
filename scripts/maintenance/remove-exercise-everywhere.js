@@ -6,7 +6,7 @@ import { recalculateWorkoutDateXpSnapshots } from '../../src/services/xpCalculat
 import { buildNameFilter, printJson, uniqueDateKeys, withDatabase } from './_helpers.js';
 
 const CONFIG = {
-  exerciseName: 'Dumbbell pullover',
+  exerciseName: 'Exercise name here',
   exact: false,
   dryRun: true,
   deleteFromCatalog: true,
