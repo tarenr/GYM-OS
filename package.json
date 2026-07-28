@@ -38,7 +38,12 @@
     "media:template-b:preview": "node scripts/link-template-b-ai-media.js",
     "media:template-b:sync": "node scripts/link-template-b-ai-media.js --write",
     "media:template-c:preview": "node scripts/link-template-c-ai-media.js",
-    "media:template-c:sync": "node scripts/link-template-c-ai-media.js --write"
+    "media:template-c:sync": "node scripts/link-template-c-ai-media.js --write",
+    "maint:inspect": "node scripts/maintenance/inspect-exercise.js",
+    "maint:update-exercise": "node scripts/maintenance/update-exercise-field.js",
+    "maint:remove-exercise": "node scripts/maintenance/remove-exercise-everywhere.js",
+    "maint:recalculate-xp": "node scripts/maintenance/recalculate-xp-for-dates.js",
+    "maint:verify-server": "node scripts/maintenance/verify-server-health.js"
   },
   "dependencies": {
     "chart.js": "^4.5.1",

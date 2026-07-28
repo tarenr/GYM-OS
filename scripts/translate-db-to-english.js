@@ -106,8 +106,6 @@ const translations = [
   ['Supino reto com pegada supinada', 'Reverse-grip dumbbell bench press'],
   ['Supino reto com halteres', 'Flat dumbbell bench press'],
   ['Crucifixo reto com halteres', 'Flat dumbbell fly'],
-  ['Pullover com halter no banco', 'Dumbbell pullover on bench'],
-  ['Pullover com halter', 'Dumbbell pullover'],
   ['Squeeze press com halteres', 'Dumbbell squeeze press'],
   ['Remada curvada com halteres', 'Bent-over dumbbell row'],
   ['Remada unilateral apoiado no banco', 'Supported single-arm dumbbell row'],

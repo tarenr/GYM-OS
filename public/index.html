@@ -30,7 +30,13 @@
         <nav class="side-menu" id="side-menu">
           <button class="nav-link active" type="button" data-tab="dashboard">Dashboard</button>
           <button class="nav-link" type="button" data-tab="daily-missions">Missions</button>
-          <button class="nav-link" type="button" data-tab="progress">Evolution</button>
+          <div class="nav-group">
+            <span>Evolution</span>
+            <button class="nav-link nav-subitem" type="button" data-tab="progress-overview">Overview</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="progress-performance">Performance</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="progress-body">Body</button>
+            <button class="nav-link nav-subitem" type="button" data-tab="progress-achievements">Achievements</button>
+          </div>
           <div class="nav-group">
             <span>Workouts</span>
             <button class="nav-link nav-subitem" type="button" data-tab="workout-create">Create</button>
@@ -330,7 +336,7 @@
               </div>
               <div class="panel-header-actions">
                 <span class="panel-badge" id="dash-safe-body-count">0 REG</span>
-                <button class="page-btn" type="button" data-tab-shortcut="progress">NEW MEASURE</button>
+                <button class="page-btn" type="button" data-tab-shortcut="progress-body">NEW MEASURE</button>
               </div>
             </div>
             <section class="summary-grid page-summary compact-summary" id="dash-safe-body-summary"></section>
@@ -436,28 +442,13 @@
       <section class="tab-view" id="view-progress">
         <div class="page-header">
           <div class="breadcrumb">ACADEMY <span>&gt;</span> GYM.OS <span>&gt;</span> XP_PROGRESS.json</div>
-          <h2 class="page-title">Evolution <span>Academy</span></h2>
+          <h2 class="page-title evolution-page-title">
+            Evolution <span class="title-primary">Academy</span>
+            <span class="title-separator">-</span>
+            <span class="title-subsection" id="progress-page-title-suffix">Overview</span>
+          </h2>
           <p class="page-subtitle" id="progress-subtitle">// official XP by workout, week and campaign</p>
         </div>
-
-        <nav class="dashboard-subnav progress-subnav" aria-label="Evolution sections">
-          <button class="dash-subnav-btn active" type="button" data-progress-tab="overview">
-            <span class="dash-subnav-icon">OV</span>
-            OVERVIEW
-          </button>
-          <button class="dash-subnav-btn" type="button" data-progress-tab="performance">
-            <span class="dash-subnav-icon">PF</span>
-            PERFORMANCE
-          </button>
-          <button class="dash-subnav-btn" type="button" data-progress-tab="body">
-            <span class="dash-subnav-icon">BD</span>
-            BODY
-          </button>
-          <button class="dash-subnav-btn" type="button" data-progress-tab="achievements">
-            <span class="dash-subnav-icon">AC</span>
-            ACHIEVEMENTS
-          </button>
-        </nav>
 
         <div class="progress-subtab active" id="progress-subtab-overview" data-progress-panel="overview">
           <section class="summary-grid page-summary" id="progress-summary-cards" aria-label="XP evolution summary"></section>
@@ -695,6 +686,37 @@
               <div class="progress-pr-list" id="progress-pr-list"></div>
             </section>
             <div class="progress-exercise-history" id="progress-exercise-history"></div>
+          </section>
+
+          <section class="panel template-compare-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-icon">AB</span>
+                <h2>WORKOUT_COMPARE.sys</h2>
+              </div>
+              <span class="panel-badge" id="template-compare-count">0 LOG</span>
+            </div>
+            <div class="toolbar-panel template-compare-toolbar">
+              <label>
+                Ficha
+                <select id="template-compare-code">
+                  <option value="">Selecione uma ficha</option>
+                </select>
+              </label>
+              <label>
+                Dia X
+                <select id="template-compare-from">
+                  <option value="">Treino anterior</option>
+                </select>
+              </label>
+              <label>
+                Dia Y
+                <select id="template-compare-to">
+                  <option value="">Treino atual</option>
+                </select>
+              </label>
+            </div>
+            <div class="template-compare-grid" id="template-compare-grid"></div>
           </section>
 
           <section class="panel progress-log-panel">

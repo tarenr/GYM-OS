@@ -1,5 +1,16 @@
-export function isValidSet(set) {
-  return Number(set?.weight || 0) > 0 && Number(set?.reps || 0) > 0;
+function isBodyweightExercise(exercise = {}) {
+  return exercise?.loadMode === 'bodyweight';
+}
+
+export function isValidSet(set, exercise = {}) {
+  const weight = Number(set?.weight || 0);
+  const reps = Number(set?.reps || 0);
+
+  if (isBodyweightExercise(exercise)) {
+    return reps > 0;
+  }
+
+  return weight > 0 && reps > 0;
 }
 
 export function isValidRound(round) {
@@ -22,7 +33,7 @@ export function calculateWorkoutXpBreakdown(workout) {
       };
     }
 
-    const validSets = (exercise.sets || []).filter(isValidSet);
+    const validSets = (exercise.sets || []).filter((set) => isValidSet(set, exercise));
     const validRounds = (exercise.rounds || []).filter(isValidRound);
     const validReps = validSets.reduce((total, set) => total + Number(set.reps || 0), 0)
       + validRounds.reduce((total, round) => total + Number(round.reps || 0), 0);

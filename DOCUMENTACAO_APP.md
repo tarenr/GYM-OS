@@ -659,10 +659,12 @@ npm run missions:sync
 1. Supino reto com halteres - 4x 8 a 12
 2. Supino reto com pegada supinada - 3x 8 a 12
 3. Crucifixo reto com halteres - 3x 10 a 15
-4. Pullover com halter no banco reto - 3x 10 a 15
-5. Squeeze press com halteres - 3x 10 a 15
-6. Triceps frances com halter - 3x 10 a 12
-7. Triceps testa com halteres ou barra curta - 3x 10 a 12
+4. Squeeze press com halteres - 3x 10 a 15
+5. Triceps frances com halter - 3x 10 a 12
+6. Triceps testa com halteres - 3x 10 a 12
+7. Triceps kickback com halter - 3x 12 a 15 cada braco
+8. Abdominal tradicional - 3x 15 a 25
+9. Prancha - 3x 30 a 60 segundos
 ```
 
 ### Treino B - Costas e Biceps

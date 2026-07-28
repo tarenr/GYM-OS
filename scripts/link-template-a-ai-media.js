@@ -30,13 +30,6 @@ const mediaByExerciseName = new Map([
     }
   ],
   [
-    'dumbbell pullover on bench',
-    {
-      imageUrl: '/assets/exercises/template-a/pullover-com-halter-no-banco-reto.png',
-      imageAlt: 'Start and end movement of dumbbell pullover on bench'
-    }
-  ],
-  [
     'dumbbell squeeze press',
     {
       imageUrl: '/assets/exercises/template-a/squeeze-press-com-halteres.png',

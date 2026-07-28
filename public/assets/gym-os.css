@@ -2259,7 +2259,7 @@ h4 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
-  padding: 0 20px 20px;
+  padding: 20px;
 }
 
 .body-progress-chart-grid {
@@ -2371,7 +2371,7 @@ h4 {
 .body-progress-history {
   flex: 1;
   align-content: start;
-  padding: 0 20px 20px;
+  padding: 20px;
 }
 
 .body-status-panel .compact-summary {
@@ -2459,6 +2459,340 @@ h4 {
 
 .progress-exercise-panel {
   margin-top: 28px;
+}
+
+.template-compare-panel {
+  margin-top: 28px;
+}
+
+.template-compare-toolbar {
+  border-width: 1px 0;
+  border-radius: 0;
+  background: var(--bg);
+}
+
+.template-compare-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(280px, 0.8fr);
+  gap: 14px;
+  padding: 20px;
+}
+
+.template-workout-panel,
+.template-evolution-panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  min-width: 0;
+  padding: 14px;
+}
+
+.template-workout-panel header,
+.template-evolution-panel header {
+  display: grid;
+  gap: 4px;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 12px;
+}
+
+.template-workout-panel header span,
+.template-evolution-panel header span,
+.template-workout-panel header small,
+.template-evolution-panel header small {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.template-workout-panel header strong,
+.template-evolution-panel header strong {
+  color: var(--text);
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.template-workout-totals,
+.template-evolution-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.template-evolution-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.template-workout-totals span,
+.template-evolution-metrics div {
+  border: 1px solid rgba(67, 214, 145, 0.22);
+  border-radius: 8px;
+  background: rgba(67, 214, 145, 0.06);
+  color: var(--green);
+  font-size: 0.66rem;
+  font-weight: 900;
+  padding: 8px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.template-evolution-metrics div {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+}
+
+.template-evolution-metrics span {
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.template-evolution-metrics strong {
+  color: var(--green);
+  font-size: 0.9rem;
+}
+
+.template-exercise-list,
+.template-evolution-list {
+  display: grid;
+  gap: 8px;
+}
+
+.template-exercise-item,
+.template-evolution-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(110px, auto);
+  gap: 10px;
+  align-items: center;
+  border: 1px solid rgba(125, 133, 144, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 10px;
+}
+
+.template-exercise-item strong,
+.template-evolution-list strong {
+  display: block;
+  color: var(--text);
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.template-exercise-item span,
+.template-exercise-item small,
+.template-evolution-list span {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.template-exercise-item b {
+  display: block;
+  color: var(--green);
+  font-size: 0.78rem;
+  text-align: right;
+}
+
+.template-exercise-item small {
+  display: block;
+  text-align: right;
+}
+
+.template-exercise-item.not-done {
+  border-color: rgba(255, 107, 107, 0.26);
+  opacity: 0.78;
+}
+
+.template-exercise-item.not-done b,
+.template-exercise-item.not-done small {
+  color: var(--red);
+}
+
+.template-evolution-list em {
+  justify-self: end;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 900;
+  padding: 4px 8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.template-evolution-panel.up {
+  border-color: rgba(67, 214, 145, 0.4);
+}
+
+.template-evolution-panel.down {
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.template-evolution-panel.up header strong,
+.template-evolution-list article.up em {
+  color: var(--green);
+}
+
+.template-evolution-panel.down header strong,
+.template-evolution-list article.down em {
+  color: var(--red);
+}
+
+.template-evolution-list article.up em {
+  border-color: rgba(67, 214, 145, 0.44);
+}
+
+.template-evolution-list article.down em {
+  border-color: rgba(255, 107, 107, 0.44);
+}
+
+.template-evolution-panel footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px dashed var(--border);
+  padding-top: 12px;
+}
+
+.template-evolution-panel footer span {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 900;
+  padding: 4px 8px;
+  text-transform: uppercase;
+}
+
+.template-compare-grid {
+  grid-template-columns: 1fr;
+}
+
+.template-compare-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  min-width: 0;
+  padding: 14px;
+}
+
+.template-compare-card header {
+  display: grid;
+  gap: 4px;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 10px;
+}
+
+.template-compare-card header span,
+.template-compare-card header small {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.template-compare-card header strong {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.template-summary-card {
+  border-color: rgba(88, 166, 255, 0.28);
+}
+
+.template-compare-card.up {
+  border-color: rgba(67, 214, 145, 0.38);
+}
+
+.template-compare-card.down {
+  border-color: rgba(255, 107, 107, 0.38);
+}
+
+.template-compare-table {
+  display: grid;
+  border: 1px solid rgba(125, 133, 144, 0.18);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.template-compare-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.1fr) repeat(2, minmax(110px, 0.75fr)) minmax(130px, 0.8fr);
+  gap: 0;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.template-compare-row + .template-compare-row {
+  border-top: 1px solid rgba(125, 133, 144, 0.16);
+}
+
+.template-compare-row > * {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 9px 10px;
+}
+
+.template-compare-row > * + * {
+  border-left: 1px solid rgba(125, 133, 144, 0.16);
+}
+
+.template-compare-row span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.template-compare-row strong,
+.template-compare-row em {
+  color: var(--text);
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.template-compare-row em {
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.template-compare-row.head {
+  background: rgba(88, 166, 255, 0.08);
+}
+
+.template-compare-row.head strong,
+.template-compare-row.head em {
+  color: var(--blue);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+}
+
+.template-compare-row.up em,
+.template-compare-card.up header strong {
+  color: var(--green);
+}
+
+.template-compare-row.down em,
+.template-compare-card.down header strong {
+  color: var(--red);
+}
+
+.template-compare-row.stable em,
+.template-compare-card.stable header strong {
+  color: var(--muted-strong);
 }
 
 .progress-pr-panel {
@@ -3381,6 +3715,7 @@ h4 {
 }
 
 .panel {
+  --panel-content-start: 0px;
   border: 1px solid var(--border);
   border-radius: 0;
   background: var(--bg-panel);
@@ -3399,10 +3734,24 @@ h4 {
   justify-content: space-between;
   gap: 16px;
   align-items: center;
+  min-height: 42px;
   margin-bottom: 24px;
   padding-bottom: 14px;
   border-bottom: 1px dashed var(--border);
   background: transparent;
+}
+
+.panel > .panel-header + * {
+  margin-top: 0;
+  padding-block-start: var(--panel-content-start);
+}
+
+.panel-header-actions,
+.panel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .panel-header h2 {
@@ -3418,8 +3767,58 @@ h4 {
 }
 
 .panel-header.compact {
+  min-height: 36px;
   margin-bottom: 14px;
   padding-bottom: 12px;
+}
+
+.panel-header.compact-header {
+  min-height: 38px;
+}
+
+.panel-collapse-toggle {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 1px solid rgba(0, 255, 135, 0.36);
+  border-radius: 4px;
+  background: rgba(0, 255, 135, 0.08);
+  color: var(--phosphor);
+  padding: 0;
+}
+
+.panel-collapse-toggle:hover {
+  border-color: var(--phosphor);
+  background: rgba(0, 255, 135, 0.14);
+}
+
+.panel-collapse-toggle span {
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+  transform: translateY(3px) rotate(45deg);
+  transition: transform 0.16s ease;
+}
+
+.panel.panel-collapsed {
+  align-self: start;
+  min-height: 0 !important;
+  padding-bottom: 0;
+}
+
+.panel.panel-collapsed > .panel-header {
+  margin-bottom: 0;
+  border-bottom-color: transparent;
+}
+
+.panel.panel-collapsed > :not(.panel-header) {
+  display: none !important;
+}
+
+.panel.panel-collapsed .panel-collapse-toggle span {
+  transform: translateY(-2px) rotate(225deg);
 }
 
 .form-grid {
@@ -4645,6 +5044,14 @@ textarea:focus {
 .breadcrumb span,
 .page-title span {
   color: var(--green);
+}
+
+.page-title .title-separator {
+  color: var(--muted);
+}
+
+.page-title .title-subsection {
+  color: var(--volt);
 }
 
 .page-title {
@@ -5888,8 +6295,45 @@ textarea:focus {
   .form-grid,
   .catalog-item,
   .mission-block-card,
-  .template-exercise-row {
+  .template-exercise-row,
+  .template-compare-row {
     grid-template-columns: 1fr;
+  }
+
+  .template-compare-row > * + * {
+    border-left: 0;
+    border-top: 1px solid rgba(125, 133, 144, 0.16);
+  }
+
+  .template-compare-row.head {
+    display: none;
+  }
+
+  .template-compare-row span::before,
+  .template-compare-row strong::before,
+  .template-compare-row em::before {
+    display: block;
+    color: var(--muted);
+    font-size: 0.56rem;
+    font-weight: 900;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+  }
+
+  .template-compare-row span::before {
+    content: "Métrica";
+  }
+
+  .template-compare-row strong:first-of-type::before {
+    content: "Data X";
+  }
+
+  .template-compare-row strong:last-of-type::before {
+    content: "Data Y";
+  }
+
+  .template-compare-row em::before {
+    content: "Evolução";
   }
 
   .mission-block-actions {

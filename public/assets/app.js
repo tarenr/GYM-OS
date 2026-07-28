@@ -46,6 +46,9 @@ const state = {
   historyPageSize: 8,
   selectedProgressExercise: '',
   progressExercisePeriodFilter: 'all',
+  selectedTemplateCompareCode: '',
+  selectedTemplateCompareFromId: '',
+  selectedTemplateCompareToId: '',
   achievementCategoryFilter: 'all',
   achievementStatusFilter: 'all',
   progressSubtab: 'overview',
@@ -204,6 +207,7 @@ const dailyMissionTodayBadge = document.querySelector('#daily-mission-today-badg
 const dailyMissionList = document.querySelector('#daily-mission-list');
 const progressSubtabButtons = document.querySelectorAll('[data-progress-tab]');
 const progressSubtabPanels = document.querySelectorAll('[data-progress-panel]');
+const progressPageTitleSuffix = document.querySelector('#progress-page-title-suffix');
 const progressSubtitle = document.querySelector('#progress-subtitle');
 const progressSummaryCards = document.querySelector('#progress-summary-cards');
 const seasonProgressBadge = document.querySelector('#season-progress-badge');
@@ -229,6 +233,11 @@ const progressCompareCount = document.querySelector('#progress-compare-count');
 const progressExerciseCompare = document.querySelector('#progress-exercise-compare');
 const progressPrCount = document.querySelector('#progress-pr-count');
 const progressPrList = document.querySelector('#progress-pr-list');
+const templateCompareCode = document.querySelector('#template-compare-code');
+const templateCompareFrom = document.querySelector('#template-compare-from');
+const templateCompareTo = document.querySelector('#template-compare-to');
+const templateCompareCount = document.querySelector('#template-compare-count');
+const templateCompareGrid = document.querySelector('#template-compare-grid');
 const bodyScanVisual = document.querySelector('#body-scan-visual');
 const bodyProgressCount = document.querySelector('#body-progress-count');
 const bodyProgressSummaryCards = document.querySelector('#body-progress-summary-cards');
@@ -328,6 +337,29 @@ const academyJourneySeasons = [
 const academySeasonWeeks = 12;
 const academyCycleWeeks = 4;
 const academyJourneyWeeks = academyJourneySeasons.length * academySeasonWeeks;
+const progressPageConfig = {
+  'progress-overview': {
+    panel: 'overview',
+    title: 'Overview',
+    subtitle: '// official XP by workout, week and campaign'
+  },
+  'progress-performance': {
+    panel: 'performance',
+    title: 'Performance',
+    subtitle: '// XP trends, exercise progress and workout comparisons'
+  },
+  'progress-body': {
+    panel: 'body',
+    title: 'Body',
+    subtitle: '// body measurements, visual scan and measurement history'
+  },
+  'progress-achievements': {
+    panel: 'achievements',
+    title: 'Achievements',
+    subtitle: '// annual achievements, unlocks and closest objectives'
+  }
+};
+const panelCollapseStorageKey = 'gym-os:collapsed-panels:v1';
 
 const rankTiers = [
   { minLevel: 1, name: 'Noob Protocol', shortName: 'Noob' },
@@ -803,7 +835,7 @@ function calculateExerciseVolume(exercise) {
     return 0;
   }
 
-  return (exercise.sets || []).reduce((total, set) => total + Number(set.weight || 0) * Number(set.reps || 0), 0);
+  return getValidExerciseSets(exercise).reduce((total, set) => total + set.weight * set.reps, 0);
 }
 
 function calculateExerciseMaxWeight(exercise) {
@@ -811,7 +843,7 @@ function calculateExerciseMaxWeight(exercise) {
     return 0;
   }
 
-  return Math.max(0, ...(exercise.sets || []).map((set) => Number(set.weight || 0)));
+  return Math.max(0, ...getValidExerciseSets(exercise).map((set) => set.weight));
 }
 
 function calculateExerciseMaxReps(exercise) {
@@ -819,7 +851,7 @@ function calculateExerciseMaxReps(exercise) {
     return 0;
   }
 
-  return Math.max(0, ...(exercise.sets || []).map((set) => Number(set.reps || 0)));
+  return Math.max(0, ...getValidExerciseSets(exercise).map((set) => set.reps));
 }
 
 function calculateExerciseRoundSeconds(exercise) {
@@ -894,13 +926,43 @@ function getMuscleClass(muscle = '') {
   return 'core';
 }
 
+function isBodyweightExercise(exercise = {}) {
+  return getExerciseLoadMode(exercise) === 'bodyweight';
+}
+
+function isTimedBodyweightExercise(exercise = {}) {
+  const name = String(exercise.name || '').toLowerCase();
+
+  return isBodyweightExercise(exercise) && name.includes('plank');
+}
+
+function isValidExerciseSet(set, exercise = {}) {
+  const weight = Number(set?.weight || 0);
+  const reps = Number(set?.reps || 0);
+
+  if (isBodyweightExercise(exercise)) {
+    return reps > 0;
+  }
+
+  return weight > 0 && reps > 0;
+}
+
+function getValidExerciseSets(exercise = {}) {
+  if (exercise.skipped) {
+    return [];
+  }
+
+  return (exercise.sets || [])
+    .map((set) => ({
+      weight: Number(set.weight || 0),
+      reps: Number(set.reps || 0)
+    }))
+    .filter((set) => isValidExerciseSet(set, exercise));
+}
+
 function countValidSets(workout) {
   return workout.exercises.reduce((total, exercise) => {
-    if (exercise.skipped) {
-      return total;
-    }
-
-    return total + (exercise.sets || []).filter((set) => Number(set.weight) > 0 && Number(set.reps) > 0).length;
+    return total + getValidExerciseSets(exercise).length;
   }, 0);
 }
 
@@ -920,7 +982,7 @@ function countSkippedExercises(workout) {
 
 function hasValidExerciseExecution(exercise) {
   return !exercise.skipped
-    && ((exercise.sets || []).some((set) => Number(set.weight) > 0 && Number(set.reps) > 0)
+    && (getValidExerciseSets(exercise).length > 0
       || (exercise.rounds || []).some((round) => round.completed !== false && Number(round.durationSeconds || 0) > 0));
 }
 
@@ -2020,13 +2082,11 @@ function getTopPersonalRecords(workouts, limit = 5) {
         return;
       }
 
-      const validSets = (exercise.sets || [])
+      const validSets = getValidExerciseSets(exercise)
         .map((set) => ({
-          weight: Number(set.weight || 0),
-          reps: Number(set.reps || 0),
-          volume: Number(set.weight || 0) * Number(set.reps || 0)
-        }))
-        .filter((set) => set.weight > 0 && set.reps > 0);
+          ...set,
+          volume: set.weight * set.reps
+        }));
 
       if (!validSets.length) {
         return;
@@ -2106,13 +2166,7 @@ function getDashboardActivityEvents(workouts, limit = 8) {
 
   workouts.filter(isCompletedWorkout).forEach((workout) => {
     const origin = getWorkoutOriginInfo(workout);
-    const validSets = (workout.exercises || []).reduce((total, exercise) => {
-      if (exercise.skipped) {
-        return total;
-      }
-
-      return total + (exercise.sets || []).filter((set) => Number(set.weight) > 0 && Number(set.reps) > 0).length;
-    }, 0);
+    const validSets = countValidSets(workout);
     const volume = calculateWorkoutVolume(workout);
     const quality = getWorkoutExecutionQuality(workout);
     const dateKey = toDateKey(workout.date);
@@ -2139,13 +2193,9 @@ function getDashboardActivityEvents(workouts, limit = 8) {
         return;
       }
 
-      (exercise.sets || []).forEach((set) => {
+      getValidExerciseSets(exercise).forEach((set) => {
         const weight = Number(set.weight || 0);
         const reps = Number(set.reps || 0);
-
-        if (weight <= 0 || reps <= 0) {
-          return;
-        }
 
         if (recordKeys.has(`${exercise.name}-${dateKey}-${weight}-${reps}`)) {
           events.push({
@@ -2419,12 +2469,8 @@ function getExerciseSecondaryGroups(exercise = {}) {
     addGroup('Triceps');
   }
 
-  if (text.includes('row') || text.includes('pullover')) {
+  if (text.includes('row')) {
     addGroup('Biceps');
-  }
-
-  if (text.includes('pullover')) {
-    addGroup(primary.toLowerCase() === 'chest' ? 'Back' : 'Chest');
   }
 
   if (text.includes('squat') || text.includes('lunge') || text.includes('deadlift') || text.includes('hip thrust') || text.includes('mountain climber')) {
@@ -2475,7 +2521,7 @@ function getExerciseProfile(exercise = {}) {
     control = Math.max(control, 62);
   }
 
-  if (name.includes('fly') || name.includes('raise') || name.includes('kickback') || name.includes('pullover')) {
+  if (name.includes('fly') || name.includes('raise') || name.includes('kickback')) {
     power = Math.min(power, 62);
     control = Math.max(control, 78);
   }
@@ -4388,8 +4434,9 @@ function getExerciseProgressEntries() {
     .filter(isCompletedWorkout)
     .flatMap((workout) => (workout.exercises || []).filter((exercise) => !exercise.skipped).map((exercise) => {
       const measurementType = exercise.measurementType || 'sets_reps_weight';
-      const validSets = (exercise.sets || []).filter((set) => Number(set.weight) > 0 && Number(set.reps) > 0);
+      const validSets = getValidExerciseSets(exercise);
       const validRounds = (exercise.rounds || []).filter((round) => round.completed !== false && Number(round.durationSeconds || 0) > 0);
+      const totalSetReps = validSets.reduce((total, set) => total + Number(set.reps || 0), 0);
       const volume = calculateExerciseVolume(exercise);
       const totalRoundSeconds = calculateExerciseRoundSeconds(exercise);
       const roundReps = calculateExerciseRoundReps(exercise);
@@ -4402,16 +4449,18 @@ function getExerciseProgressEntries() {
         dateKey: toDateKey(workout.date),
         measurementType,
         loadMode: getExerciseLoadMode(exercise),
+        isTimedBodyweight: isTimedBodyweightExercise(exercise),
         muscleGroup: exercise.muscleGroup || exercise.category || '',
         modality: exercise.modality || getTemplateForWorkout(workout)?.workoutTypeCode || 'strength',
         validSets: validSets.length,
         validRounds: validRounds.length,
+        totalSetReps,
         maxWeight: calculateExerciseMaxWeight(exercise),
         maxReps: calculateExerciseMaxReps(exercise),
         volume,
         totalRoundSeconds,
         roundReps,
-        score: volume || roundReps || totalRoundSeconds || validSets.length || validRounds.length
+        score: volume || roundReps || totalRoundSeconds || totalSetReps || validSets.length || validRounds.length
       };
     }))
     .filter((entry) => entry.key && entry.score > 0)
@@ -4467,9 +4516,9 @@ function getExercisePrMetrics(entry) {
     },
     {
       type: 'max_reps',
-      label: 'Reps',
+      label: entry.isTimedBodyweight ? 'Tempo' : 'Reps',
       value: entry.maxReps,
-      formatted: `${entry.maxReps} reps`
+      formatted: entry.isTimedBodyweight ? formatSeconds(entry.maxReps) : `${entry.maxReps} reps`
     },
     {
       type: 'volume',
@@ -4593,7 +4642,11 @@ function getExerciseProgressSummary(entries) {
   const totalVolume = entries.reduce((total, entry) => total + entry.volume, 0);
   const totalRounds = entries.reduce((total, entry) => total + entry.validRounds, 0);
   const totalRoundSeconds = entries.reduce((total, entry) => total + entry.totalRoundSeconds, 0);
+  const totalTimedBodyweightSeconds = entries.reduce((total, entry) => (
+    total + (entry.isTimedBodyweight ? entry.totalSetReps : 0)
+  ), 0);
   const bestWeight = [...entries].sort((a, b) => b.maxWeight - a.maxWeight)[0];
+  const bestTimedBodyweight = [...entries].sort((a, b) => b.maxReps - a.maxReps)[0];
   const bestVolume = [...entries].sort((a, b) => b.volume - a.volume)[0];
   const bestRoundReps = [...entries].sort((a, b) => b.roundReps - a.roundReps)[0];
   const bestRoundTime = [...entries].sort((a, b) => b.totalRoundSeconds - a.totalRoundSeconds)[0];
@@ -4604,7 +4657,9 @@ function getExerciseProgressSummary(entries) {
     totalVolume,
     totalRounds,
     totalRoundSeconds,
+    totalTimedBodyweightSeconds,
     bestWeight,
+    bestTimedBodyweight,
     bestVolume,
     bestRoundReps,
     bestRoundTime
@@ -4624,11 +4679,20 @@ function formatExerciseProgressPrimary(entry) {
     return formatSeconds(entry.totalRoundSeconds);
   }
 
+  if (entry.isTimedBodyweight && entry.maxReps > 0) {
+    return formatSeconds(entry.maxReps);
+  }
+
+  if (entry.maxReps > 0) {
+    return `${formatCompactNumber(entry.maxReps)} reps`;
+  }
+
   return `${entry.validSets + entry.validRounds} units`;
 }
 
 function getExerciseCompareMetrics(entries) {
   const hasRounds = entries.some((entry) => entry.validRounds > 0);
+  const hasTimedBodyweight = !hasRounds && entries.some((entry) => entry.isTimedBodyweight);
 
   if (hasRounds) {
     return [
@@ -4641,6 +4705,21 @@ function getExerciseCompareMetrics(entries) {
         label: 'Strikes',
         value: (entry) => entry.roundReps,
         format: (value) => `${formatCompactNumber(value)} strikes`
+      }
+    ];
+  }
+
+  if (hasTimedBodyweight) {
+    return [
+      {
+        label: 'Time',
+        value: (entry) => entry.maxReps,
+        format: (value) => formatSeconds(value)
+      },
+      {
+        label: 'Sets',
+        value: (entry) => entry.validSets,
+        format: (value) => `${formatCompactNumber(value)} sets`
       }
     ];
   }
@@ -4755,14 +4834,19 @@ function renderProgressExerciseSummary(entries) {
 
   const summary = getExerciseProgressSummary(entries);
   const isRoundBased = entries.some((entry) => entry.validRounds > 0);
+  const isTimedBodyweight = !isRoundBased && entries.some((entry) => entry.isTimedBodyweight);
   const hasRoundReps = isRoundBased && summary.bestRoundReps?.roundReps > 0;
   const bestRoundEntry = hasRoundReps ? summary.bestRoundReps : summary.bestRoundTime;
   const bestPrimary = isRoundBased
     ? formatExerciseProgressPrimary(bestRoundEntry)
-    : formatLoadModeWeight(summary.bestWeight?.maxWeight || 0, summary.bestWeight?.loadMode);
+    : isTimedBodyweight
+      ? formatExerciseProgressPrimary(summary.bestTimedBodyweight)
+      : formatLoadModeWeight(summary.bestWeight?.maxWeight || 0, summary.bestWeight?.loadMode);
   const totalPrimary = isRoundBased
     ? `${summary.totalRounds} rounds | ${formatSeconds(summary.totalRoundSeconds)}`
-    : `${formatCompactNumber(summary.totalVolume)} kg`;
+    : isTimedBodyweight
+      ? formatSeconds(summary.totalTimedBodyweightSeconds)
+      : `${formatCompactNumber(summary.totalVolume)} kg`;
 
   renderSummaryCards(progressExerciseSummaryCards, [
     {
@@ -4774,16 +4858,20 @@ function renderProgressExerciseSummary(entries) {
     },
     {
       icon: 'PR',
-      label: isRoundBased ? (hasRoundReps ? 'Best strikes' : 'Longest time') : 'Highest load',
+      label: isRoundBased ? (hasRoundReps ? 'Best strikes' : 'Longest time') : isTimedBodyweight ? 'Longest time' : 'Highest load',
       value: bestPrimary,
-      detail: isRoundBased && bestRoundEntry ? formatDate(bestRoundEntry.dateKey) : formatDate(summary.bestWeight.dateKey),
+      detail: isRoundBased && bestRoundEntry
+        ? formatDate(bestRoundEntry.dateKey)
+        : isTimedBodyweight
+          ? formatDate(summary.bestTimedBodyweight.dateKey)
+          : formatDate(summary.bestWeight.dateKey),
       tone: 'blue'
     },
     {
-      icon: isRoundBased ? 'TIME' : 'VOL',
-      label: isRoundBased ? 'Total time' : 'Total volume',
+      icon: isRoundBased || isTimedBodyweight ? 'TIME' : 'VOL',
+      label: isRoundBased || isTimedBodyweight ? 'Total time' : 'Total volume',
       value: totalPrimary,
-      detail: isRoundBased ? 'completed rounds' : 'load x reps',
+      detail: isRoundBased ? 'completed rounds' : isTimedBodyweight ? 'logged seconds' : 'load x reps',
       tone: 'orange'
     },
     {
@@ -4813,6 +4901,8 @@ function renderProgressExerciseHistory(entries) {
     const isRoundBased = entry.validRounds > 0;
     const metricLine = isRoundBased
       ? `${entry.validRounds} rounds | ${formatSeconds(entry.totalRoundSeconds)} | ${entry.roundReps} strikes`
+      : entry.isTimedBodyweight
+        ? `${entry.validSets} sets | total ${formatSeconds(entry.totalSetReps)} | max ${formatSeconds(entry.maxReps)}`
       : `${entry.validSets} sets | max ${formatLoadModeWeight(entry.maxWeight, entry.loadMode)} | ${formatCompactNumber(entry.volume)} kg vol`;
     const meterWidth = Math.max(4, Math.round((entry.score / maxScore) * 100));
     const prBadges = (entry.personalRecords || []).length
@@ -4861,6 +4951,406 @@ function renderProgressRecentPrs(entries) {
       <strong>${escapeHtml(record.formatted)}</strong>
     </article>
   `).join('');
+}
+
+function getTemplateCompareWorkouts() {
+  return state.allWorkouts
+    .filter((workout) => workout.workoutCode && isCompletedWorkout(workout))
+    .sort((a, b) => {
+      const dateCompare = new Date(b.date) - new Date(a.date);
+
+      if (dateCompare !== 0) {
+        return dateCompare;
+      }
+
+      return String(b._id || '').localeCompare(String(a._id || ''));
+    });
+}
+
+function getTemplateCompareCodes(workouts) {
+  const latestByCode = new Map();
+
+  workouts.forEach((workout, index) => {
+    if (!latestByCode.has(workout.workoutCode)) {
+      latestByCode.set(workout.workoutCode, {
+        code: workout.workoutCode,
+        name: workout.workoutName,
+        latestIndex: index
+      });
+    }
+  });
+
+  return [...latestByCode.values()].sort((a, b) => a.latestIndex - b.latestIndex);
+}
+
+function getTemplateCompareWorkoutLabel(workout) {
+  return `${formatDate(workout.date)} - ${workout.workoutCode}`;
+}
+
+function getExerciseCompareKey(exercise) {
+  return (exercise?.name || '').trim().toLowerCase();
+}
+
+function summarizeTemplateExercise(exercise) {
+  const validSets = getValidExerciseSets(exercise || {});
+  const setCount = validSets.length;
+  const totalWeight = validSets.reduce((total, set) => total + set.weight, 0);
+  const totalReps = validSets.reduce((total, set) => total + set.reps, 0);
+  const volume = validSets.reduce((total, set) => total + set.weight * set.reps, 0);
+
+  return {
+    name: exercise?.name || 'Exercise',
+    muscleGroup: exercise?.muscleGroup || exercise?.category || '',
+    loadMode: getExerciseLoadMode(exercise || {}),
+    isTimedBodyweight: isTimedBodyweightExercise(exercise || {}),
+    performed: !exercise?.skipped && setCount > 0,
+    skipped: Boolean(exercise?.skipped),
+    setCount,
+    avgWeight: setCount ? totalWeight / setCount : 0,
+    avgReps: setCount ? totalReps / setCount : 0,
+    maxWeight: calculateExerciseMaxWeight(exercise || {}),
+    maxReps: calculateExerciseMaxReps(exercise || {}),
+    volume
+  };
+}
+
+function summarizeTemplateWorkout(workout) {
+  const exercises = (workout?.exercises || []).map((exercise) => summarizeTemplateExercise(exercise));
+  const performed = exercises.filter((exercise) => exercise.performed);
+  const totalSets = performed.reduce((total, exercise) => total + exercise.setCount, 0);
+  const totalVolume = performed.reduce((total, exercise) => total + exercise.volume, 0);
+  const avgWeight = totalSets
+    ? performed.reduce((total, exercise) => total + exercise.avgWeight * exercise.setCount, 0) / totalSets
+    : 0;
+  const avgReps = totalSets
+    ? performed.reduce((total, exercise) => total + exercise.avgReps * exercise.setCount, 0) / totalSets
+    : 0;
+
+  return {
+    workout,
+    exercises,
+    performedCount: performed.length,
+    totalExercises: exercises.length,
+    totalSets,
+    totalVolume,
+    avgWeight,
+    avgReps
+  };
+}
+
+function getTemplateExerciseRows(fromWorkout, toWorkout) {
+  const fromMap = new Map();
+  const toMap = new Map();
+  const rows = [];
+
+  (fromWorkout?.exercises || []).forEach((exercise) => {
+    const key = getExerciseCompareKey(exercise);
+
+    if (key) {
+      fromMap.set(key, exercise);
+      rows.push({ key, name: exercise.name || 'Exercise' });
+    }
+  });
+
+  (toWorkout?.exercises || []).forEach((exercise) => {
+    const key = getExerciseCompareKey(exercise);
+
+    if (!key) {
+      return;
+    }
+
+    toMap.set(key, exercise);
+
+    if (!rows.some((row) => row.key === key)) {
+      rows.push({ key, name: exercise.name || 'Exercise' });
+    }
+  });
+
+  return rows.map((row) => ({
+    ...row,
+    from: summarizeTemplateExercise(fromMap.get(row.key)),
+    to: summarizeTemplateExercise(toMap.get(row.key))
+  }));
+}
+
+function formatTemplateAverageWeight(summary) {
+  return summary.performed ? formatLoadModeWeight(summary.avgWeight, summary.loadMode) : 'não realizado';
+}
+
+function formatTemplateAverageReps(summary) {
+  if (!summary.performed) {
+    return 'não realizado';
+  }
+
+  return summary.isTimedBodyweight
+    ? `${formatSeconds(summary.avgReps)} média`
+    : `${formatCompactNumber(summary.avgReps)} reps média`;
+}
+
+function formatTemplateExerciseMeta(summary) {
+  if (summary.skipped) {
+    return 'Não realizado';
+  }
+
+  if (!summary.performed) {
+    return 'Sem séries válidas';
+  }
+
+  if (summary.isTimedBodyweight) {
+    return `${summary.setCount} sets | max ${formatSeconds(summary.maxReps)}`;
+  }
+
+  if (summary.loadMode === 'bodyweight') {
+    return `${summary.setCount} sets | max ${formatCompactNumber(summary.maxReps)} reps`;
+  }
+
+  return `${summary.setCount} sets | ${formatCompactNumber(summary.volume)} kg vol`;
+}
+
+function getTemplateExerciseTrend(row) {
+  if (!row.from.performed && !row.to.performed) {
+    return { tone: 'stable', label: 'NÃO REALIZADO', detail: 'Sem séries válidas nos dois treinos.' };
+  }
+
+  if (!row.from.performed && row.to.performed) {
+    return { tone: 'up', label: 'FEITO NO DIA ATUAL', detail: 'Realizado apenas no treino mais recente selecionado.' };
+  }
+
+  if (row.from.performed && !row.to.performed) {
+    return { tone: 'down', label: 'NÃO FEITO NO DIA ATUAL', detail: 'Não realizado no treino mais recente selecionado.' };
+  }
+
+  const isTimedBodyweight = row.from.isTimedBodyweight || row.to.isTimedBodyweight;
+  const isBodyweight = row.from.loadMode === 'bodyweight' || row.to.loadMode === 'bodyweight';
+  const primaryDelta = isTimedBodyweight || isBodyweight
+    ? row.to.avgReps - row.from.avgReps
+    : row.to.volume - row.from.volume;
+  const weightDelta = row.to.avgWeight - row.from.avgWeight;
+  const repsDelta = row.to.avgReps - row.from.avgReps;
+  const primaryLabel = isTimedBodyweight
+    ? 'Tempo'
+    : isBodyweight
+      ? 'Reps'
+      : 'Volume';
+  const formatPrimaryDelta = (value) => (
+    isTimedBodyweight ? formatSeconds(Math.abs(value)) : formatCompactNumber(Math.abs(value))
+  );
+
+  if (primaryDelta > 0) {
+    return {
+      tone: 'up',
+      label: 'MELHOROU',
+      detail: `${primaryLabel} +${formatPrimaryDelta(primaryDelta)} | reps ${getTrendLabel(row.from.avgReps, row.to.avgReps)}`
+    };
+  }
+
+  if (primaryDelta < 0) {
+    return {
+      tone: 'down',
+      label: 'PIOROU',
+      detail: `${primaryLabel} -${formatPrimaryDelta(primaryDelta)} | reps ${getTrendLabel(row.from.avgReps, row.to.avgReps)}`
+    };
+  }
+
+  if (weightDelta > 0 || repsDelta > 0) {
+    return {
+      tone: 'up',
+      label: 'MELHOROU',
+      detail: `Peso ${getTrendLabel(row.from.avgWeight, row.to.avgWeight)} | reps ${getTrendLabel(row.from.avgReps, row.to.avgReps)}`
+    };
+  }
+
+  return { tone: 'stable', label: 'MANTEVE', detail: 'Volume, peso e reps ficaram iguais.' };
+}
+
+function formatTemplateDelta(fromValue, toValue, suffix = '') {
+  const delta = Number(toValue || 0) - Number(fromValue || 0);
+
+  if (delta > 0) {
+    return `+${formatCompactNumber(delta)}${suffix}`;
+  }
+
+  if (delta < 0) {
+    return `-${formatCompactNumber(Math.abs(delta))}${suffix}`;
+  }
+
+  return 'manteve';
+}
+
+function getTemplateOverallStatus(fromSummary, toSummary, rows) {
+  const volumeDelta = toSummary.totalVolume - fromSummary.totalVolume;
+  const trends = rows.map(getTemplateExerciseTrend);
+  const improved = trends.filter((trend) => trend.tone === 'up').length;
+  const declined = trends.filter((trend) => trend.tone === 'down').length;
+  const headlineTone = volumeDelta > 0 ? 'up' : volumeDelta < 0 ? 'down' : improved > declined ? 'up' : declined > improved ? 'down' : 'stable';
+
+  return headlineTone === 'up' ? 'EVOLUIU' : headlineTone === 'down' ? 'CAIU' : 'MANTEVE';
+}
+
+function renderTemplateCompareRow(label, fromValue, toValue, evolution, tone = '') {
+  return `
+    <div class="template-compare-row ${tone}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(fromValue)}</strong>
+      <strong>${escapeHtml(toValue)}</strong>
+      <em>${escapeHtml(evolution)}</em>
+    </div>
+  `;
+}
+
+function renderTemplateSummaryCompare(fromSummary, toSummary, rows) {
+  const fromWorkout = fromSummary.workout;
+  const toWorkout = toSummary.workout;
+  const status = getTemplateOverallStatus(fromSummary, toSummary, rows);
+  const statusTone = status === 'EVOLUIU' ? 'up' : status === 'CAIU' ? 'down' : 'stable';
+  const fromDate = formatDate(fromWorkout.date);
+  const toDate = formatDate(toWorkout.date);
+
+  return `
+    <article class="template-compare-card template-summary-card ${statusTone}">
+      <header>
+        <span>Resumo geral</span>
+        <strong>${escapeHtml(fromWorkout.workoutCode)} - ${escapeHtml(fromWorkout.workoutName)}</strong>
+        <small>${escapeHtml(fromDate)} vs ${escapeHtml(toDate)}</small>
+      </header>
+      <div class="template-compare-table">
+        <div class="template-compare-row head">
+          <span>${escapeHtml(fromWorkout.workoutCode)}</span>
+          <strong>${escapeHtml(fromDate)}</strong>
+          <strong>${escapeHtml(toDate)}</strong>
+          <em>Evolução</em>
+        </div>
+        ${renderTemplateCompareRow('Volume total', `${formatCompactNumber(fromSummary.totalVolume)} kg`, `${formatCompactNumber(toSummary.totalVolume)} kg`, formatTemplateDelta(fromSummary.totalVolume, toSummary.totalVolume, ' kg'))}
+        ${renderTemplateCompareRow('Exercícios realizados', `${fromSummary.performedCount}/${fromSummary.totalExercises}`, `${toSummary.performedCount}/${toSummary.totalExercises}`, formatTemplateDelta(fromSummary.performedCount, toSummary.performedCount))}
+        ${renderTemplateCompareRow('Média de peso', `${formatCompactNumber(fromSummary.avgWeight)} kg`, `${formatCompactNumber(toSummary.avgWeight)} kg`, formatTemplateDelta(fromSummary.avgWeight, toSummary.avgWeight, ' kg'))}
+        ${renderTemplateCompareRow('Média de reps', `${formatCompactNumber(fromSummary.avgReps)}`, `${formatCompactNumber(toSummary.avgReps)}`, formatTemplateDelta(fromSummary.avgReps, toSummary.avgReps, ' reps'))}
+        ${renderTemplateCompareRow('Séries válidas', String(fromSummary.totalSets), String(toSummary.totalSets), formatTemplateDelta(fromSummary.totalSets, toSummary.totalSets))}
+        ${renderTemplateCompareRow('Status geral', '-', '-', status, statusTone)}
+      </div>
+    </article>
+  `;
+}
+
+function getTemplatePerformedLabel(summary) {
+  if (summary.skipped) {
+    return 'não realizado';
+  }
+
+  return summary.performed ? 'realizado' : 'não realizado';
+}
+
+function renderTemplateExerciseCompareCard(row, fromDate, toDate) {
+  const trend = getTemplateExerciseTrend(row);
+  const statusTone = trend.tone || 'stable';
+
+  return `
+    <article class="template-compare-card template-exercise-compare-card ${statusTone}">
+      <header>
+        <span>Exercício</span>
+        <strong>${escapeHtml(row.name)}</strong>
+        <small>${escapeHtml(trend.detail)}</small>
+      </header>
+      <div class="template-compare-table">
+        <div class="template-compare-row head">
+          <span>Métrica</span>
+          <strong>${escapeHtml(fromDate)}</strong>
+          <strong>${escapeHtml(toDate)}</strong>
+          <em>Evolução</em>
+        </div>
+        ${renderTemplateCompareRow('Peso médio', formatTemplateAverageWeight(row.from), formatTemplateAverageWeight(row.to), row.from.performed && row.to.performed ? formatTemplateDelta(row.from.avgWeight, row.to.avgWeight, ' kg') : trend.label, statusTone)}
+        ${renderTemplateCompareRow('Reps médias', formatTemplateAverageReps(row.from), formatTemplateAverageReps(row.to), row.from.performed && row.to.performed ? formatTemplateDelta(row.from.avgReps, row.to.avgReps, ' reps') : trend.label, statusTone)}
+        ${renderTemplateCompareRow('Séries válidas', String(row.from.setCount), String(row.to.setCount), formatTemplateDelta(row.from.setCount, row.to.setCount), statusTone)}
+        ${renderTemplateCompareRow('Volume', `${formatCompactNumber(row.from.volume)} kg`, `${formatCompactNumber(row.to.volume)} kg`, formatTemplateDelta(row.from.volume, row.to.volume, ' kg'), statusTone)}
+        ${renderTemplateCompareRow('Status', getTemplatePerformedLabel(row.from), getTemplatePerformedLabel(row.to), trend.label, statusTone)}
+      </div>
+    </article>
+  `;
+}
+
+function refreshTemplateCompareControls(workouts) {
+  if (!templateCompareCode || !templateCompareFrom || !templateCompareTo) {
+    return { fromWorkout: null, toWorkout: null, codeWorkouts: [] };
+  }
+
+  const codes = getTemplateCompareCodes(workouts);
+
+  if (!codes.some((item) => item.code === state.selectedTemplateCompareCode)) {
+    state.selectedTemplateCompareCode = codes[0]?.code || '';
+    state.selectedTemplateCompareFromId = '';
+    state.selectedTemplateCompareToId = '';
+  }
+
+  const codeWorkouts = workouts.filter((workout) => workout.workoutCode === state.selectedTemplateCompareCode);
+
+  if (!codeWorkouts.some((workout) => workout._id === state.selectedTemplateCompareToId)) {
+    state.selectedTemplateCompareToId = codeWorkouts[0]?._id || '';
+  }
+
+  if (
+    !codeWorkouts.some((workout) => workout._id === state.selectedTemplateCompareFromId)
+    || state.selectedTemplateCompareFromId === state.selectedTemplateCompareToId
+  ) {
+    state.selectedTemplateCompareFromId = codeWorkouts.find((workout) => workout._id !== state.selectedTemplateCompareToId)?._id || '';
+  }
+
+  templateCompareCode.innerHTML = [
+    '<option value="">Selecione uma ficha</option>',
+    ...codes.map((item) => (
+      `<option value="${escapeHtml(item.code)}" ${item.code === state.selectedTemplateCompareCode ? 'selected' : ''}>${escapeHtml(item.code)} - ${escapeHtml(item.name)}</option>`
+    ))
+  ].join('');
+
+  const dateOptions = [
+    '<option value="">Selecione uma data</option>',
+    ...codeWorkouts.map((workout) => (
+      `<option value="${escapeHtml(workout._id)}">${escapeHtml(getTemplateCompareWorkoutLabel(workout))}</option>`
+    ))
+  ].join('');
+
+  templateCompareFrom.innerHTML = dateOptions;
+  templateCompareTo.innerHTML = dateOptions;
+  templateCompareFrom.value = state.selectedTemplateCompareFromId;
+  templateCompareTo.value = state.selectedTemplateCompareToId;
+
+  return {
+    codeWorkouts,
+    fromWorkout: codeWorkouts.find((workout) => workout._id === state.selectedTemplateCompareFromId) || null,
+    toWorkout: codeWorkouts.find((workout) => workout._id === state.selectedTemplateCompareToId) || null
+  };
+}
+
+function renderTemplateCompare() {
+  if (!templateCompareGrid) {
+    return;
+  }
+
+  const workouts = getTemplateCompareWorkouts();
+  const { fromWorkout, toWorkout, codeWorkouts } = refreshTemplateCompareControls(workouts);
+
+  if (templateCompareCount) {
+    templateCompareCount.textContent = `${codeWorkouts.length} LOG`;
+  }
+
+  if (!workouts.length) {
+    templateCompareGrid.innerHTML = '<p class="empty-state">Salve pelo menos dois treinos para comparar fichas.</p>';
+    return;
+  }
+
+  if (!fromWorkout || !toWorkout) {
+    templateCompareGrid.innerHTML = '<p class="empty-state">Escolha duas datas da mesma ficha para comparar.</p>';
+    return;
+  }
+
+  const fromSummary = summarizeTemplateWorkout(fromWorkout);
+  const toSummary = summarizeTemplateWorkout(toWorkout);
+  const rows = getTemplateExerciseRows(fromWorkout, toWorkout);
+  const fromDate = formatDate(fromWorkout.date);
+  const toDate = formatDate(toWorkout.date);
+
+  templateCompareGrid.innerHTML = [
+    renderTemplateSummaryCompare(fromSummary, toSummary, rows),
+    ...rows.map((row) => renderTemplateExerciseCompareCard(row, fromDate, toDate))
+  ].join('');
 }
 
 function renderProgressExercise(entries) {
@@ -5641,6 +6131,7 @@ function renderProgress() {
   renderProgressTrend(items);
   renderProgressSplit(items);
   renderAnnualAchievements(items, exerciseEntries);
+  renderTemplateCompare();
   renderProgressExercise(exerciseEntries);
   renderProgressLog(items);
   renderBodyProgress();
@@ -7986,14 +8477,27 @@ weeklyMap.addEventListener('click', (event) => {
 function getInitialTabFromLocation() {
   const params = new URLSearchParams(window.location.search);
   const queryTab = params.get('tab');
+  const progressPanel = params.get('progress');
 
   if (queryTab && document.querySelector(`#view-${queryTab}`)) {
+    return queryTab;
+  }
+
+  if (queryTab === 'progress' && progressPanel) {
+    return getProgressTabName(progressPanel);
+  }
+
+  if (queryTab && progressPageConfig[queryTab]) {
     return queryTab;
   }
 
   const hashTab = window.location.hash.replace('#', '');
 
   if (hashTab && document.querySelector(`#view-${hashTab}`)) {
+    return hashTab;
+  }
+
+  if (hashTab && progressPageConfig[hashTab]) {
     return hashTab;
   }
 
@@ -8009,8 +8513,137 @@ function updateTabUrl(tabName) {
   } else {
     url.searchParams.delete('tab');
   }
+  url.searchParams.delete('progress');
 
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
+function readCollapsedPanelState() {
+  try {
+    return JSON.parse(localStorage.getItem(panelCollapseStorageKey) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function writeCollapsedPanelState(stateMap) {
+  try {
+    localStorage.setItem(panelCollapseStorageKey, JSON.stringify(stateMap));
+  } catch {
+    // Collapsing still works for the current session even if storage is blocked.
+  }
+}
+
+function getPanelCollapseId(panel) {
+  if (panel.dataset.panelCollapseId) {
+    return panel.dataset.panelCollapseId;
+  }
+
+  const title = panel.querySelector('.panel-title h2, .panel-header h2')?.textContent || 'panel';
+  const panelIndex = [...document.querySelectorAll('.panel')].indexOf(panel);
+  const normalizedTitle = title
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'panel';
+
+  panel.dataset.panelCollapseId = `${normalizedTitle}-${panelIndex}`;
+  return panel.dataset.panelCollapseId;
+}
+
+function setPanelCollapsed(panel, collapsed) {
+  const button = panel.querySelector(':scope > .panel-header .panel-collapse-toggle');
+
+  panel.classList.toggle('panel-collapsed', collapsed);
+  if (button) {
+    button.setAttribute('aria-expanded', String(!collapsed));
+    button.setAttribute('title', collapsed ? 'Expand panel' : 'Collapse panel');
+  }
+}
+
+function togglePanelCollapsed(panel) {
+  const panelId = getPanelCollapseId(panel);
+  const collapsed = !panel.classList.contains('panel-collapsed');
+  const stateMap = readCollapsedPanelState();
+
+  if (collapsed) {
+    stateMap[panelId] = true;
+  } else {
+    delete stateMap[panelId];
+  }
+
+  writeCollapsedPanelState(stateMap);
+  setPanelCollapsed(panel, collapsed);
+}
+
+function ensurePanelCollapseControls(root = document) {
+  const stateMap = readCollapsedPanelState();
+
+  root.querySelectorAll?.('.panel').forEach((panel) => {
+    const header = panel.querySelector(':scope > .panel-header');
+
+    if (!header || header.querySelector('.panel-collapse-toggle')) {
+      return;
+    }
+
+    const title = header.querySelector('.panel-title h2, h2')?.textContent?.trim() || 'panel';
+    const actions = header.querySelector('.panel-header-actions, .panel-actions') || document.createElement('div');
+    const isNewActionsContainer = !actions.parentElement;
+    const button = document.createElement('button');
+
+    button.className = 'panel-collapse-toggle';
+    button.type = 'button';
+    button.dataset.panelCollapseToggle = 'true';
+    button.setAttribute('aria-label', `Collapse ${title}`);
+    button.innerHTML = '<span aria-hidden="true"></span>';
+
+    if (isNewActionsContainer) {
+      actions.className = 'panel-header-actions';
+      header.append(actions);
+    }
+
+    actions.append(button);
+    setPanelCollapsed(panel, Boolean(stateMap[getPanelCollapseId(panel)]));
+  });
+}
+
+function observePanelCollapseControls() {
+  const observer = new MutationObserver((mutations) => {
+    if (mutations.some((mutation) => mutation.addedNodes.length > 0)) {
+      ensurePanelCollapseControls(document);
+    }
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function getProgressTabName(panelName = 'overview') {
+  return Object.entries(progressPageConfig)
+    .find(([, config]) => config.panel === panelName)?.[0] || 'progress-overview';
+}
+
+function resolveTabName(tabName = 'dashboard') {
+  if (progressPageConfig[tabName]) {
+    return {
+      requestedTab: tabName,
+      viewTab: 'progress',
+      progressPanel: progressPageConfig[tabName].panel
+    };
+  }
+
+  if (tabName === 'progress') {
+    return {
+      requestedTab: getProgressTabName(state.progressSubtab),
+      viewTab: 'progress',
+      progressPanel: state.progressSubtab
+    };
+  }
+
+  return {
+    requestedTab: tabName,
+    viewTab: tabName,
+    progressPanel: ''
+  };
 }
 
 function setMobileMenuOpen(isOpen) {
@@ -8028,11 +8661,18 @@ function toggleMobileMenu() {
 }
 
 function activateProgressSubtab(tabName = 'overview') {
-  const targetTab = [...progressSubtabButtons].some((button) => button.dataset.progressTab === tabName)
+  const targetTab = [...progressSubtabPanels].some((panel) => panel.dataset.progressPanel === tabName)
     ? tabName
     : 'overview';
+  const pageConfig = progressPageConfig[getProgressTabName(targetTab)];
 
   state.progressSubtab = targetTab;
+  if (progressPageTitleSuffix && pageConfig) {
+    progressPageTitleSuffix.textContent = pageConfig.title;
+  }
+  if (progressSubtitle && pageConfig) {
+    progressSubtitle.textContent = pageConfig.subtitle;
+  }
 
   progressSubtabButtons.forEach((button) => {
     const isActive = button.dataset.progressTab === targetTab;
@@ -8049,33 +8689,34 @@ function activateProgressSubtab(tabName = 'overview') {
 
 async function activateTab(tabName, options = {}) {
   const { updateUrl = true, scroll = true } = options;
-  const targetView = document.querySelector(`#view-${tabName}`);
+  const resolvedTab = resolveTabName(tabName);
+  const targetView = document.querySelector(`#view-${resolvedTab.viewTab}`);
 
   if (!targetView) {
     return false;
   }
 
   document.querySelectorAll('.nav-link[data-tab]').forEach((item) => {
-    const isDocumentationShortcut = tabName === 'documentation' && item.dataset.documentationShortcut;
+    const isDocumentationShortcut = resolvedTab.viewTab === 'documentation' && item.dataset.documentationShortcut;
     const isActiveDocumentationShortcut = isDocumentationShortcut
       && item.dataset.documentationShortcut === (options.documentationDoc || state.activeDocumentationDoc);
 
-    item.classList.toggle('active', isDocumentationShortcut ? isActiveDocumentationShortcut : item.dataset.tab === tabName);
+    item.classList.toggle('active', isDocumentationShortcut ? isActiveDocumentationShortcut : item.dataset.tab === resolvedTab.requestedTab);
   });
   document.querySelectorAll('.tab-view').forEach((item) => item.classList.remove('active'));
   targetView.classList.add('active');
 
-  if (tabName === 'documentation') {
+  if (resolvedTab.viewTab === 'documentation') {
     await loadDocumentation(options.documentationDoc || state.activeDocumentationDoc);
   }
 
-  if (tabName === 'progress') {
-    activateProgressSubtab(state.progressSubtab);
+  if (resolvedTab.viewTab === 'progress') {
+    activateProgressSubtab(resolvedTab.progressPanel || state.progressSubtab);
     renderProgress();
   }
 
   if (updateUrl) {
-    updateTabUrl(tabName);
+    updateTabUrl(resolvedTab.requestedTab);
   }
 
   if (scroll) {
@@ -8106,6 +8747,17 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('click', (event) => {
+  const panelCollapseButton = event.target.closest('[data-panel-collapse-toggle]');
+
+  if (panelCollapseButton) {
+    const panel = panelCollapseButton.closest('.panel');
+
+    if (panel) {
+      togglePanelCollapsed(panel);
+      return;
+    }
+  }
+
   if (!sideNav?.classList.contains('menu-open')) {
     return;
   }
@@ -8171,6 +8823,23 @@ progressExerciseSelect?.addEventListener('change', () => {
 
 progressExercisePeriodFilter?.addEventListener('change', () => {
   state.progressExercisePeriodFilter = progressExercisePeriodFilter.value;
+  renderProgress();
+});
+
+templateCompareCode?.addEventListener('change', () => {
+  state.selectedTemplateCompareCode = templateCompareCode.value;
+  state.selectedTemplateCompareFromId = '';
+  state.selectedTemplateCompareToId = '';
+  renderProgress();
+});
+
+templateCompareFrom?.addEventListener('change', () => {
+  state.selectedTemplateCompareFromId = templateCompareFrom.value;
+  renderProgress();
+});
+
+templateCompareTo?.addEventListener('change', () => {
+  state.selectedTemplateCompareToId = templateCompareTo.value;
   renderProgress();
 });
 
@@ -8663,6 +9332,8 @@ resetForm();
 resetWorkoutTypeForm();
 resetTemplateForm();
 resetBodyMeasurementForm();
+ensurePanelCollapseControls();
+observePanelCollapseControls();
 
 const initialTab = getInitialTabFromLocation();
 

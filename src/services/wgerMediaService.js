@@ -5,7 +5,6 @@ const exerciseSearchAliases = new Map([
   ['flat dumbbell bench press', 'dumbbell bench press'],
   ['reverse-grip dumbbell bench press', 'reverse grip dumbbell bench press'],
   ['flat dumbbell fly', 'dumbbell fly'],
-  ['dumbbell pullover on bench', 'dumbbell pullover'],
   ['dumbbell squeeze press', 'dumbbell squeeze press'],
   ['overhead dumbbell triceps extension', 'dumbbell overhead triceps extension'],
   ['dumbbell skull crusher', 'dumbbell lying triceps extension'],
