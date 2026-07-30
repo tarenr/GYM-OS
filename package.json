@@ -45,7 +45,8 @@
     "maint:recalculate-xp": "node scripts/maintenance/recalculate-xp-for-dates.js",
     "maint:verify-server": "node scripts/maintenance/verify-server-health.js",
     "maint:fix-single-dumbbell": "node scripts/maintenance/fix-single-dumbbell-load-modes.js",
-    "maint:add-front-raise-template-c": "node scripts/maintenance/add-front-raise-to-template-c.js"
+    "maint:add-front-raise-template-c": "node scripts/maintenance/add-front-raise-to-template-c.js",
+    "maint:reclassify-workout-exercise": "node scripts/maintenance/reclassify-workout-exercise-source.js"
   },
   "dependencies": {
     "chart.js": "^4.5.1",
