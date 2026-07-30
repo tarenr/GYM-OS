@@ -60,6 +60,18 @@ function inferLoadMode(exercise = {}) {
     || text.includes('leg raise')
     || text.includes('mountain climber')
   ) return 'bodyweight';
+  if (
+    text.includes('single-arm')
+    || text.includes('concentration curl')
+    || text.includes('russian twist')
+    || text.includes('hip thrust')
+    || text.includes('sumo squat')
+    || text.includes('goblet')
+    || text.includes('kickback')
+    || text.includes('overhead dumbbell triceps extension')
+    || text.includes('kettlebell or dumbbell')
+    || text.includes('dumbbell or kettlebell')
+  ) return 'single_dumbbell';
 
   return 'dumbbell_each';
 }

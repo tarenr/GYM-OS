@@ -43,7 +43,8 @@
     "maint:update-exercise": "node scripts/maintenance/update-exercise-field.js",
     "maint:remove-exercise": "node scripts/maintenance/remove-exercise-everywhere.js",
     "maint:recalculate-xp": "node scripts/maintenance/recalculate-xp-for-dates.js",
-    "maint:verify-server": "node scripts/maintenance/verify-server-health.js"
+    "maint:verify-server": "node scripts/maintenance/verify-server-health.js",
+    "maint:fix-single-dumbbell": "node scripts/maintenance/fix-single-dumbbell-load-modes.js"
   },
   "dependencies": {
     "chart.js": "^4.5.1",

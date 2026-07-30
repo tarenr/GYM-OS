@@ -35,7 +35,7 @@ const templateExerciseSchema = new mongoose.Schema(
     },
     loadMode: {
       type: String,
-      enum: ['dumbbell_each', 'bar_total', 'machine_stack', 'bodyweight', 'non_weight'],
+      enum: ['dumbbell_each', 'single_dumbbell', 'bar_total', 'machine_stack', 'bodyweight', 'non_weight'],
       default: 'dumbbell_each',
       trim: true
     },

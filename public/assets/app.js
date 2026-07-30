@@ -827,7 +827,7 @@ function calculateWorkoutVolume(workout) {
     }
 
     return workoutTotal + (exercise.sets || []).reduce((setTotal, set) => {
-      return setTotal + Number(set.weight || 0) * Number(set.reps || 0);
+      return setTotal + getSetVolume(set, exercise);
     }, 0);
   }, 0);
 }
@@ -837,7 +837,7 @@ function calculateExerciseVolume(exercise) {
     return 0;
   }
 
-  return getValidExerciseSets(exercise).reduce((total, set) => total + set.weight * set.reps, 0);
+  return getValidExerciseSets(exercise).reduce((total, set) => total + getSetVolume(set, exercise), 0);
 }
 
 function calculateExerciseMaxWeight(exercise) {
@@ -960,6 +960,14 @@ function getValidExerciseSets(exercise = {}) {
       reps: Number(set.reps || 0)
     }))
     .filter((set) => isValidExerciseSet(set, exercise));
+}
+
+function getLoadModeVolumeMultiplier(loadMode = 'dumbbell_each') {
+  return loadMode === 'dumbbell_each' ? 2 : 1;
+}
+
+function getSetVolume(set = {}, exercise = {}) {
+  return Number(set.weight || 0) * getLoadModeVolumeMultiplier(getExerciseLoadMode(exercise)) * Number(set.reps || 0);
 }
 
 function countValidSets(workout) {
@@ -2087,7 +2095,7 @@ function getTopPersonalRecords(workouts, limit = 5) {
       const validSets = getValidExerciseSets(exercise)
         .map((set) => ({
           ...set,
-          volume: set.weight * set.reps
+          volume: getSetVolume(set, exercise)
         }));
 
       if (!validSets.length) {
@@ -2337,6 +2345,18 @@ function inferExerciseLoadMode(exercise = {}) {
   if (text.includes('barra')) return 'bar_total';
   if (text.includes('maquina') || text.includes('polia')) return 'machine_stack';
   if (text.includes('bodyweight') || text.includes('prancha') || text.includes('abdominal') || text.includes('leg raise')) return 'bodyweight';
+  if (
+    text.includes('single-arm')
+    || text.includes('concentration curl')
+    || text.includes('russian twist')
+    || text.includes('hip thrust')
+    || text.includes('sumo squat')
+    || text.includes('goblet')
+    || text.includes('kickback')
+    || text.includes('overhead dumbbell triceps extension')
+    || text.includes('kettlebell or dumbbell')
+    || text.includes('dumbbell or kettlebell')
+  ) return 'single_dumbbell';
 
   return 'dumbbell_each';
 }
@@ -2357,7 +2377,13 @@ function getLoadModeMeta(loadMode = 'dumbbell_each') {
       label: 'Dumbbells',
       fieldLabel: 'Dumbbell weight',
       unit: 'kg each',
-      hint: 'log one dumbbell weight; the app calculates volume using reps x entered weight.'
+      hint: 'log one dumbbell weight; volume uses entered weight x 2 x reps.'
+    },
+    single_dumbbell: {
+      label: 'Single dumbbell',
+      fieldLabel: 'Total load',
+      unit: 'kg total',
+      hint: 'log the single dumbbell or kettlebell used as the total load.'
     },
     bar_total: {
       label: 'Barbell',
@@ -2391,6 +2417,7 @@ function getLoadModeMeta(loadMode = 'dumbbell_each') {
 function getLoadModeOptionsMarkup(currentValue = 'dumbbell_each') {
   const options = [
     ['dumbbell_each', 'Dumbbells'],
+    ['single_dumbbell', 'Single dumbbell'],
     ['bar_total', 'Barbell'],
     ['machine_stack', 'Machine'],
     ['bodyweight', 'Bodyweight'],
@@ -2440,6 +2467,7 @@ function formatExerciseGroup(exercise = {}) {
 function getExerciseEquipmentDisplay(exercise = {}, loadMode = getExerciseLoadMode(exercise)) {
   const hiddenByLoadMode = {
     dumbbell_each: ['dumbbell', 'dumbbells'],
+    single_dumbbell: ['dumbbell', 'kettlebell', 'dumbbell or kettlebell', 'kettlebell or dumbbell'],
     bodyweight: ['bodyweight'],
     bar_total: ['barbell', 'bar', 'short-bar', 'barra', 'barra curta'],
     machine_stack: ['machine', 'cable'],
@@ -4998,7 +5026,7 @@ function summarizeTemplateExercise(exercise) {
   const setCount = validSets.length;
   const totalWeight = validSets.reduce((total, set) => total + set.weight, 0);
   const totalReps = validSets.reduce((total, set) => total + set.reps, 0);
-  const volume = validSets.reduce((total, set) => total + set.weight * set.reps, 0);
+  const volume = validSets.reduce((total, set) => total + getSetVolume(set, exercise || {}), 0);
 
   return {
     name: exercise?.name || 'Exercise',

@@ -29,8 +29,9 @@ async function writeWorkouts(workouts) {
 
 function calculateTotalVolume(workout) {
   return workout.exercises.reduce((workoutTotal, exercise) => {
+    const multiplier = exercise.loadMode === 'dumbbell_each' ? 2 : 1;
     const exerciseTotal = exercise.sets.reduce((setTotal, set) => {
-      return setTotal + Number(set.weight || 0) * Number(set.reps || 0);
+      return setTotal + Number(set.weight || 0) * multiplier * Number(set.reps || 0);
     }, 0);
 
     return workoutTotal + exerciseTotal;
