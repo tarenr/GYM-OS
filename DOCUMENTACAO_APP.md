@@ -689,7 +689,8 @@ npm run missions:sync
 5. Panturrilha em pe com halteres - 4x 15 a 25
 6. Desenvolvimento com halteres - 4x 8 a 12
 7. Elevacao lateral com halteres - 3x 12 a 15
-8. Encolhimento com halteres - 3x 12 a 15
+8. Elevacao frontal com halteres - 3x 12 a 15
+9. Encolhimento com halteres - 3x 12 a 15
 ```
 
 ## Paginas e Menus
