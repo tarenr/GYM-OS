@@ -183,6 +183,8 @@ const historyMuscleFilter = document.querySelector('#history-muscle-filter');
 const historyPeriodFilter = document.querySelector('#history-period-filter');
 const historyListHeader = document.querySelector('#history-list-header');
 const historyPagination = document.querySelector('#history-pagination');
+const historyReviewCount = document.querySelector('#history-review-count');
+const historyReviewList = document.querySelector('#history-review-list');
 const exportHistoryButton = document.querySelector('#export-history');
 const templateSubtitle = document.querySelector('#template-subtitle');
 const exerciseSubtitle = document.querySelector('#exercise-subtitle');
@@ -6920,6 +6922,174 @@ function renderHistoryCard(workout) {
   `;
 }
 
+function getExerciseReviewStats(exercise = {}) {
+  const validSets = getValidExerciseSets(exercise);
+  const validRounds = (exercise.rounds || [])
+    .filter((round) => round.completed !== false && Number(round.durationSeconds || 0) > 0);
+  const volume = calculateExerciseVolume(exercise);
+  const isTimedBodyweight = isTimedBodyweightExercise(exercise);
+  const isBodyweight = isBodyweightExercise(exercise);
+  const avgReps = validSets.length
+    ? validSets.reduce((total, set) => total + set.reps, 0) / validSets.length
+    : 0;
+  const avgWeight = validSets.length
+    ? validSets.reduce((total, set) => total + set.weight, 0) / validSets.length
+    : 0;
+  const avgRoundSeconds = validRounds.length
+    ? validRounds.reduce((total, round) => total + Number(round.durationSeconds || 0), 0) / validRounds.length
+    : 0;
+  const avgRoundReps = validRounds.length
+    ? validRounds.reduce((total, round) => total + Number(round.reps || 0), 0) / validRounds.length
+    : 0;
+
+  if (exercise.skipped) {
+    return {
+      className: 'skipped',
+      status: 'Not done',
+      primary: '-',
+      secondary: 'Skipped in this session',
+      volume: '-'
+    };
+  }
+
+  if (validRounds.length) {
+    return {
+      className: 'rounds',
+      status: `${validRounds.length} rounds`,
+      primary: `${Math.round(avgRoundSeconds)}s avg`,
+      secondary: avgRoundReps ? `${formatNumber(avgRoundReps)} reps avg` : 'Timed rounds',
+      volume: volume ? `${formatCompactNumber(volume)} kg` : 'Rounds'
+    };
+  }
+
+  if (validSets.length) {
+    return {
+      className: isTimedBodyweight ? 'timed' : 'done',
+      status: `${validSets.length} sets`,
+      primary: isTimedBodyweight ? `${Math.round(avgReps)}s avg` : `${formatNumber(avgReps)} reps avg`,
+      secondary: isTimedBodyweight
+        ? 'Bodyweight time'
+        : isBodyweight
+          ? 'Bodyweight'
+          : `${formatLoadModeWeight(avgWeight, getExerciseLoadMode(exercise))} avg`,
+      volume: volume ? `${formatCompactNumber(volume)} kg` : (isBodyweight ? 'Bodyweight' : '-')
+    };
+  }
+
+  return {
+    className: 'empty',
+    status: 'No valid logs',
+    primary: '-',
+    secondary: 'No valid reps or time',
+    volume: '-'
+  };
+}
+
+function renderWorkoutReviewExercise(exercise) {
+  const stats = getExerciseReviewStats(exercise);
+  const sourceLabel = exercise.source === 'extra'
+    ? '<span class="review-mini-tag extra">EXTRA</span>'
+    : exercise.source === 'substitution'
+      ? '<span class="review-mini-tag substitution">SUB</span>'
+      : '';
+
+  return `
+    <article class="review-exercise ${escapeHtml(stats.className)}">
+      <div class="review-exercise-name">
+        <strong>${escapeHtml(exercise.name || 'Exercise')}</strong>
+        <span>${escapeHtml(exercise.muscleGroup || 'General')}${sourceLabel}</span>
+      </div>
+      <div>
+        <span>Status</span>
+        <strong>${escapeHtml(stats.status)}</strong>
+      </div>
+      <div>
+        <span>${stats.className === 'timed' ? 'Time' : 'Reps'}</span>
+        <strong>${escapeHtml(stats.primary)}</strong>
+      </div>
+      <div>
+        <span>Load</span>
+        <strong>${escapeHtml(stats.secondary)}</strong>
+      </div>
+      <div>
+        <span>Volume</span>
+        <strong>${escapeHtml(stats.volume)}</strong>
+      </div>
+    </article>
+  `;
+}
+
+function renderWorkoutReviewCard(workout, index) {
+  const tags = getWorkoutTags(workout);
+  const origin = getWorkoutOriginInfo(workout);
+  const quality = getWorkoutExecutionQuality(workout);
+  const volume = calculateWorkoutVolume(workout);
+  const duration = Number(workout.durationMinutes || 0);
+  const validSets = countValidSets(workout);
+  const validRounds = countValidRounds(workout);
+  const skippedCount = countSkippedExercises(workout);
+  const completedUnits = countCompletedUnits(workout);
+  const rowNumber = String(index + 1).padStart(3, '0');
+  const exerciseRows = (workout.exercises || []).map(renderWorkoutReviewExercise).join('');
+  const openAttribute = index === 0 ? ' open' : '';
+
+  return `
+    <details class="workout-review-card"${openAttribute}>
+      <summary>
+        <div class="review-session-id">#${rowNumber}</div>
+        <div class="review-session-main">
+          <h3>Workout ${escapeHtml(workout.workoutCode)} - ${escapeHtml(workout.workoutName)}</h3>
+          <p>${escapeHtml(formatWorkoutQualitySummary(quality))} | ${validSets} sets | ${validRounds} rounds${skippedCount && !quality.skippedCount ? ` | ${skippedCount} skipped` : ''}</p>
+          <div class="review-tags"><span class="row-tag ${origin.className}">${origin.label}</span>${renderWorkoutQualityTag(quality)}${renderWorkoutTags(tags)}</div>
+        </div>
+        <div class="review-metrics">
+          <span><strong>${escapeHtml(formatDate(workout.date))}</strong><small>${escapeHtml(formatWeekday(workout.date))}</small></span>
+          <span><strong>${volume ? `${formatCompactNumber(volume)} kg` : `${validRounds} rounds`}</strong><small>volume</small></span>
+          <span><strong>${duration ? `${duration} min` : '-'}</strong><small>duration</small></span>
+          <span><strong>${completedUnits}</strong><small>logs</small></span>
+        </div>
+      </summary>
+      <div class="workout-review-body">
+        <div class="review-exercise-header">
+          <span>Exercise</span>
+          <span>Status</span>
+          <span>Reps / Time</span>
+          <span>Load</span>
+          <span>Volume</span>
+        </div>
+        <div class="review-exercise-list">
+          ${exerciseRows || '<p class="empty-state">No exercises recorded for this workout.</p>'}
+        </div>
+        <div class="review-card-footer">
+          <p>${workout.notes ? `// ${escapeHtml(workout.notes)}` : '// No notes logged.'}</p>
+          <div class="history-actions">
+            <button class="button button-secondary compact-action" type="button" data-action="details" data-id="${workout._id}">VIEW</button>
+            <button class="button button-ghost compact-action" type="button" data-action="edit" data-id="${workout._id}">EDIT</button>
+            <button class="button button-ghost compact-action danger-action" type="button" data-action="delete" data-id="${workout._id}">DELETE</button>
+          </div>
+        </div>
+      </div>
+    </details>
+  `;
+}
+
+function renderWorkoutReviewPanel(pageWorkouts, totalWorkouts) {
+  if (!historyReviewList || !historyReviewCount) {
+    return;
+  }
+
+  historyReviewCount.textContent = `${totalWorkouts} SESSIONS`;
+
+  if (!pageWorkouts.length) {
+    historyReviewList.innerHTML = '<p class="empty-state">No workouts found for review.</p>';
+    return;
+  }
+
+  historyReviewList.innerHTML = pageWorkouts
+    .map(renderWorkoutReviewCard)
+    .join('');
+}
+
 function renderHistoryPagination(totalItems) {
   const pageCount = Math.max(1, Math.ceil(totalItems / state.historyPageSize));
 
@@ -7143,6 +7313,7 @@ function renderHistory() {
 
   renderHistoryStats(filteredWorkouts);
   renderHistoryPagination(filteredWorkouts.length);
+  renderWorkoutReviewPanel(pageWorkouts, filteredWorkouts.length);
   historyList.className = state.historyView === 'cards' ? 'history-list card-grid' : 'history-list workout-list';
   historyListHeader.hidden = state.historyView === 'cards';
 
@@ -9049,6 +9220,7 @@ async function handleWorkoutAction(event) {
 }
 
 historyList.addEventListener('click', handleWorkoutAction);
+historyReviewList.addEventListener('click', handleWorkoutAction);
 dashboardHistory.addEventListener('click', handleWorkoutAction);
 
 document.addEventListener('mouseover', (event) => {
