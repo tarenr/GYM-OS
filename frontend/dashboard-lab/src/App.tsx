@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { type CSSProperties, useEffect, useMemo, useState } from 'react';
 import { Bar } from '../../../src/components/charts/bar';
 import { BarChart } from '../../../src/components/charts/bar-chart';
 import { Grid } from '../../../src/components/charts/grid';
@@ -373,35 +373,9 @@ function useDashboardData() {
   return { data, loading, error };
 }
 
-function Panel({
-  icon,
-  title,
-  badge,
-  children,
-  className = ''
-}: {
-  icon: string;
-  title: string;
-  badge?: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <article className={`lab-panel ${className}`}>
-      <div className="lab-panel-heading">
-        <div>
-          <span className="panel-icon">{icon}</span>
-          <h2>{title}</h2>
-        </div>
-        {badge ? <strong>{badge}</strong> : null}
-      </div>
-      {children}
-    </article>
-  );
-}
-
 export default function App() {
   const { data, loading, error } = useDashboardData();
+  const [activeSubtab, setActiveSubtab] = useState<'operations' | 'analytics' | 'evolution' | 'logs'>('operations');
   const dashboard = useMemo(() => {
     const workouts = [...data.workouts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     const completedWorkouts = workouts.filter(isCompletedWorkout);
@@ -492,307 +466,660 @@ export default function App() {
       className: key === toDateKey(new Date()) ? 'today' : activeDays.has(key) ? 'done' : key > toDateKey(new Date()) ? 'future' : 'missed'
     };
   });
+  const missionReward = dashboard.todayMission?.restDay
+    ? 0
+    : (dashboard.todayMission?.blocks || []).reduce(
+        (total, block) => total + Number(block.xpReward || 0),
+        Number(dashboard.todayMission?.bonusXp || 0)
+      );
+  const activeAverageVolume = dashboard.trend.filter((week) => week.volume > 0).length
+    ? Math.round(totalTrendVolume / dashboard.trend.filter((week) => week.volume > 0).length)
+    : 0;
+  const recentWorkouts = dashboard.completedWorkouts.slice(0, 4);
+  const weeklyQuality = dashboard.weeklyWorkouts.length
+    ? Math.round(dashboard.weeklyWorkouts.reduce((total, workout) => total + getQuality(workout), 0) / dashboard.weeklyWorkouts.length)
+    : 0;
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <div className="dashboard-lab-shell">
-        <header className="fighter-card-lab">
-          <div>
-            <span className="brand-mark">&lt;GO&gt;</span>
+    <>
+      <div className="scanlines" aria-hidden="true"></div>
+      <div className="app-layout dashboard-lab-layout">
+        <aside className="side-nav" aria-label="Main menu">
+          <div className="side-brand">
+            <span>&lt;GO&gt;</span>
             <div>
-              <h1>GYM<span>-OS</span></h1>
-              <p>PLAYER: TAREN / {dashboard.rank.short} | {dashboard.journey.label} / DASHBOARD LAB</p>
+              <strong>GYM-OS</strong>
+              <small>DASHBOARD LAB // BKLIT</small>
             </div>
           </div>
-          <aside>
-            <div className="streak-box">
-              <span>Streak</span>
-              <strong>{dashboard.streak}</strong>
-              <small>days</small>
+
+          <nav className="side-menu" id="side-menu">
+            <a className="nav-link active" href="/dashboard-lab/">Dashboard Lab</a>
+            <a className="nav-link" href="/">Current App</a>
+            <div className="nav-group">
+              <span>Experiment</span>
+              <button className="nav-link nav-subitem" type="button">Same UI</button>
+              <button className="nav-link nav-subitem" type="button">Bklit charts</button>
             </div>
-            <div className="level-box" style={{ '--level-progress': `${dashboard.level.progress}%` } as React.CSSProperties}>
-              <strong>{dashboard.level.level}</strong>
-              <span>LV.</span>
-            </div>
-            <a href="/">Back to app</a>
-          </aside>
-        </header>
+          </nav>
+        </aside>
 
-        {error ? <p className="status-banner error">{error}</p> : null}
-        {loading ? <p className="status-banner">Loading live GYM-OS data...</p> : null}
-
-        <section className="hud-grid">
-          {[
-            ['DAY', 'JOURNEY DAY', String(dashboard.journey.day), `${dashboard.journey.week} week | ${dashboard.journey.annualPercent}% year`, 'green'],
-            ['XP', 'XP LEVEL', `LV. ${dashboard.level.level}`, `${dashboard.level.currentXp} / ${dashboard.level.nextLevelXp} XP`, 'orange'],
-            ['OK', 'TOTAL WORKOUTS', String(dashboard.completedWorkouts.length), `${dashboard.weeklyWorkouts.length} this week`, 'green'],
-            ['KG', 'VOLUME TOTAL', formatCompact(dashboard.totalVolume), `${formatCompact(dashboard.weeklyVolume)} kg week`, 'blue'],
-            ['PR', 'PRS THIS MONTH', String(dashboard.monthlyPrs), 'current month', 'red']
-          ].map(([icon, label, value, note, tone]) => (
-            <article className={`hud-card ${tone}`} key={label}>
-              <div><span>{icon}</span><em>{note}</em></div>
-              <small>{label}</small>
-              <strong>{value}</strong>
-              {label === 'XP LEVEL' ? <i><b style={{ width: `${dashboard.level.progress}%` }} /></i> : null}
-            </article>
-          ))}
-        </section>
-
-        <nav className="lab-subnav" aria-label="Dashboard sections">
-          <a href="#operations">OP Operations & Today</a>
-          <a href="#analytics">AN Performance & Metrics</a>
-          <a href="#evolution">EV Evolution & Progress</a>
-          <a href="#logs">LG Activity Logs & Feed</a>
-        </nav>
-
-        <section className="dashboard-section" id="operations">
-          <Panel icon="!" title="CAMPAIGN_TODAY.exe" badge={dashboard.todayWorkout ? 'DONE' : dashboard.todayMission?.restDay ? 'RECOVERY' : 'CAMPAIGN'} className="mission-panel">
-            <div className="mission-command">
-              <h3>{dashboard.todayMission?.missionName || 'Campaign not configured'}</h3>
-              <p>
-                {dashboard.todayMission?.restDay
-                  ? 'Recovery scheduled. The Academy sequence stays preserved.'
-                  : dashboard.todayWorkout
-                    ? `${dashboard.todayWorkout.workoutCode} completed with ${getValidSets(dashboard.todayWorkout)} valid sets.`
-                    : `${dashboard.todayMission?.intensity || 'Today protocol is waiting for execution.'}`}
-              </p>
-              <ul>
-                {(dashboard.todayMission?.blocks || []).map((block) => (
-                  <li className={dashboard.todayWorkout || dashboard.todayMission?.restDay ? 'done' : 'pending'} key={`${block.type}-${block.workoutCode}`}>
-                    {block.type.toUpperCase()}: {block.workoutCode} {block.workoutName}
-                  </li>
-                ))}
-              </ul>
-              <div className="reward-box">
-                <span>REWARD</span>
-                <strong>{dashboard.todayMission?.restDay ? '+0 XP' : `+${(dashboard.todayMission?.blocks || []).reduce((total, block) => total + Number(block.xpReward || 0), Number(dashboard.todayMission?.bonusXp || 0))} XP`}</strong>
+        <main className="app-shell">
+          <header className="fighter-card">
+            <div className="fc-left">
+              <div className="fc-mark">&lt;GO&gt;</div>
+              <div className="fc-title">
+                <h1>GYM<span>-OS</span></h1>
+                <p>PLAYER: TAREN &nbsp;/&nbsp; {dashboard.rank.short} | {dashboard.journey.label} &nbsp;/&nbsp; DASHBOARD LAB</p>
               </div>
             </div>
-          </Panel>
-
-          <Panel icon="#" title="WEEKLY_SCHEDULE.sys" badge="CURRENT WEEK" className="schedule-panel">
-            <div className="schedule-grid">
-              {dashboard.schedule.map((item) => (
-                <article className={`schedule-day ${item.state}`} key={item.dateKey}>
-                  <span>{item.mission.dayOfWeek.slice(0, 3)}</span>
-                  <strong>{item.date.getDate()}</strong>
-                  <div>{item.code}</div>
-                  <small>{item.mission.restDay ? 'Rest' : item.workout ? '1 of 1 blocks' : '0 of 1 blocks'}</small>
-                </article>
-              ))}
-            </div>
-            <div className="weekly-focus">
-              <div>
-                <span>WEEK_OBJECTIVE</span>
-                <strong>{dashboard.completedWeekBlocks}/{dashboard.requiredWeekBlocks} planned workouts</strong>
-                <p>{weekPercent}% of weekly campaign | {dashboard.requiredWeekBlocks - dashboard.completedWeekBlocks} open blocks</p>
+            <div className="fc-right">
+              <div className="streak">
+                <div className="eyebrow">Streak</div>
+                <div className="num"><span>{dashboard.streak}</span><small>DIA</small></div>
               </div>
-              <i><b style={{ width: `${weekPercent}%` }} /></i>
-            </div>
-          </Panel>
-
-          <Panel icon="OS" title="JOURNEY_COMMAND.sys" badge={dashboard.journey.label} className="journey-panel">
-            <div className="journey-grid">
-              {[
-                ['YEAR', 'Annual journey', `Day ${dashboard.journey.day}/${annualDays}`, `${dashboard.journey.annualPercent}% of year`],
-                ['WEEK', 'Week', `${dashboard.completedWeekBlocks}/${dashboard.requiredWeekBlocks}`, `${dashboard.requiredWeekBlocks - dashboard.completedWeekBlocks} open blocks`],
-                ['QUAL', 'Execution', `${dashboard.weeklyWorkouts.length ? Math.round(dashboard.weeklyWorkouts.reduce((total, workout) => total + getQuality(workout), 0) / dashboard.weeklyWorkouts.length) : 0}%`, 'weekly average'],
-                ['CYCLE', 'Current cycle', `C${dashboard.journey.cycle}`, `${formatCompact(dashboard.weeklyVolume)} kg week`],
-                ['MODE', 'Journey health', dashboard.completedWeekBlocks ? 'On pace' : 'Open', `${formatCompact(dashboard.totalXp)} XP total`],
-                ['BODY', 'Body evolution', dashboard.latestBody?.weightKg ? `${dashboard.latestBody.weightKg} kg` : '-', dashboard.latestBody ? formatDate(dashboard.latestBody.measuredAt) : 'log first measurement']
-              ].map(([code, label, value, detail]) => (
-                <article key={code}>
-                  <span>{code}</span>
-                  <small>{label}</small>
-                  <strong>{value}</strong>
-                  <p>{detail}</p>
-                </article>
-              ))}
-            </div>
-          </Panel>
-
-          <Panel icon="~" title="ACTIVITY_HEATMAP.sys" badge="LAST 28 DAYS" className="heatmap-panel">
-            <div className="heatmap-grid">
-              {heatmapDays.map((day) => (
-                <span className={day.className} key={day.key} title={day.key}>{day.label}</span>
-              ))}
-            </div>
-            <div className="heatmap-legend">
-              <span><i className="done" /> OK</span>
-              <span><i className="today" /> Today</span>
-              <span><i className="missed" /> Missed</span>
-              <span><i className="future" /> Future</span>
-            </div>
-          </Panel>
-        </section>
-
-        <section className="dashboard-section analytics-layout" id="analytics">
-          <Panel icon="*" title="PLAYER_STATS.json" badge={`LV. ${dashboard.level.level}`} className="player-panel">
-            <div className="player-card-lab">
-              <div className="level-disc" style={{ '--level-progress': `${dashboard.level.progress}%` } as React.CSSProperties}>
-                <strong>{dashboard.level.level}</strong>
+              <div className="lvl-badge">
+                <svg viewBox="0 0 74 74">
+                  <circle cx="37" cy="37" r="32" fill="none" stroke="var(--border)" strokeWidth="4" />
+                  <circle
+                    cx="37"
+                    cy="37"
+                    r="32"
+                    fill="none"
+                    stroke="var(--phosphor)"
+                    strokeWidth="4"
+                    strokeDasharray="201.1"
+                    strokeDashoffset={201.1 * (1 - dashboard.level.progress / 100)}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <b>{dashboard.level.level}</b><span>LV.</span>
               </div>
-              <div>
-                <span>Current Rank</span>
-                <h3>{dashboard.rank.name}</h3>
-                <i><b style={{ width: `${dashboard.level.progress}%` }} /></i>
-                <p>{dashboard.level.currentXp} / {dashboard.level.nextLevelXp} XP | {dashboard.level.progress}% until next level</p>
-                <div className="player-chip-grid">
-                  <article><span>Streak</span><strong>{dashboard.streak}d</strong><p>current streak</p></article>
-                  <article><span>Week</span><strong>{dashboard.weeklyWorkouts.length}/6</strong><p>valid workouts</p></article>
-                  <article><span>Volume</span><strong>{formatCompact(dashboard.weeklyVolume)} kg</strong><p>weekly load</p></article>
-                  <article><span>XP Total</span><strong>{formatCompact(dashboard.totalXp)}</strong><p>official season</p></article>
+            </div>
+          </header>
+
+          {error ? <p className="empty-state dashboard-lab-status">{error}</p> : null}
+          {loading ? <p className="empty-state dashboard-lab-status">Loading live GYM-OS data...</p> : null}
+
+          <section className="tab-view active" id="view-dashboard">
+            <section className="dashboard-grid">
+              <article className="stat-card stat-green">
+                <div className="stat-top">
+                  <span className="stat-icon">DAY</span>
+                  <span className="stat-trend trend-up">{dashboard.journey.label}</span>
                 </div>
-              </div>
-            </div>
-          </Panel>
+                <span className="stat-label">JOURNEY DAY</span>
+                <strong className="stat-value">{dashboard.journey.day}</strong>
+                <span className="stat-note">Season 2026 | week {dashboard.journey.week}</span>
+              </article>
+              <article className="stat-card stat-orange">
+                <div className="stat-top">
+                  <span className="stat-icon">XP</span>
+                  <span className="stat-trend trend-up">{dashboard.rank.short}</span>
+                </div>
+                <span className="stat-label">XP LEVEL</span>
+                <strong className="stat-value">LV. {dashboard.level.level}</strong>
+                <span className="rank-name">{dashboard.rank.name}</span>
+                <div className="xp-bar" aria-label="XP progress">
+                  <span style={{ width: `${dashboard.level.progress}%` }}></span>
+                </div>
+                <span className="stat-note">{dashboard.level.currentXp} / {dashboard.level.nextLevelXp} XP</span>
+              </article>
+              <article className="stat-card stat-green">
+                <div className="stat-top">
+                  <span className="stat-icon">OK</span>
+                  <span className="stat-trend trend-up">+{dashboard.weeklyWorkouts.length} week</span>
+                </div>
+                <span className="stat-label">TOTAL WORKOUTS</span>
+                <strong className="stat-value">{dashboard.completedWorkouts.length}</strong>
+                <span className="stat-note">protocols completed</span>
+              </article>
+              <article className="stat-card stat-blue">
+                <div className="stat-top">
+                  <span className="stat-icon">KG</span>
+                  <span className="stat-trend trend-up">+{formatCompact(dashboard.weeklyVolume)} kg week</span>
+                </div>
+                <span className="stat-label">VOLUME TOTAL</span>
+                <strong className="stat-value">{formatCompact(dashboard.totalVolume)}</strong>
+                <span className="stat-note">accumulated load</span>
+              </article>
+              <article className="stat-card stat-red">
+                <div className="stat-top">
+                  <span className="stat-icon">PR</span>
+                  <span className="stat-trend trend-up">current month</span>
+                </div>
+                <span className="stat-label">PRS NO MES</span>
+                <strong className="stat-value">{dashboard.monthlyPrs}</strong>
+                <span className="stat-note">novos recordes</span>
+              </article>
+            </section>
 
-          <Panel icon="^" title="TOP_PRS.json" badge="TOP 5" className="pr-panel">
-            <div className="pr-list">
-              {dashboard.topRecords.length ? dashboard.topRecords.map((record, index) => (
-                <article key={record.name}>
-                  <span>#{index + 1}</span>
-                  <div>
-                    <h3>{record.name}</h3>
-                    <p>{record.muscle} | Workout {record.code} | {formatDate(record.date)}</p>
-                  </div>
-                  <strong>{record.weight} kg <small>{record.reps} reps</small></strong>
-                </article>
-              )) : <p className="empty-state">Log sets with load to map your PRs.</p>}
-            </div>
-          </Panel>
-
-          <Panel icon="~" title="VOLUME_TREND.chart" badge="12 WEEKS" className="volume-panel">
-            <div className="lab-chart-frame tall">
-              <LineChart data={dashboard.trend} margin={{ top: 28, right: 24, bottom: 42, left: 36 }}>
-                <Grid horizontal vertical stroke="rgba(99, 255, 154, 0.14)" />
-                <Line dataKey="volume" stroke="var(--chart-line-primary)" strokeWidth={3} />
-                <Line dataKey="xp" stroke="var(--chart-line-secondary)" strokeWidth={2} yAxisId="xp" />
-                <XAxis />
-                <ChartTooltip />
-              </LineChart>
-            </div>
-            <div className="metric-strip">
-              <article><span>Total 12 weeks</span><strong>{formatCompact(totalTrendVolume)} kg</strong><small>{dashboard.trend.filter((week) => week.volume > 0).length} active weeks</small></article>
-              <article><span>Best week</span><strong>{bestWeek?.label || '-'}</strong><small>{formatCompact(bestWeek?.volume || 0)} kg</small></article>
-              <article><span>Current week</span><strong>{formatCompact(lastWeek?.volume || 0)} kg</strong><small>{lastWeek?.workouts || 0} workouts</small></article>
-            </div>
-          </Panel>
-
-          <Panel icon="%" title="MUSCLE_DISTRIBUTION.data" badge="BY VOLUME" className="muscle-panel">
-            <div className="lab-chart-frame compact">
-              <BarChart data={dashboard.muscleSplit} xDataKey="name" margin={{ top: 26, right: 18, bottom: 48, left: 30 }} barGap={0.26}>
-                <Grid horizontal stroke="rgba(38, 217, 255, 0.13)" />
-                <Bar dataKey="volume" fill="var(--chart-line-secondary)" lineCap="round" />
-                <BarXAxis />
-                <ChartTooltip />
-              </BarChart>
-            </div>
-            <div className="muscle-list">
-              {dashboard.muscleSplit.map((item) => {
-                const percent = Math.round((item.volume / Math.max(1, muscleTotal)) * 100);
-                return (
-                  <article key={item.name}>
-                    <div><span>{item.name}</span><strong>{percent}%</strong></div>
-                    <small>{formatCompact(item.volume)} kg of {formatCompact(muscleTotal)} kg</small>
-                    <i><b style={{ width: `${percent}%` }} /></i>
-                  </article>
-                );
-              })}
-            </div>
-          </Panel>
-        </section>
-
-        <section className="dashboard-section evolution-layout" id="evolution">
-          <Panel icon="S" title="SEASON_PROGRESS.sys" badge={dashboard.journey.label}>
-            <div className="season-grid">
+            <nav className="dashboard-subnav" aria-label="Dashboard submenu">
               {[
-                ['Annual journey', `${dashboard.journey.annualPercent}%`, dashboard.journey.annualPercent, `Week ${dashboard.journey.week}`],
-                ['Current week', `${weekPercent}%`, weekPercent, `${dashboard.completedWeekBlocks}/${dashboard.requiredWeekBlocks} blocks`],
-                ['XP progress', `${dashboard.level.progress}%`, dashboard.level.progress, `LV. ${dashboard.level.level}`],
-                ['Body log', `${data.bodyMeasurements.length}`, Math.min(100, data.bodyMeasurements.length * 20), 'measurements']
-              ].map(([label, value, percent, detail]) => (
-                <article key={String(label)}>
-                  <div><span>{label}</span><strong>{value}</strong></div>
-                  <i><b style={{ width: `${percent}%` }} /></i>
-                  <p>{detail}</p>
-                </article>
+                ['operations', 'OP', 'Operations & Today'],
+                ['analytics', 'AN', 'Performance & Metrics'],
+                ['evolution', 'EV', 'Evolution & Progress'],
+                ['logs', 'LG', 'Activity Logs & Feed']
+              ].map(([key, icon, label]) => (
+                <button
+                  className={`dash-subnav-btn ${activeSubtab === key ? 'active' : ''}`}
+                  type="button"
+                  data-dash-tab={key}
+                  key={key}
+                  onClick={() => setActiveSubtab(key as typeof activeSubtab)}
+                >
+                  <span className="dash-subnav-icon">{icon}</span> {label}
+                </button>
               ))}
-            </div>
-          </Panel>
+            </nav>
 
-          <Panel icon="KG" title="BODY_PROGRESS.sys" badge={`${data.bodyMeasurements.length} REG`}>
-            <div className="body-grid">
-              <article><span>Current weight</span><strong>{dashboard.latestBody?.weightKg ? `${dashboard.latestBody.weightKg} kg` : '-'}</strong><p>{dashboard.weightDelta <= 0 ? '' : '+'}{dashboard.weightDelta.toFixed(1)} kg vs first log</p></article>
-              <article><span>Waist</span><strong>{dashboard.latestBody?.measurementsCm?.waist ? `${dashboard.latestBody.measurementsCm.waist} cm` : '-'}</strong><p>{dashboard.waistDelta <= 0 ? '' : '+'}{dashboard.waistDelta.toFixed(1)} cm vs first log</p></article>
-              <article><span>Latest measure</span><strong>{dashboard.latestBody ? formatDate(dashboard.latestBody.measuredAt) : '-'}</strong><p>next measurement enables trend comparison</p></article>
-            </div>
-          </Panel>
-
-          <Panel icon="TPL" title="TEMPLATE_STATUS.sys" badge="A/B/C">
-            <div className="template-grid">
-              {dashboard.templateSummary.map((template) => (
-                <article key={template.code}>
-                  <span>Workout {template.code}</span>
-                  <strong>{template.name}</strong>
-                  <p>{template.exercises} exercises | {template.categories.join(' + ')}</p>
-                </article>
-              ))}
-            </div>
-          </Panel>
-        </section>
-
-        <section className="dashboard-section logs-layout" id="logs">
-          <Panel icon=">" title="ACTIVITY_FEED.stream" badge="RECENT" className="feed-panel">
-            <div className="feed-list">
-              {dashboard.completedWorkouts.slice(0, 8).map((workout) => (
-                <article key={workout._id}>
-                  <span>{workout.missionSubstitution ? 'SWAP' : 'MISSION'}</span>
-                  <div>
-                    <h3>{workout.missionSubstitution ? 'Workout replaced mission' : 'Mission completed'}</h3>
-                    <p>Workout {workout.workoutCode} - {workout.workoutName}</p>
-                    <small>{getQuality(workout)}% quality | {getValidSets(workout)} sets | {formatCompact(getWorkoutVolume(workout))} kg</small>
+            <div className={`dashboard-subtab ${activeSubtab === 'operations' ? 'active' : ''}`} id="dash-subtab-operations">
+              <section className="content-grid operations-grid">
+                <article className="panel mission-panel hero-mission-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">!</span>
+                      <h2>CAMPAIGN_TODAY.exe</h2>
+                    </div>
+                    <span className="panel-badge">{dashboard.todayWorkout ? 'DONE' : dashboard.todayMission?.restDay ? 'RECOVERY' : 'CAMPAIGN'}</span>
                   </div>
-                  <time>{formatDate(workout.date)}</time>
-                </article>
-              ))}
-            </div>
-          </Panel>
 
-          <Panel icon="#" title="LOG_HISTORY.db" badge="LAST 4" className="history-panel">
-            <div className="history-list">
-              {dashboard.completedWorkouts.slice(0, 4).map((workout) => (
-                <article key={workout._id}>
-                  <div><span>{workout.missionSubstitution ? 'SWAP' : 'MISSION'}</span><time>{formatDate(workout.date)}</time></div>
-                  <h3>Workout {workout.workoutCode}</h3>
-                  <p>{workout.workoutName}</p>
-                  <footer><strong>{formatCompact(getWorkoutVolume(workout))} kg</strong><small>{getValidSets(workout)} sets | {Number(workout.durationMinutes || 0) || 'logs'} min</small></footer>
-                </article>
-              ))}
-            </div>
-          </Panel>
-
-          <Panel icon="*" title="WEEKLY_MISSIONS.sys" badge={`${dashboard.completedWeekBlocks}/${dashboard.requiredWeekBlocks}`}>
-            <div className="weekly-missions">
-              {dashboard.schedule.filter((item) => !item.mission.restDay).map((item) => (
-                <article className={item.workout ? 'done' : 'pending'} key={item.dateKey}>
-                  <div>
-                    <h3>Complete Workout {item.code}</h3>
-                    <p>{item.mission.missionName} | {formatDate(item.date)}</p>
-                    <i><b style={{ width: item.workout ? '100%' : '0%' }} /></i>
+                  <div className="mission-body">
+                    <h3>{dashboard.todayMission?.missionName || 'Campaign not configured'}</h3>
+                    <p>
+                      {dashboard.todayMission?.restDay
+                        ? 'Recovery scheduled. The Academy sequence stays preserved.'
+                        : dashboard.todayWorkout
+                          ? `${dashboard.todayWorkout.workoutCode} completed with ${getValidSets(dashboard.todayWorkout)} valid sets.`
+                          : dashboard.todayMission?.intensity || 'Today protocol is waiting for execution.'}
+                    </p>
+                    <ul className="mission-list">
+                      {(dashboard.todayMission?.blocks || []).map((block, index) => (
+                        <li className={dashboard.todayWorkout || dashboard.todayMission?.restDay ? 'done' : 'pending'} key={`${block.type}-${index}`}>
+                          {block.type === 'recovery' ? 'Recovery scheduled' : `${block.type}: ${block.workoutCode} ${block.workoutName}`}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mission-reward">
+                      <span>REWARD</span>
+                      <strong>+{missionReward} XP{dashboard.todayWorkout ? ' OK' : ''}</strong>
+                    </div>
+                    <div className="weekly-strip-header">
+                      <span>WEEK_CAMPAIGN</span>
+                      <strong>{dashboard.completedWeekBlocks}/{dashboard.requiredWeekBlocks}</strong>
+                    </div>
+                    <div className="weekly-map">
+                      {dashboard.schedule.map((item) => (
+                        <button
+                          className={`week-node ${item.state} ${item.dateKey === toDateKey(new Date()) ? 'is-today selected' : ''}`}
+                          type="button"
+                          key={item.dateKey}
+                          title={`${item.mission.missionName} | ${formatDate(item.date)}`}
+                        >
+                          <span>{item.mission.dayOfWeek.slice(0, 3)}</span>
+                          <strong>{item.code}</strong>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <strong>{item.workout ? 'OK' : '+180 XP'}</strong>
                 </article>
-              ))}
-            </div>
-          </Panel>
-        </section>
 
-        <footer className="terminal-footer-lab">
-          <p><span>user@gym-os:~$</span> ./commit_gains --force --all</p>
-          <p>[OK] Dashboard Lab rendered with Bklit charts. Current dashboard remains untouched.</p>
-        </footer>
+                <article className="panel schedule-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">#</span>
+                      <h2>WEEKLY_SCHEDULE.sys</h2>
+                    </div>
+                    <span className="panel-badge">CURRENT WEEK</span>
+                  </div>
+                  <div className="schedule-grid">
+                    {dashboard.schedule.map((item) => (
+                      <article className={`schedule-day ${item.state}`} key={item.dateKey}>
+                        <span className="schedule-day-name">{item.mission.dayOfWeek.slice(0, 3)}</span>
+                        <strong>{item.date.getDate()}</strong>
+                        <div className="schedule-code">{item.code}</div>
+                        <small>{item.mission.restDay ? 'Rest' : item.workout ? '1 of 1 blocks' : '0 of 1 blocks'}</small>
+                      </article>
+                    ))}
+                  </div>
+                  <div className="weekly-focus-panel">
+                    <div>
+                      <span>WEEK_OBJECTIVE</span>
+                      <strong>{dashboard.completedWeekBlocks}/{dashboard.requiredWeekBlocks} planned workouts</strong>
+                      <p>{weekPercent}% of weekly campaign | next: {dashboard.schedule.find((item) => !item.mission.restDay && !item.workout)?.code || 'no pending blocks'}</p>
+                    </div>
+                    <div className="weekly-focus-meter" aria-label="Weekly progress">
+                      <span style={{ width: `${weekPercent}%` }}></span>
+                    </div>
+                  </div>
+                  <div className="weekly-summary-grid">
+                    <article className="weekly-summary-card">
+                      <span>SEMANA</span>
+                      <strong>{dashboard.completedWeekBlocks}/{dashboard.requiredWeekBlocks}</strong>
+                      <p>{weekPercent}% of weekly campaign</p>
+                    </article>
+                    <article className="weekly-summary-card">
+                      <span>PROXIMO</span>
+                      <strong>{dashboard.schedule.find((item) => !item.mission.restDay && !item.workout)?.code || 'DESC'}</strong>
+                      <p>pending campaign block</p>
+                    </article>
+                    <article className="weekly-summary-card">
+                      <span>STATUS</span>
+                      <strong>{dashboard.requiredWeekBlocks - dashboard.completedWeekBlocks} open</strong>
+                      <p>Sunday rest</p>
+                    </article>
+                  </div>
+                </article>
+              </section>
+
+              <section className="journey-overview-grid">
+                <section className="panel journey-command-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">OS</span>
+                      <h2>JOURNEY_COMMAND.sys</h2>
+                    </div>
+                    <span className="panel-badge">{dashboard.journey.label}</span>
+                  </div>
+                  <div className="journey-command-grid">
+                    {[
+                      ['YEAR', 'Annual journey', `Dia ${dashboard.journey.day}/${annualDays}`, `Week ${dashboard.journey.week} | ${dashboard.journey.annualPercent}% of year`, 'green'],
+                      ['WEEK', 'Week', `${dashboard.completedWeekBlocks}/${dashboard.requiredWeekBlocks}`, `Open blocks: ${dashboard.requiredWeekBlocks - dashboard.completedWeekBlocks}`, 'blue'],
+                      ['QUAL', 'Execucao', `${weeklyQuality}%`, `${dashboard.weeklyWorkouts.length} workouts this week`, weeklyQuality >= 80 ? 'green' : 'orange'],
+                      ['CYCLE', 'Current cycle', `C${dashboard.journey.cycle}`, `${formatCompact(dashboard.weeklyVolume)} kg week`, 'purple'],
+                      ['MODE', 'Journey health', dashboard.completedWeekBlocks ? 'On pace' : 'Open', `XP total ${formatCompact(dashboard.totalXp)}`, 'green'],
+                      ['BODY', 'Body evolution', dashboard.latestBody?.weightKg ? `${dashboard.latestBody.weightKg} kg` : '-', dashboard.latestBody ? formatDate(dashboard.latestBody.measuredAt) : 'log first measurement', 'orange']
+                    ].map(([code, label, value, detail, tone]) => (
+                      <article className={`journey-command-card ${tone}`} key={code}>
+                        <span>{code}</span>
+                        <div>
+                          <small>{label}</small>
+                          <strong>{value}</strong>
+                          <p>{detail}</p>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="panel heatmap-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">~</span>
+                      <h2>ACTIVITY_HEATMAP.sys</h2>
+                    </div>
+                    <span className="panel-badge">LAST 28 DAYS</span>
+                  </div>
+                  <div className="heatmap-scroll">
+                    <div className="heatmap-grid dashboard-lab-heatmap">
+                      {heatmapDays.map((day) => (
+                        <span className={`heat-cell ${day.className}`} key={day.key} title={day.key}>{day.label}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="heatmap-legend">
+                    <span><i className="heat-future"></i> Future</span>
+                    <span><i className="heat-today"></i> Today</span>
+                    <span><i className="heat-missed"></i> Missed</span>
+                    <span><i className="heat-complete"></i> OK</span>
+                  </div>
+                </section>
+              </section>
+            </div>
+
+            <div className={`dashboard-subtab ${activeSubtab === 'analytics' ? 'active' : ''}`} id="dash-subtab-analytics">
+              <section className="content-grid dashboard-control-grid analytics-panel-grid">
+                <article className="panel player-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">*</span>
+                      <h2>PLAYER_STATS.json</h2>
+                    </div>
+                    <span className="panel-badge">LV. {dashboard.level.level}</span>
+                  </div>
+                  <div className="player-card">
+                    <div className="level-ring" aria-label="XP progress">
+                      <svg width="92" height="92" viewBox="0 0 92 92" aria-hidden="true">
+                        <circle className="level-ring-bg" cx="46" cy="46" r="39"></circle>
+                        <circle
+                          className="level-ring-progress"
+                          cx="46"
+                          cy="46"
+                          r="39"
+                          style={{ strokeDashoffset: `${245 - (245 * dashboard.level.progress) / 100}` }}
+                        ></circle>
+                      </svg>
+                      <strong>{dashboard.level.level}</strong>
+                    </div>
+                    <div className="player-info">
+                      <span>Current Rank</span>
+                      <h3>{dashboard.rank.name}</h3>
+                      <div className="xp-bar player-xp-bar">
+                        <span style={{ width: `${dashboard.level.progress}%` }}></span>
+                      </div>
+                      <p>{dashboard.level.currentXp} / {dashboard.level.nextLevelXp} XP | {dashboard.level.progress}% until next level</p>
+                      <div className="player-stat-grid">
+                        {[
+                          ['Streak', `${dashboard.streak}d`, 'current streak'],
+                          ['Week', `${dashboard.weeklyWorkouts.length}/6`, 'valid workouts'],
+                          ['Volume', `${formatCompact(dashboard.weeklyVolume)} kg`, 'weekly load'],
+                          ['XP Total', formatCompact(dashboard.totalXp), 'official season']
+                        ].map(([label, value, detail]) => (
+                          <article className="player-stat-chip" key={label}>
+                            <span>{label}</span>
+                            <strong>{value}</strong>
+                            <p>{detail}</p>
+                          </article>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <article className="panel pr-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">^</span>
+                      <h2>TOP_PRS.json</h2>
+                    </div>
+                    <span className="panel-badge">TOP 5</span>
+                  </div>
+                  <div className="pr-list">
+                    {dashboard.topRecords.length ? dashboard.topRecords.map((record, index) => (
+                      <article className="pr-item" key={record.name}>
+                        <span className="pr-rank">#{index + 1}</span>
+                        <div className="pr-main">
+                          <h3>{record.name}</h3>
+                          <p>{record.muscle} | Workout {record.code} | {formatDate(record.date)}</p>
+                        </div>
+                        <div className="pr-value">
+                          <strong>{record.weight} kg</strong>
+                          <span>{formatNumber(record.reps)} reps</span>
+                        </div>
+                      </article>
+                    )) : <p className="empty-state">Log sets with load to map your PRs.</p>}
+                  </div>
+                </article>
+              </section>
+
+              <section className="content-grid analytics-grid analytics-panel-grid">
+                <article className="panel volume-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">~</span>
+                      <h2>VOLUME_TREND.chart</h2>
+                    </div>
+                    <span className="panel-badge">12 WEEKS</span>
+                  </div>
+                  <div className="volume-chart-wrap">
+                    <div className="volume-chart dashboard-lab-bklit-chart">
+                      <LineChart data={dashboard.trend} margin={{ top: 30, right: 36, bottom: 42, left: 40 }}>
+                        <Grid horizontal vertical stroke="rgba(139, 148, 158, 0.16)" />
+                        <Line dataKey="volume" stroke="var(--chart-line-primary)" strokeWidth={3} />
+                        <XAxis />
+                        <ChartTooltip />
+                      </LineChart>
+                    </div>
+                    <div className="chart-summary">
+                      <article className="volume-analysis-card">
+                        <span>Total 12 weeks</span>
+                        <strong>{formatCompact(totalTrendVolume)} kg</strong>
+                        <small>{dashboard.trend.filter((week) => week.volume > 0).length} weeks with volume</small>
+                      </article>
+                      <article className="volume-analysis-card">
+                        <span>Active average</span>
+                        <strong>{formatCompact(activeAverageVolume)} kg</strong>
+                        <small>per trained week</small>
+                      </article>
+                      <article className="volume-analysis-card">
+                        <span>Best week</span>
+                        <strong>{bestWeek?.label || '-'} | {formatCompact(bestWeek?.volume || 0)} kg</strong>
+                        <small>gold point</small>
+                      </article>
+                      <article className="volume-analysis-card">
+                        <span>Current week</span>
+                        <strong>{formatCompact(lastWeek?.volume || 0)} kg</strong>
+                        <small>{lastWeek?.workouts || 0} workouts</small>
+                      </article>
+                      <div className="volume-point-legend" aria-label="Volume chart legend">
+                        <span><i className="legend-dot legend-volume"></i> Bklit volume</span>
+                        <span><i className="legend-dot legend-current"></i> current</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <article className="panel muscle-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">%</span>
+                      <h2>MUSCLE_DISTRIBUTION.data</h2>
+                    </div>
+                    <span className="panel-badge">BY VOLUME</span>
+                  </div>
+                  <div className="muscle-distribution">
+                    <div className="muscle-metric-summary">
+                      <span>METRIC</span>
+                      <strong>Volume by muscle group</strong>
+                      <p>Total analyzed: {formatCompact(muscleTotal)} kg | chart powered by Bklit</p>
+                    </div>
+                    <div className="muscle-radar-wrap dashboard-lab-bklit-chart">
+                      <BarChart data={dashboard.muscleSplit} xDataKey="name" margin={{ top: 24, right: 24, bottom: 42, left: 28 }} barGap={0.25}>
+                        <Grid horizontal stroke="rgba(139, 148, 158, 0.16)" />
+                        <Bar dataKey="volume" fill="var(--chart-line-secondary)" lineCap="round" />
+                        <BarXAxis />
+                        <ChartTooltip />
+                      </BarChart>
+                    </div>
+                    <div className="radar-list">
+                      {dashboard.muscleSplit.map((item) => {
+                        const percent = Math.round((item.volume / Math.max(1, muscleTotal)) * 100);
+                        return (
+                          <article className="muscle-item" key={item.name}>
+                            <div className="muscle-row-head">
+                              <span>{item.name}</span>
+                              <div><strong>{percent}%</strong></div>
+                            </div>
+                            <small>{formatCompact(item.volume)} kg of {formatCompact(muscleTotal)} kg</small>
+                            <div className="muscle-bar-bg">
+                              <span className="muscle-bar-fill" style={{ width: `${percent}%` }}></span>
+                            </div>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </article>
+              </section>
+            </div>
+
+            <div className={`dashboard-subtab ${activeSubtab === 'evolution' ? 'active' : ''}`} id="dash-subtab-evolution">
+              <section className="summary-grid page-summary">
+                {[
+                  ['XP', 'XP Total', String(dashboard.totalXp), `${dashboard.weeklyWorkouts.length} workouts this week`, 'green'],
+                  ['WK', 'XP Week', String(dashboard.weeklyWorkouts.reduce((total, workout) => total + getXp(workout), 0)), 'current week', 'blue'],
+                  ['AVG', 'Avg per Workout', String(dashboard.completedWorkouts.length ? Math.round(dashboard.totalXp / dashboard.completedWorkouts.length) : 0), 'valid workout average', 'orange'],
+                  ['TOP', 'Best Workout', String(Math.max(0, ...dashboard.completedWorkouts.map(getXp))), 'highest XP snapshot', 'purple']
+                ].map(([icon, label, value, detail, tone]) => (
+                  <article className={`summary-card ${tone}`} key={label}>
+                    <span>{icon}</span>
+                    <div>
+                      <small>{label}</small>
+                      <strong>{value}</strong>
+                      <p>{detail}</p>
+                    </div>
+                  </article>
+                ))}
+              </section>
+
+              <section className="panel season-progress-panel">
+                <div className="panel-header">
+                  <div className="panel-title">
+                    <span className="panel-icon">S</span>
+                    <h2>SEASON_PROGRESS.sys</h2>
+                  </div>
+                  <span className="panel-badge">{dashboard.journey.label}</span>
+                </div>
+                <div className="season-progress-grid">
+                  {[
+                    ['Annual journey', `${dashboard.journey.annualPercent}%`, dashboard.journey.annualPercent, `Week ${dashboard.journey.week}`],
+                    ['Current week', `${weekPercent}%`, weekPercent, `${dashboard.completedWeekBlocks}/${dashboard.requiredWeekBlocks} blocks`],
+                    ['XP progress', `${dashboard.level.progress}%`, dashboard.level.progress, `LV. ${dashboard.level.level}`]
+                  ].map(([label, value, percent, detail]) => (
+                    <article className="season-progress-card" key={String(label)}>
+                      <div className="season-progress-card-head">
+                        <span>{label}</span>
+                        <strong>{value}</strong>
+                      </div>
+                      <div className="season-progress-meter"><span style={{ width: `${percent}%` }}></span></div>
+                      <p>{detail}</p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section className="panel body-progress-panel">
+                <div className="panel-header">
+                  <div className="panel-title">
+                    <span className="panel-icon">KG</span>
+                    <h2>BODY_PROGRESS.sys</h2>
+                  </div>
+                  <div className="panel-header-actions">
+                    <span className="panel-badge">{data.bodyMeasurements.length} REG</span>
+                    <a className="page-btn" href="/?tab=progress-body">NEW MEASURE</a>
+                  </div>
+                </div>
+                <section className="summary-grid page-summary compact-summary">
+                  <article className="summary-card green">
+                    <span>KG</span>
+                    <div><small>Current weight</small><strong>{dashboard.latestBody?.weightKg ? `${dashboard.latestBody.weightKg} kg` : '-'}</strong><p>{dashboard.weightDelta.toFixed(1)} kg vs first log</p></div>
+                  </article>
+                  <article className="summary-card blue">
+                    <span>WA</span>
+                    <div><small>Waist</small><strong>{dashboard.latestBody?.measurementsCm?.waist ? `${dashboard.latestBody.measurementsCm.waist} cm` : '-'}</strong><p>{dashboard.waistDelta.toFixed(1)} cm vs first log</p></div>
+                  </article>
+                  <article className="summary-card orange">
+                    <span>DT</span>
+                    <div><small>Latest measure</small><strong>{dashboard.latestBody ? formatDate(dashboard.latestBody.measuredAt) : '-'}</strong><p>body trend snapshot</p></div>
+                  </article>
+                </section>
+              </section>
+            </div>
+
+            <div className={`dashboard-subtab ${activeSubtab === 'logs' ? 'active' : ''}`} id="dash-subtab-logs">
+              <section className="content-grid insights-grid activity-log-grid">
+                <article className="panel feed-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">&gt;</span>
+                      <h2>ACTIVITY_FEED.stream</h2>
+                    </div>
+                    <span className="panel-badge">RECENT</span>
+                  </div>
+                  <div className="activity-feed">
+                    {dashboard.completedWorkouts.slice(0, 8).map((workout) => (
+                      <article className={`feed-item ${workout.missionSubstitution ? 'substitution' : 'workout'}`} key={workout._id}>
+                        <span className="feed-dot" aria-hidden="true"></span>
+                        <div>
+                          <div className="feed-head">
+                            <div>
+                              <span className="feed-badge">{workout.missionSubstitution ? 'SWAP' : 'MISSION'}</span>
+                              <h3>{workout.missionSubstitution ? 'Workout replaced mission' : 'Mission completed'}</h3>
+                            </div>
+                            <time dateTime={toDateKey(workout.date)}>{formatDate(workout.date)}</time>
+                          </div>
+                          <p>Workout {workout.workoutCode} - {workout.workoutName}</p>
+                          <small>{getQuality(workout)}% quality | {getValidSets(workout)} sets | {formatCompact(getWorkoutVolume(workout))} kg</small>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </article>
+
+                <article className="panel achievements-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">*</span>
+                      <h2>ACHIEVEMENTS.sys</h2>
+                    </div>
+                    <span className="panel-badge">LAB</span>
+                  </div>
+                  <div className="achievement-list">
+                    {[
+                      ['First blood', dashboard.completedWorkouts.length > 0],
+                      ['Weekly strike', dashboard.completedWeekBlocks >= 3],
+                      ['Volume hunter', dashboard.weeklyVolume > 0]
+                    ].map(([label, done]) => (
+                      <article className={`achievement-card ${done ? 'done' : ''}`} key={String(label)}>
+                        <strong>{label}</strong>
+                        <p>{done ? 'Unlocked in live data' : 'Pending'}</p>
+                      </article>
+                    ))}
+                  </div>
+                </article>
+              </section>
+
+              <section className="content-grid progress-grid">
+                <article className="panel log-preview-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">#</span>
+                      <h2>LOG_HISTORY.db</h2>
+                    </div>
+                    <a className="page-btn" href="/?tab=workout-list">OPEN</a>
+                  </div>
+                  <div className="dashboard-history">
+                    {recentWorkouts.length ? recentWorkouts.map((workout) => (
+                      <article className="dashboard-log-card" key={workout._id}>
+                        <div className="dashboard-log-head">
+                          <div>
+                            <span className={`feed-badge ${workout.missionSubstitution ? 'substitution' : 'official'}`}>{workout.missionSubstitution ? 'SWAP' : 'MISSION'}</span>
+                            <h3>Workout {workout.workoutCode}</h3>
+                          </div>
+                          <time dateTime={toDateKey(workout.date)}>{formatDate(workout.date)}</time>
+                        </div>
+                        <p>{workout.workoutName}</p>
+                        <div className="dashboard-log-metrics">
+                          <span>{getQuality(workout)}% quality</span>
+                          <strong>{formatCompact(getWorkoutVolume(workout))} kg</strong>
+                          <small>{getValidSets(workout)} sets</small>
+                        </div>
+                      </article>
+                    )) : <p className="empty-state">No workouts logged yet.</p>}
+                  </div>
+                </article>
+
+                <article className="panel weekly-missions-panel">
+                  <div className="panel-header">
+                    <div className="panel-title">
+                      <span className="panel-icon">&gt;</span>
+                      <h2>WEEKLY_MISSIONS.sys</h2>
+                    </div>
+                    <span className="panel-badge">{dashboard.completedWeekBlocks}/{dashboard.requiredWeekBlocks}</span>
+                  </div>
+                  <div className="weekly-mission-list">
+                    {dashboard.schedule.filter((item) => !item.mission.restDay).map((item) => (
+                      <article className={`weekly-mission ${item.workout ? 'done' : 'pending'}`} key={item.dateKey}>
+                        <div>
+                          <h3>Complete Workout {item.code}</h3>
+                          <p>{item.mission.missionName} | {formatDate(item.date)}</p>
+                          <div className="achievement-meter"><span style={{ width: item.workout ? '100%' : '0%' }}></span></div>
+                        </div>
+                        <strong>{item.workout ? 'OK' : '+180 XP'}</strong>
+                      </article>
+                    ))}
+                  </div>
+                </article>
+              </section>
+            </div>
+
+            <footer className="terminal-footer">
+              <p><span>user@gym-os:~$</span> ./commit_gains --force --all</p>
+              <p>[OK] Same dashboard UI. Bklit only replaces chart surfaces.</p>
+            </footer>
+          </section>
+        </main>
       </div>
-    </main>
+    </>
   );
 }

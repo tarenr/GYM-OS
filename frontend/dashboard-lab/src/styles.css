@@ -1,823 +1,97 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
-  color-scheme: dark;
-  --background: #07090d;
-  --foreground: #edf7f2;
-  --card: #0d1117;
-  --card-foreground: #edf7f2;
-  --primary: #63ff9a;
-  --muted-foreground: #8a97a8;
-  --accent: #ff8a3d;
-  --danger: #ff4d5e;
-  --blue: #26d9ff;
-  --border: rgba(99, 255, 154, 0.18);
-  --chart-line-primary: #63ff9a;
-  --chart-line-secondary: #26d9ff;
-  --chart-line-tertiary: #ff8a3d;
-  --chart-grid: oklch(0.34 0.03 165);
-  --chart-label: oklch(0.78 0.02 180);
-  --chart-tooltip-background: rgba(7, 9, 13, 0.92);
-  --chart-tooltip-foreground: #edf7f2;
-  --chart-tooltip-muted: #8a97a8;
-  --chart-foreground-muted: #8a97a8;
-  font-family: "Chakra Petch", "JetBrains Mono", monospace;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
+  --chart-line-primary: var(--green);
+  --chart-line-secondary: var(--blue);
+  --chart-grid: rgba(139, 148, 158, 0.18);
+  --chart-label: var(--muted);
+  --chart-tooltip-background: rgba(13, 17, 23, 0.96);
+  --chart-tooltip-foreground: var(--text);
+  --chart-tooltip-muted: var(--muted);
+  --chart-foreground-muted: var(--muted);
 }
 
 body {
   margin: 0;
-  min-width: 320px;
-  background:
-    linear-gradient(rgba(99, 255, 154, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(38, 217, 255, 0.025) 1px, transparent 1px),
-    radial-gradient(circle at 8% 0%, rgba(255, 138, 61, 0.16), transparent 28%),
-    #07090d;
-  background-size: 28px 28px, 28px 28px, auto, auto;
 }
 
-a {
-  color: inherit;
-}
-
-.dashboard-lab-shell {
-  width: min(1680px, calc(100% - 28px));
-  margin: 0 auto;
-  padding: 18px 0 40px;
-}
-
-.fighter-card-lab,
-.lab-panel,
-.hud-card,
-.lab-subnav,
-.terminal-footer-lab,
-.status-banner {
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(13, 17, 23, 0.95), rgba(8, 11, 16, 0.97));
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
-}
-
-.fighter-card-lab {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: center;
-  padding: 16px 18px;
-}
-
-.fighter-card-lab > div,
-.fighter-card-lab aside {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.brand-mark,
-.panel-icon {
-  display: inline-grid;
-  min-width: 44px;
-  min-height: 38px;
-  place-items: center;
-  border: 1px solid rgba(99, 255, 154, 0.28);
-  color: var(--primary);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.72rem;
-  font-weight: 800;
-}
-
-.fighter-card-lab h1 {
-  margin: 0;
-  font-size: clamp(1.8rem, 5vw, 3.2rem);
-  line-height: 0.92;
-}
-
-.fighter-card-lab h1 span {
-  color: var(--primary);
-}
-
-.fighter-card-lab p,
-.terminal-footer-lab p,
-.status-banner {
-  margin: 4px 0 0;
-  color: var(--muted-foreground);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.75rem;
-}
-
-.fighter-card-lab aside a {
-  border: 1px solid rgba(38, 217, 255, 0.34);
-  color: var(--blue);
-  padding: 9px 12px;
+.dashboard-lab-layout .side-menu a.nav-link {
   text-decoration: none;
-  white-space: nowrap;
 }
 
-.streak-box {
-  display: grid;
-  min-width: 82px;
-  text-align: center;
+.dashboard-lab-status {
+  margin: 0 0 14px;
 }
 
-.streak-box span,
-.streak-box small,
-.hud-card small,
-.hud-card em,
-.lab-panel-heading strong,
-.mission-command li,
-.reward-box span,
-.journey-grid small,
-.journey-grid p,
-.metric-strip span,
-.metric-strip small,
-.pr-list p,
-.pr-list small,
-.muscle-list small,
-.season-grid p,
-.body-grid p,
-.template-grid p,
-.feed-list small,
-.history-list small,
-.weekly-missions p {
-  color: var(--muted-foreground);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.72rem;
-  font-style: normal;
+.dashboard-lab-bklit-chart {
+  min-height: 320px;
 }
 
-.streak-box strong {
-  color: var(--primary);
-  font-size: 1.8rem;
-  line-height: 1;
-}
-
-.level-box,
-.level-disc {
-  display: grid;
-  place-items: center;
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at center, #0d1117 56%, transparent 57%),
-    conic-gradient(var(--primary) var(--level-progress), rgba(99, 255, 154, 0.12) 0);
-}
-
-.level-box strong,
-.level-disc strong {
-  font-size: 1.35rem;
-  line-height: 1;
-}
-
-.level-box span {
-  margin-top: -20px;
-  color: var(--muted-foreground);
-  font-size: 0.62rem;
-  font-weight: 800;
-}
-
-.status-banner {
-  margin: 12px 0 0;
-  padding: 10px 12px;
-}
-
-.status-banner.error {
-  border-color: rgba(255, 77, 94, 0.4);
-  color: var(--danger);
-}
-
-.hud-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 14px;
-}
-
-.hud-card {
-  display: grid;
-  gap: 9px;
-  min-height: 130px;
-  padding: 16px;
-}
-
-.hud-card > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.hud-card > div span {
-  color: var(--primary);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.72rem;
-  font-weight: 800;
-}
-
-.hud-card strong {
-  font-size: clamp(1.6rem, 3vw, 2.45rem);
-  line-height: 0.98;
-}
-
-.hud-card i,
-.player-card-lab i,
-.weekly-focus i,
-.season-grid i,
-.weekly-missions i,
-.muscle-list i {
-  display: block;
-  height: 8px;
-  overflow: hidden;
-  border: 1px solid rgba(99, 255, 154, 0.18);
-  background: rgba(7, 9, 13, 0.82);
-}
-
-.hud-card i b,
-.player-card-lab i b,
-.weekly-focus i b,
-.season-grid i b,
-.weekly-missions i b,
-.muscle-list i b {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--blue));
-}
-
-.hud-card.orange > div span,
-.hud-card.orange strong {
-  color: var(--accent);
-}
-
-.hud-card.blue > div span,
-.hud-card.blue strong {
-  color: var(--blue);
-}
-
-.hud-card.red > div span,
-.hud-card.red strong {
-  color: var(--danger);
-}
-
-.lab-subnav {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 14px;
-  padding: 10px;
-  backdrop-filter: blur(12px);
-}
-
-.lab-subnav a {
-  border: 1px solid rgba(99, 255, 154, 0.16);
-  color: var(--foreground);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.74rem;
-  font-weight: 800;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.dashboard-section {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
-  gap: 14px;
-  margin-top: 14px;
-  scroll-margin-top: 86px;
-}
-
-.analytics-layout {
-  grid-template-columns: minmax(360px, 0.75fr) minmax(360px, 0.75fr) minmax(0, 1.45fr);
-}
-
-.evolution-layout,
-.logs-layout {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.mission-panel,
-.volume-panel,
-.feed-panel {
-  grid-column: span 2;
-}
-
-.lab-panel {
-  min-height: 280px;
-  padding: 16px;
-}
-
-.lab-panel-heading {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  align-items: flex-start;
-  margin-bottom: 16px;
-}
-
-.lab-panel-heading > div {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.lab-panel-heading h2 {
-  margin: 0;
-  font-size: clamp(1rem, 2vw, 1.4rem);
-  line-height: 1.05;
-}
-
-.lab-panel-heading strong {
-  border: 1px solid rgba(255, 138, 61, 0.38);
-  color: var(--accent);
-  padding: 6px 8px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.mission-command {
-  display: grid;
-  gap: 14px;
-}
-
-.mission-command h3,
-.player-card-lab h3,
-.pr-list h3,
-.feed-list h3,
-.history-list h3 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.mission-command p {
-  margin: 0;
-  color: var(--muted-foreground);
-}
-
-.mission-command ul {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.mission-command li {
-  border: 1px solid rgba(99, 255, 154, 0.16);
-  padding: 10px;
-}
-
-.mission-command li.done {
-  color: var(--primary);
-}
-
-.mission-command li.pending {
-  color: var(--accent);
-}
-
-.reward-box {
-  display: grid;
-  width: min(220px, 100%);
-  gap: 4px;
-  border: 1px solid rgba(255, 138, 61, 0.28);
-  padding: 12px;
-}
-
-.reward-box strong {
-  color: var(--accent);
-  font-size: 1.8rem;
-  line-height: 1;
-}
-
-.schedule-grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.schedule-day {
-  display: grid;
-  gap: 6px;
-  min-height: 126px;
-  border: 1px solid rgba(99, 255, 154, 0.16);
-  padding: 10px;
-}
-
-.schedule-day span,
-.schedule-day small {
-  color: var(--muted-foreground);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.68rem;
-  text-transform: uppercase;
-}
-
-.schedule-day strong {
-  font-size: 1.6rem;
-}
-
-.schedule-day div {
-  color: var(--primary);
-  font-weight: 800;
-}
-
-.schedule-day.done {
-  border-color: rgba(99, 255, 154, 0.5);
-}
-
-.schedule-day.today {
-  border-color: rgba(38, 217, 255, 0.52);
-}
-
-.schedule-day.missed {
-  border-color: rgba(255, 77, 94, 0.36);
-}
-
-.schedule-day.rest {
-  opacity: 0.72;
-}
-
-.weekly-focus,
-.metric-strip,
-.body-grid,
-.template-grid,
-.player-chip-grid {
-  display: grid;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.weekly-focus {
-  grid-template-columns: minmax(0, 1fr);
-  border: 1px solid rgba(38, 217, 255, 0.18);
-  padding: 12px;
-}
-
-.weekly-focus span,
-.journey-grid span,
-.metric-strip span,
-.player-card-lab span,
-.season-grid span,
-.body-grid span,
-.template-grid span {
-  color: var(--primary);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.weekly-focus strong {
-  display: block;
-  margin-top: 4px;
-}
-
-.weekly-focus p {
-  margin: 4px 0 0;
-  color: var(--muted-foreground);
-}
-
-.journey-grid,
-.season-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.journey-grid article,
-.season-grid article,
-.body-grid article,
-.template-grid article,
-.player-chip-grid article,
-.metric-strip article {
-  display: grid;
-  gap: 8px;
-  border: 1px solid rgba(99, 255, 154, 0.14);
-  padding: 12px;
-}
-
-.journey-grid strong,
-.season-grid strong,
-.body-grid strong,
-.template-grid strong,
-.metric-strip strong {
-  font-size: 1.2rem;
-  line-height: 1.05;
-}
-
-.journey-grid p,
-.season-grid p,
-.body-grid p,
-.template-grid p {
-  margin: 0;
-}
-
-.heatmap-grid {
-  display: grid;
-  grid-template-columns: repeat(14, minmax(0, 1fr));
-  gap: 6px;
-}
-
-.heatmap-grid span {
-  display: grid;
-  aspect-ratio: 1;
-  place-items: center;
-  border: 1px solid rgba(99, 255, 154, 0.14);
-  color: var(--muted-foreground);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.66rem;
-}
-
-.heatmap-grid .done,
-.heatmap-legend .done {
-  background: rgba(99, 255, 154, 0.34);
-  color: var(--foreground);
-}
-
-.heatmap-grid .today,
-.heatmap-legend .today {
-  background: rgba(38, 217, 255, 0.3);
-}
-
-.heatmap-grid .missed,
-.heatmap-legend .missed {
-  background: rgba(255, 77, 94, 0.22);
-}
-
-.heatmap-grid .future,
-.heatmap-legend .future {
-  background: rgba(138, 151, 168, 0.12);
-}
-
-.heatmap-legend {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
-
-.heatmap-legend span {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-  color: var(--muted-foreground);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.68rem;
-}
-
-.heatmap-legend i {
-  width: 12px;
-  height: 12px;
-  border: 1px solid rgba(99, 255, 154, 0.18);
-}
-
-.player-card-lab {
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 16px;
-}
-
-.level-disc {
-  width: 92px;
-  height: 92px;
-}
-
-.player-card-lab p {
-  color: var(--muted-foreground);
-  margin: 8px 0;
-}
-
-.player-chip-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.player-chip-grid strong {
-  font-size: 1.1rem;
-}
-
-.lab-chart-frame {
-  min-height: 300px;
-}
-
-.lab-chart-frame.tall {
-  min-height: 370px;
-}
-
-.lab-chart-frame.compact {
-  min-height: 280px;
-}
-
-.lab-chart-frame > div {
+.dashboard-lab-bklit-chart > div {
   width: 100%;
+  height: 100%;
 }
 
-.metric-strip {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.muscle-radar-wrap.dashboard-lab-bklit-chart {
+  height: 270px;
+  min-height: 270px;
 }
 
-.pr-list,
-.muscle-list,
-.feed-list,
-.history-list,
-.weekly-missions {
+.dashboard-lab-heatmap {
+  grid-template-columns: repeat(14, minmax(28px, 1fr));
+}
+
+.dashboard-lab-heatmap .heat-cell {
   display: grid;
-  gap: 10px;
-}
-
-.pr-list article,
-.feed-list article,
-.history-list article,
-.weekly-missions article,
-.muscle-list article {
-  display: grid;
-  gap: 10px;
-  border: 1px solid rgba(99, 255, 154, 0.14);
-  padding: 12px;
-}
-
-.pr-list article {
-  grid-template-columns: 42px minmax(0, 1fr) auto;
-  align-items: center;
-}
-
-.pr-list article > span,
-.feed-list article > span,
-.history-list article span {
-  color: var(--primary);
+  min-height: 28px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--muted);
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 800;
 }
 
-.pr-list p,
-.feed-list p,
-.history-list p,
-.weekly-missions p {
-  margin: 4px 0 0;
+.dashboard-lab-heatmap .heat-cell.done {
+  border-color: rgba(0, 255, 65, 0.55);
+  background: rgba(0, 255, 65, 0.2);
+  color: var(--green);
 }
 
-.pr-list strong {
-  display: grid;
-  text-align: right;
-}
-
-.pr-list strong small {
-  color: var(--muted-foreground);
-}
-
-.muscle-list article div,
-.season-grid article div,
-.feed-list article,
-.history-list article > div,
-.history-list footer,
-.weekly-missions article {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.muscle-list article {
-  gap: 7px;
-}
-
-.muscle-list strong {
+.dashboard-lab-heatmap .heat-cell.today {
+  border-color: rgba(88, 166, 255, 0.62);
+  background: rgba(88, 166, 255, 0.18);
   color: var(--blue);
 }
 
-.body-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.dashboard-lab-heatmap .heat-cell.missed {
+  border-color: rgba(248, 81, 73, 0.42);
+  background: rgba(248, 81, 73, 0.13);
+  color: var(--red);
 }
 
-.template-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.dashboard-lab-heatmap .heat-cell.future {
+  opacity: 0.52;
 }
 
-.feed-list article {
-  align-items: flex-start;
-}
-
-.feed-list time,
-.history-list time {
-  color: var(--muted-foreground);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.72rem;
-  white-space: nowrap;
-}
-
-.history-list footer {
-  align-items: end;
-}
-
-.weekly-missions article.done {
-  border-color: rgba(99, 255, 154, 0.36);
-}
-
-.weekly-missions article.pending {
-  border-color: rgba(255, 138, 61, 0.28);
-}
-
-.weekly-missions strong {
-  color: var(--accent);
-  white-space: nowrap;
-}
-
-.empty-state {
-  color: var(--muted-foreground);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.8rem;
-}
-
-.terminal-footer-lab {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 14px;
-  padding: 14px 16px;
-}
-
-.terminal-footer-lab span {
-  color: var(--primary);
-}
-
-@media (max-width: 1180px) {
-  .hud-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 900px) {
+  .dashboard-lab-layout .side-nav {
+    position: static;
   }
 
-  .dashboard-section,
-  .analytics-layout,
-  .evolution-layout,
-  .logs-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .mission-panel,
-  .volume-panel,
-  .feed-panel {
-    grid-column: auto;
-  }
-
-  .schedule-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .dashboard-lab-shell {
-    width: min(100% - 18px, 1680px);
-  }
-
-  .fighter-card-lab,
-  .fighter-card-lab > div,
-  .fighter-card-lab aside,
-  .terminal-footer-lab {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .lab-subnav,
-  .hud-grid,
-  .journey-grid,
-  .metric-strip,
-  .body-grid,
-  .template-grid,
-  .player-chip-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .schedule-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .player-card-lab,
-  .pr-list article,
-  .feed-list article,
-  .history-list article > div,
-  .history-list footer,
-  .weekly-missions article {
-    display: grid;
-    grid-template-columns: 1fr;
+  .dashboard-lab-bklit-chart {
+    min-height: 260px;
   }
 }
 
 @theme inline {
-  --color-chart-background: var(--chart-background);
-  --color-chart-foreground: var(--chart-foreground);
-  --color-chart-foreground-muted: var(--chart-foreground-muted);
   --color-chart-grid: var(--chart-grid);
   --color-chart-label: var(--chart-label);
   --color-chart-tooltip-background: var(--chart-tooltip-background);
   --color-chart-tooltip-foreground: var(--chart-tooltip-foreground);
   --color-chart-tooltip-muted: var(--chart-tooltip-muted);
+  --color-chart-foreground-muted: var(--chart-foreground-muted);
   --chart-line-primary: var(--chart-line-primary);
   --chart-line-secondary: var(--chart-line-secondary);
 }
