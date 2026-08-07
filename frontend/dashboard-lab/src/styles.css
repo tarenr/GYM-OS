@@ -1,0 +1,260 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  color-scheme: dark;
+  --background: #07090d;
+  --foreground: #edf7f2;
+  --card: #0d1117;
+  --card-foreground: #edf7f2;
+  --popover: #0d1117;
+  --popover-foreground: #edf7f2;
+  --primary: #63ff9a;
+  --primary-foreground: #041007;
+  --secondary: #161b22;
+  --secondary-foreground: #edf7f2;
+  --muted: #161b22;
+  --muted-foreground: #8a97a8;
+  --accent: #ff8a3d;
+  --accent-foreground: #120602;
+  --destructive: #ff4d5e;
+  --destructive-foreground: #fff8f8;
+  --border: rgba(99, 255, 154, 0.18);
+  --input: rgba(99, 255, 154, 0.16);
+  --ring: #63ff9a;
+  --chart-line-primary: #63ff9a;
+  --chart-line-secondary: #26d9ff;
+  --chart-line-tertiary: #ff8a3d;
+  --chart-1: #63ff9a;
+  --chart-2: #26d9ff;
+  --chart-3: #ff8a3d;
+  --chart-4: #ff4d5e;
+  --chart-5: #f6d365;
+  font-family: "Chakra Petch", "JetBrains Mono", monospace;
+  --chart-background: oklch(1 0 0);
+  --chart-foreground: oklch(0.145 0.004 285);
+  --chart-foreground-muted: oklch(0.55 0.014 260);
+  --chart-crosshair: oklch(0.4 0.1828 274.34);
+  --chart-grid: oklch(0.9 0 0);
+  --chart-brush-border: var(--chart-grid);
+  --chart-tooltip-background: oklch(0.21 0.006 285 / 0.8);
+  --chart-tooltip-foreground: oklch(0.985 0 0);
+  --chart-tooltip-muted: oklch(0.65 0.01 260);
+  --chart-marker-background: oklch(0.97 0.005 260);
+  --chart-marker-border: oklch(0.85 0.01 260);
+  --chart-marker-foreground: oklch(0.3 0.01 260);
+  --chart-label: oklch(0.45 0.01 260);
+  --chart-scale-01: oklch(0.98 0.003 106);
+  --chart-scale-02: oklch(0.92 0.008 106);
+  --chart-scale-03: oklch(0.82 0.015 106);
+  --chart-scale-04: oklch(0.68 0.02 106);
+  --chart-scale-05: oklch(0.55 0.025 106);
+  --chart-scale-pattern-color: oklch(0.96 0.005 106);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    linear-gradient(rgba(99, 255, 154, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(38, 217, 255, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 20% 0%, rgba(255, 138, 61, 0.14), transparent 34%),
+    #07090d;
+  background-size: 28px 28px, 28px 28px, auto, auto;
+}
+
+.lab-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  border: 1px solid var(--border);
+  background: rgba(13, 17, 23, 0.86);
+  padding: clamp(18px, 3vw, 30px);
+}
+
+.lab-kicker,
+.lab-panel-heading span,
+.lab-stat-grid span {
+  margin: 0;
+  color: var(--primary);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.lab-header h1 {
+  margin: 8px 0 0;
+  font-size: clamp(2rem, 7vw, 4.8rem);
+  line-height: 0.92;
+}
+
+.lab-copy {
+  max-width: 680px;
+  margin: 14px 0 0;
+  color: var(--muted-foreground);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.lab-back {
+  border: 1px solid rgba(38, 217, 255, 0.36);
+  color: var(--chart-line-secondary);
+  padding: 10px 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lab-stat-grid,
+.lab-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.lab-stat-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.lab-stat-grid article,
+.lab-panel {
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(22, 27, 34, 0.94), rgba(10, 13, 18, 0.96));
+}
+
+.lab-stat-grid article {
+  display: grid;
+  gap: 8px;
+  min-height: 128px;
+  padding: 18px;
+}
+
+.lab-stat-grid strong {
+  font-size: clamp(1.55rem, 4vw, 2.6rem);
+  line-height: 1;
+}
+
+.lab-stat-grid small {
+  color: var(--muted-foreground);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.lab-grid {
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.8fr);
+}
+
+.lab-panel {
+  min-height: 420px;
+  padding: 18px;
+}
+
+.lab-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.lab-panel-heading h2 {
+  margin: 6px 0 0;
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+}
+
+.lab-panel-heading strong {
+  border: 1px solid rgba(255, 138, 61, 0.42);
+  color: var(--accent);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  padding: 6px 8px;
+  text-transform: uppercase;
+}
+
+.lab-chart-frame {
+  display: flex;
+  min-height: 310px;
+  align-items: center;
+  padding-top: 24px;
+}
+
+.lab-chart-frame > div {
+  width: 100%;
+}
+
+.lab-chart-frame.compact {
+  min-height: 320px;
+}
+
+@media (max-width: 900px) {
+  .lab-header,
+  .lab-panel-heading {
+    flex-direction: column;
+  }
+
+  .lab-stat-grid,
+  .lab-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-back {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.dark {
+  --chart-1: oklch(1 0 none);
+  --chart-2: oklch(0.73 0 none);
+  --chart-3: oklch(0.51 0 none);
+  --chart-4: oklch(0.39 0 none);
+  --chart-5: oklch(0.32 0 none);
+  --chart-background: oklch(0.145 0 0);
+  --chart-foreground: oklch(0.45 0 0);
+  --chart-foreground-muted: oklch(0.65 0.01 260);
+  --chart-crosshair: oklch(0.45 0 0);
+  --chart-grid: oklch(0.25 0 0);
+  --chart-brush-border: var(--chart-grid);
+  --chart-marker-background: oklch(0.25 0.01 260);
+  --chart-marker-border: oklch(0.4 0.01 260);
+  --chart-marker-foreground: oklch(0.9 0 0);
+  --chart-label: oklch(0.75 0.01 260);
+  --chart-scale-01: oklch(0.28 0.03 270);
+  --chart-scale-02: oklch(0.38 0.04 270);
+  --chart-scale-03: oklch(0.48 0.05 270);
+  --chart-scale-04: oklch(0.58 0.06 270);
+  --chart-scale-05: oklch(0.68 0.07 270);
+  --chart-scale-pattern-color: oklch(0.145 0 0);
+}
+
+@theme inline {
+  --color-chart-1: var(----chart-1);
+  --color-chart-2: var(----chart-2);
+  --color-chart-3: var(----chart-3);
+  --color-chart-4: var(----chart-4);
+  --color-chart-5: var(----chart-5);
+  --color-chart-background: var(----chart-background);
+  --color-chart-foreground: var(----chart-foreground);
+  --color-chart-foreground-muted: var(----chart-foreground-muted);
+  --chart-line-primary: var(----chart-line-primary);
+  --chart-line-secondary: var(----chart-line-secondary);
+  --color-chart-crosshair: var(----chart-crosshair);
+  --color-chart-grid: var(----chart-grid);
+  --chart-brush-border: var(----chart-brush-border);
+  --color-chart-tooltip-background: var(----chart-tooltip-background);
+  --color-chart-tooltip-foreground: var(----chart-tooltip-foreground);
+  --color-chart-tooltip-muted: var(----chart-tooltip-muted);
+  --color-chart-marker-background: var(----chart-marker-background);
+  --color-chart-marker-border: var(----chart-marker-border);
+  --color-chart-marker-foreground: var(----chart-marker-foreground);
+  --color-chart-label: var(----chart-label);
+  --color-chart-scale-01: var(----chart-scale-01);
+  --color-chart-scale-02: var(----chart-scale-02);
+  --color-chart-scale-03: var(----chart-scale-03);
+  --color-chart-scale-04: var(----chart-scale-04);
+  --color-chart-scale-05: var(----chart-scale-05);
+  --color-chart-scale-pattern-color: var(----chart-scale-pattern-color);
+}

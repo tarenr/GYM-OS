@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node src/server.js",
+    "dashboard-lab:dev": "vite --config vite.dashboard-lab.config.js",
+    "dashboard-lab:build": "vite build --config vite.dashboard-lab.config.js",
     "demo:preview": "node scripts/seed-demo-workouts.js",
     "demo:seed": "node scripts/seed-demo-workouts.js --write",
     "demo:clear:preview": "node scripts/clear-demo-workouts.js",
@@ -49,10 +51,34 @@
     "maint:reclassify-workout-exercise": "node scripts/maintenance/reclassify-workout-exercise-source.js"
   },
   "dependencies": {
+    "@number-flow/react": "^0.6.2",
+    "@tailwindcss/vite": "^4.3.3",
+    "@visx/curve": "^4.0.1-alpha.0",
+    "@visx/event": "^4.0.1-alpha.0",
+    "@visx/gradient": "^4.0.1-alpha.0",
+    "@visx/grid": "^4.0.1-alpha.0",
+    "@visx/pattern": "^4.0.1-alpha.0",
+    "@visx/responsive": "^4.0.1-alpha.0",
+    "@visx/scale": "^4.0.1-alpha.0",
+    "@visx/shape": "^4.0.1-alpha.0",
+    "@vitejs/plugin-react": "^6.0.5",
     "chart.js": "^4.5.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "cors": "^2.8.5",
+    "d3-array": "^3.2.4",
+    "d3-shape": "^3.2.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mongoose": "^8.9.5"
+    "lucide-react": "^1.29.0",
+    "mongoose": "^8.9.5",
+    "motion": "^13.0.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-use-measure": "^2.1.7",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.1"
   }
 }
