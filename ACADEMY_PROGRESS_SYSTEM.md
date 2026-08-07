@@ -493,8 +493,8 @@ Implementado:
 ACHIEVEMENTS.codex na tela Evolucao.
 ACHIEVEMENTS.sys no Dashboard consumindo o mesmo motor anual.
 82 conquistas anuais calculadas em tempo real.
-Inicio da jornada fixado em 2026-07-22.
-Treinos anteriores ficam fora da progressao anual.
+Inicio oficial da temporada fixado em 2026-08-01.
+Treinos de 2026-07-22 ate 2026-07-31 ficam como pre-temporada, fora da progressao anual oficial.
 Filtros por categoria e estado.
 Resumo por 10 categorias.
 Sem persistencia de desbloqueio ainda.
@@ -550,13 +550,14 @@ Simular curva anual antes de alterar `calculateLevel`.
 A jornada anual da Academy comeca em:
 
 ```text
-2026-07-22
+2026-08-01
 ```
 
 Regra:
 
 ```text
-O treino de 22/07/2026 e considerado o primeiro passo oficial da jornada anual.
+Treinos entre 22/07/2026 e 31/07/2026 sao considerados pre-temporada.
+O treino de 01/08/2026 e considerado o primeiro passo oficial da jornada anual.
 ```
 
 Dados anteriores a 22/07/2026 foram removidos do banco em 22/07/2026 para a jornada anual comecar limpa.

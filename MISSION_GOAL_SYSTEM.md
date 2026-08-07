@@ -22,7 +22,8 @@ Modalidades pausadas: boxing, kickboxing
 Frequencia: segunda a sabado
 Descanso: domingo
 Padrao semanal: A B C A B C DESC
-Inicio da jornada: 2026-07-22
+Inicio da pre-temporada: 2026-07-22
+Inicio oficial da jornada: 2026-08-01
 ```
 
 Regra operacional:
@@ -46,7 +47,8 @@ const goalProfile = {
   activeModalities: ['strength'],
   pausedModalities: ['boxing', 'kickboxing'],
   weeklyPattern: ['A', 'B', 'C', 'A', 'B', 'C', 'DESC'],
-  startDate: '2026-07-22'
+  preseasonStartDate: '2026-07-22',
+  startDate: '2026-08-01'
 };
 ```
 

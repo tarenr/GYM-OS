@@ -33,7 +33,8 @@ Jornada ativa:
 
 ```text
 Projeto Anual 2026
-Inicio oficial: 2026-07-22
+Inicio da pre-temporada: 2026-07-22
+Inicio oficial: 2026-08-01
 ```
 
 Stack:
@@ -138,7 +139,7 @@ Implementado:
 
 Implementado:
 
-- heatmap a partir de 2026-07-22;
+- heatmap oficial a partir de 2026-08-01;
 - estados futuro, hoje, perdeu, parcial, ok, descanso e extra;
 - descanso planejado nao quebra a sequencia;
 - dias futuros nao aparecem como perdidos;
@@ -187,7 +188,8 @@ Implementado:
 - categoria `Corporal`;
 - conquista `Primeira Medicao`;
 - resumo por categoria;
-- inicio oficial da jornada em 2026-07-22.
+- inicio oficial da jornada em 2026-08-01;
+- treinos de 2026-07-22 ate 2026-07-31 classificados como pre-temporada.
 
 Ainda nao implementado:
 

@@ -327,8 +327,9 @@ const weeklySchedule = [
   { day: 6, label: 'SAT', code: 'C' },
   { day: 0, label: 'SUN', code: 'DESC' }
 ];
-const heatmapStartDate = '2026-07-22';
-const academyJourneyStartDate = '2026-07-22';
+const preseasonStartDate = '2026-07-22';
+const heatmapStartDate = '2026-08-01';
+const academyJourneyStartDate = '2026-08-01';
 const heatmapWeekCount = 16;
 const academyJourneySeasons = [
   { id: 1, name: 'Foundation', focus: 'Consistency > intensity' },
@@ -403,11 +404,48 @@ function getJourneyDay(dateKey = todayInputValue()) {
   return Math.max(1, diff);
 }
 
+function isPreseasonDate(dateValue) {
+  const dateKey = toDateKey(dateValue);
+
+  return dateKey >= preseasonStartDate && dateKey < academyJourneyStartDate;
+}
+
+function isOfficialSeasonDate(dateValue) {
+  return toDateKey(dateValue) >= academyJourneyStartDate;
+}
+
+function isOfficialSeasonWorkout(workout) {
+  return isCompletedWorkout(workout) && isOfficialSeasonDate(workout.date);
+}
+
 function clampPercent(value) {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
 
 function getJourneyPosition(dateKey = todayInputValue()) {
+  if (!isOfficialSeasonDate(dateKey)) {
+    const start = new Date(`${academyJourneyStartDate}T00:00:00Z`);
+    const current = new Date(`${dateKey}T00:00:00Z`);
+    const daysUntilStart = Math.max(0, Math.ceil((start - current) / 86400000));
+    const season = academyJourneySeasons[0];
+
+    return {
+      day: 0,
+      week: 0,
+      season,
+      seasonNumber: season.id,
+      weekInSeason: 0,
+      cycleInSeason: 0,
+      weekInCycle: 0,
+      annualPercent: 0,
+      seasonPercent: 0,
+      cyclePercent: 0,
+      daysUntilStart,
+      isPreseason: true,
+      label: 'PRE'
+    };
+  }
+
   const day = getJourneyDay(dateKey);
   const week = Math.max(1, Math.ceil(day / 7));
   const cappedWeek = Math.min(academyJourneyWeeks, week);
@@ -795,6 +833,13 @@ function renderMissionActionButtons(mission, dateKey) {
 }
 
 function getWorkoutOriginInfo(workout) {
+  if (isPreseasonDate(workout.date)) {
+    return {
+      label: 'PRE-SEASON',
+      className: 'preseason'
+    };
+  }
+
   if (workout.missionDate && workout.missionBlockType && workout.missionOriginalWorkoutCode) {
     return {
       label: workout.missionSubstitution ? 'SUBSTITUTES' : 'MISSION',
@@ -1302,7 +1347,7 @@ function calculateCampaignXpBreakdown() {
     }
 
     const matchingDates = [...new Set(state.allWorkouts
-      .filter((workout) => getDailyMissionForDate(workout.date)?.dayIndex === mission.dayIndex)
+      .filter((workout) => isOfficialSeasonDate(workout.date) && getDailyMissionForDate(workout.date)?.dayIndex === mission.dayIndex)
       .map((workout) => toDateKey(workout.date)))]
       .sort();
 
@@ -3729,10 +3774,12 @@ function renderJourneyCommand({ journeyPosition, weeklyStatus, weeklyQuality, we
 
   const cards = [
     {
-      code: 'YEAR',
-      label: 'Annual journey',
-      value: `Dia ${journeyPosition.day}/${journeyTotalDays}`,
-      detail: `Week ${journeyPosition.week}/${academyJourneyWeeks} | ${journeyPosition.annualPercent}% of year`,
+      code: journeyPosition.isPreseason ? 'PRE' : 'YEAR',
+      label: journeyPosition.isPreseason ? 'Pre-season' : 'Annual journey',
+      value: journeyPosition.isPreseason ? `${journeyPosition.daysUntilStart} days` : `Dia ${journeyPosition.day}/${journeyTotalDays}`,
+      detail: journeyPosition.isPreseason
+        ? `Official season starts ${formatDate(academyJourneyStartDate)}`
+        : `Week ${journeyPosition.week}/${academyJourneyWeeks} | ${journeyPosition.annualPercent}% of year`,
       tone: 'green'
     },
     {
@@ -3750,10 +3797,12 @@ function renderJourneyCommand({ journeyPosition, weeklyStatus, weeklyQuality, we
       tone: weeklyQuality.average >= 80 ? 'green' : weeklyQuality.average >= 60 ? 'orange' : 'red'
     },
     {
-      code: 'CYCLE',
-      label: 'Current cycle',
-      value: `C${journeyPosition.cycleInSeason} S${journeyPosition.weekInCycle}/${academyCycleWeeks}`,
-      detail: `${formatCompactNumber(weeklyVolume)} kg week | ${cycleXp} XP week`,
+      code: journeyPosition.isPreseason ? 'BASE' : 'CYCLE',
+      label: journeyPosition.isPreseason ? 'Base build' : 'Current cycle',
+      value: journeyPosition.isPreseason ? 'Pre-season' : `C${journeyPosition.cycleInSeason} S${journeyPosition.weekInCycle}/${academyCycleWeeks}`,
+      detail: journeyPosition.isPreseason
+        ? `${formatCompactNumber(weeklyVolume)} kg official week | ${cycleXp} XP official`
+        : `${formatCompactNumber(weeklyVolume)} kg week | ${cycleXp} XP week`,
       tone: 'purple'
     },
     {
@@ -3787,19 +3836,20 @@ function renderJourneyCommand({ journeyPosition, weeklyStatus, weeklyQuality, we
 }
 
 function renderDashboard() {
-  const completedXpWorkouts = state.allWorkouts.filter(isCompletedWorkout);
+  const officialWorkouts = state.allWorkouts.filter(isOfficialSeasonWorkout);
+  const completedXpWorkouts = officialWorkouts;
   const hasCompleteSnapshotXp = completedXpWorkouts.length > 0
     && completedXpWorkouts.every((workout) => Number(workout.xp?.total || 0) > 0);
-  const xpInfos = state.allWorkouts.filter(isCompletedWorkout).map(getWorkoutXpInfo);
+  const xpInfos = officialWorkouts.map(getWorkoutXpInfo);
   const xpItems = getXpWorkouts();
   const exerciseEntries = getExerciseProgressEntries();
   const snapshotXp = xpInfos.reduce((total, item) => total + item.total, 0);
   const workoutXp = hasCompleteSnapshotXp ? snapshotXp : xpInfos.reduce((total, item) => total + item.execution, 0);
   const campaignXp = calculateCampaignXpBreakdown();
-  const totalVolume = state.allWorkouts.reduce((total, workout) => total + calculateWorkoutVolume(workout), 0);
-  const completedWorkouts = state.allWorkouts.filter(isCompletedWorkout).length;
-  const totalValidSets = countTotalValidSets(state.allWorkouts);
-  const currentStreak = calculateCurrentStreak(state.allWorkouts);
+  const totalVolume = officialWorkouts.reduce((total, workout) => total + calculateWorkoutVolume(workout), 0);
+  const completedWorkouts = officialWorkouts.length;
+  const totalValidSets = countTotalValidSets(officialWorkouts);
+  const currentStreak = calculateCurrentStreak(officialWorkouts);
   const todayKey = todayInputValue();
   const monday = getMonday();
   const selectedMissionDayIndex = getSelectedMissionDayIndex();
@@ -3811,13 +3861,15 @@ function renderDashboard() {
     state.allWorkouts
       .filter((workout) => {
         const workoutDate = new Date(workout.date);
-        return workoutDate >= monday && isCompletedWorkout(workout);
+        return workoutDate >= monday && isOfficialSeasonWorkout(workout);
       })
       .map((workout) => `${toDateKey(workout.date)}-${workout.workoutCode}`)
   );
-  const weeklyWorkouts = state.allWorkouts.filter((workout) => new Date(workout.date) >= monday && isCompletedWorkout(workout));
+  const weeklyWorkouts = officialWorkouts.filter((workout) => new Date(workout.date) >= monday);
   const weeklyVolume = weeklyWorkouts.reduce((total, workout) => total + calculateWorkoutVolume(workout), 0);
-  const completedTrainingDays = state.dailyMissions.length
+  const completedTrainingDays = journeyPosition.isPreseason
+    ? 0
+    : state.dailyMissions.length
     ? state.dailyMissions.filter((mission) => {
         if (mission.restDay) {
           return false;
@@ -3833,7 +3885,9 @@ function renderDashboard() {
         date.setDate(monday.getDate() + index);
         return completedThisWeek.has(`${date.toISOString().slice(0, 10)}-${item.code}`);
       }).length;
-  const weeklyStatus = getWeeklyCampaignCommand(monday);
+  const weeklyStatus = journeyPosition.isPreseason
+    ? { required: 0, complete: 0, partial: 0, openToday: 0, overdue: 0 }
+    : getWeeklyCampaignCommand(monday);
   const weeklyQuality = getWeeklyExecutionCommand(weeklyWorkouts);
   const totalXp = hasCompleteSnapshotXp ? workoutXp : workoutXp + campaignXp.total;
   const level = calculateLevel(totalXp);
@@ -3860,12 +3914,14 @@ function renderDashboard() {
       hudLevelRing.style.strokeDashoffset = lvlCirc * (1 - (xpProgress / 100));
     });
   }
-  dashboardJourneyDay.textContent = journeyDay;
+  dashboardJourneyDay.textContent = journeyPosition.isPreseason ? 'PRE' : journeyDay;
   dashboardJourneySeason.textContent = journeyPosition.label;
-  dashboardJourneyText.textContent = `${journeyPosition.season.name} | week ${journeyPosition.weekInSeason}/${academySeasonWeeks}`;
-  dashboardTotalWorkouts.textContent = state.allWorkouts.length;
+  dashboardJourneyText.textContent = journeyPosition.isPreseason
+    ? `Pre-season | starts ${formatDate(academyJourneyStartDate)}`
+    : `${journeyPosition.season.name} | week ${journeyPosition.weekInSeason}/${academySeasonWeeks}`;
+  dashboardTotalWorkouts.textContent = completedWorkouts;
   dashboardVolume.textContent = formatCompactNumber(totalVolume);
-  dashboardPrs.textContent = countMonthlyPrs(state.allWorkouts);
+  dashboardPrs.textContent = countMonthlyPrs(officialWorkouts);
   dashboardLevel.textContent = `LV. ${level.level}`;
   dashboardLevelTrend.textContent = rank.shortName;
   dashboardRank.textContent = rank.name;
@@ -3885,7 +3941,7 @@ function renderDashboard() {
       { label: 'Streak', value: `${currentStreak}d`, detail: 'current streak' },
       { label: 'Week', value: `${weeklyWorkouts.length}/6`, detail: 'valid workouts' },
       { label: 'Volume', value: `${formatCompactNumber(weeklyVolume)} kg`, detail: 'weekly load' },
-      { label: 'XP Total', value: `${formatCompactNumber(totalXp)}`, detail: 'annual journey' }
+      { label: 'XP Total', value: `${formatCompactNumber(totalXp)}`, detail: 'official season' }
     ];
 
     dashboardPlayerStatGrid.innerHTML = playerStats.map((item) => `
@@ -4046,6 +4102,7 @@ function renderDashboardEvolutionSubtab() {
 
   // 2. Season Progress (Season 2026)
   const position = getJourneyPosition();
+  const isPreseason = position.isPreseason;
   const dashSeasonBadge = document.getElementById('dash-safe-season-badge');
   const dashSeasonGrid = document.getElementById('dash-safe-season-grid');
 
@@ -4058,21 +4115,21 @@ function renderDashboardEvolutionSubtab() {
       {
         label: 'Annual journey',
         value: `${position.annualPercent}%`,
-        detail: `Week ${position.week}/${academyJourneyWeeks}`,
+        detail: isPreseason ? `Starts ${formatDate(academyJourneyStartDate)}` : `Week ${position.week}/${academyJourneyWeeks}`,
         percent: position.annualPercent,
         className: 'annual'
       },
       {
         label: `Season ${position.seasonNumber} - ${position.season.name}`,
         value: `${position.seasonPercent}%`,
-        detail: position.season.focus,
+        detail: isPreseason ? 'Pre-season workouts are logged outside official XP' : position.season.focus,
         percent: position.seasonPercent,
         className: 'season'
       },
       {
-        label: `Cycle ${position.cycleInSeason}`,
+        label: isPreseason ? 'Cycle 0 - Pre-season' : `Cycle ${position.cycleInSeason}`,
         value: `${position.cyclePercent}%`,
-        detail: `Week ${position.weekInCycle}/${academyCycleWeeks} of current cycle`,
+        detail: isPreseason ? 'Official cycle starts on day one' : `Week ${position.weekInCycle}/${academyCycleWeeks} of current cycle`,
         percent: position.cyclePercent,
         className: 'cycle'
       }
@@ -4450,7 +4507,7 @@ function renderDailyMissions() {
 
 function getXpWorkouts() {
   return state.allWorkouts
-    .filter(isCompletedWorkout)
+    .filter(isOfficialSeasonWorkout)
     .map((workout) => ({
       workout,
       xp: getWorkoutXpInfo(workout),
@@ -4461,7 +4518,7 @@ function getXpWorkouts() {
 
 function getExerciseProgressEntries() {
   const entries = state.allWorkouts
-    .filter(isCompletedWorkout)
+    .filter(isOfficialSeasonWorkout)
     .flatMap((workout) => (workout.exercises || []).filter((exercise) => !exercise.skipped).map((exercise) => {
       const measurementType = exercise.measurementType || 'sets_reps_weight';
       const validSets = getValidExerciseSets(exercise);
@@ -5107,6 +5164,10 @@ function formatTemplateAverageWeight(summary) {
   return summary.performed ? formatLoadModeWeight(summary.avgWeight, summary.loadMode) : 'não realizado';
 }
 
+function getTemplateComparableAverageWeight(summary) {
+  return Number(summary?.avgWeight || 0) * getLoadModeVolumeMultiplier(summary?.loadMode);
+}
+
 function formatTemplateAverageReps(summary) {
   if (!summary.performed) {
     return 'não realizado';
@@ -5155,7 +5216,7 @@ function getTemplateExerciseTrend(row) {
   const primaryDelta = isTimedBodyweight || isBodyweight
     ? row.to.avgReps - row.from.avgReps
     : row.to.volume - row.from.volume;
-  const weightDelta = row.to.avgWeight - row.from.avgWeight;
+  const weightDelta = getTemplateComparableAverageWeight(row.to) - getTemplateComparableAverageWeight(row.from);
   const repsDelta = row.to.avgReps - row.from.avgReps;
   const primaryLabel = isTimedBodyweight
     ? 'Tempo'
@@ -5186,7 +5247,7 @@ function getTemplateExerciseTrend(row) {
     return {
       tone: 'up',
       label: 'MELHOROU',
-      detail: `Peso ${getTrendLabel(row.from.avgWeight, row.to.avgWeight)} | reps ${getTrendLabel(row.from.avgReps, row.to.avgReps)}`
+      detail: `Peso ${getTrendLabel(getTemplateComparableAverageWeight(row.from), getTemplateComparableAverageWeight(row.to))} | reps ${getTrendLabel(row.from.avgReps, row.to.avgReps)}`
     };
   }
 
@@ -5287,7 +5348,7 @@ function renderTemplateExerciseCompareCard(row, fromDate, toDate) {
           <strong>${escapeHtml(toDate)}</strong>
           <em>Evolução</em>
         </div>
-        ${renderTemplateCompareRow('Peso médio', formatTemplateAverageWeight(row.from), formatTemplateAverageWeight(row.to), row.from.performed && row.to.performed ? formatTemplateDelta(row.from.avgWeight, row.to.avgWeight, ' kg') : trend.label, statusTone)}
+        ${renderTemplateCompareRow('Peso médio', formatTemplateAverageWeight(row.from), formatTemplateAverageWeight(row.to), row.from.performed && row.to.performed ? formatTemplateDelta(getTemplateComparableAverageWeight(row.from), getTemplateComparableAverageWeight(row.to), ' kg') : trend.label, statusTone)}
         ${renderTemplateCompareRow('Reps médias', formatTemplateAverageReps(row.from), formatTemplateAverageReps(row.to), row.from.performed && row.to.performed ? formatTemplateDelta(row.from.avgReps, row.to.avgReps, ' reps') : trend.label, statusTone)}
         ${renderTemplateCompareRow('Séries válidas', String(row.from.setCount), String(row.to.setCount), formatTemplateDelta(row.from.setCount, row.to.setCount), statusTone)}
         ${renderTemplateCompareRow('Volume', `${formatCompactNumber(row.from.volume)} kg`, `${formatCompactNumber(row.to.volume)} kg`, formatTemplateDelta(row.from.volume, row.to.volume, ' kg'), statusTone)}
@@ -5403,7 +5464,7 @@ function renderProgressExercise(entries) {
 }
 
 function isJourneyDate(dateValue) {
-  return toDateKey(dateValue) >= academyJourneyStartDate;
+  return isOfficialSeasonDate(dateValue);
 }
 
 function getJourneyWorkoutItems(items) {
@@ -5498,7 +5559,7 @@ function getAnnualAchievementStats(items, exerciseEntries) {
       return advancedBodyFields.some((field) => Number(measurement[field] || 0) > 0);
     }).length,
     level,
-    journeyDay: journeyPosition.journeyDay,
+    journeyDay: journeyPosition.day,
     activeWeeks: activeWeekDays.size,
     activeDays: activeDays.size,
     completedWorkouts: journeyWorkouts.length,
@@ -5977,6 +6038,7 @@ function renderSeasonProgress() {
   }
 
   const position = getJourneyPosition();
+  const isPreseason = position.isPreseason;
 
   if (seasonProgressBadge) {
     seasonProgressBadge.textContent = position.label;
@@ -5984,24 +6046,24 @@ function renderSeasonProgress() {
 
   renderSummaryCards(seasonProgressSummaryCards, [
     {
-      icon: 'DAY',
-      label: 'Dia',
-      value: String(position.day),
-      detail: `week ${position.week} of annual journey`,
+      icon: isPreseason ? 'PRE' : 'DAY',
+      label: isPreseason ? 'Pre-season' : 'Dia',
+      value: isPreseason ? `${position.daysUntilStart}d` : String(position.day),
+      detail: isPreseason ? `starts ${formatDate(academyJourneyStartDate)}` : `week ${position.week} of annual journey`,
       tone: 'green'
     },
     {
       icon: `T${position.seasonNumber}`,
       label: 'Season',
-      value: position.season.name,
-      detail: `week ${position.weekInSeason}/${academySeasonWeeks}`,
+      value: isPreseason ? 'Not started' : position.season.name,
+      detail: isPreseason ? position.season.name : `week ${position.weekInSeason}/${academySeasonWeeks}`,
       tone: 'blue'
     },
     {
-      icon: `C${position.cycleInSeason}`,
+      icon: isPreseason ? 'C0' : `C${position.cycleInSeason}`,
       label: 'Cycle',
-      value: `${position.cycleInSeason}/3`,
-      detail: `week ${position.weekInCycle}/${academyCycleWeeks}`,
+      value: isPreseason ? '0/3' : `${position.cycleInSeason}/3`,
+      detail: isPreseason ? 'official cycle waits for day one' : `week ${position.weekInCycle}/${academyCycleWeeks}`,
       tone: 'orange'
     },
     {
@@ -6017,21 +6079,21 @@ function renderSeasonProgress() {
     {
       label: 'Annual journey',
       value: `${position.annualPercent}%`,
-      detail: `Week ${position.week}/${academyJourneyWeeks}`,
+      detail: isPreseason ? `Starts ${formatDate(academyJourneyStartDate)}` : `Week ${position.week}/${academyJourneyWeeks}`,
       percent: position.annualPercent,
       className: 'annual'
     },
     {
       label: `Season ${position.seasonNumber} - ${position.season.name}`,
       value: `${position.seasonPercent}%`,
-      detail: position.season.focus,
+      detail: isPreseason ? 'Pre-season workouts are logged outside official XP' : position.season.focus,
       percent: position.seasonPercent,
       className: 'season'
     },
     {
-      label: `Cycle ${position.cycleInSeason}`,
+      label: isPreseason ? 'Cycle 0 - Pre-season' : `Cycle ${position.cycleInSeason}`,
       value: `${position.cyclePercent}%`,
-      detail: `Week ${position.weekInCycle}/${academyCycleWeeks} of current cycle`,
+      detail: isPreseason ? 'Official cycle starts on day one' : `Week ${position.weekInCycle}/${academyCycleWeeks} of current cycle`,
       percent: position.cyclePercent,
       className: 'cycle'
     }
@@ -6149,11 +6211,12 @@ function renderProgressLog(items) {
 function renderProgress() {
   const items = getXpWorkouts();
   const exerciseEntries = getExerciseProgressEntries();
+  const preseasonWorkouts = state.allWorkouts.filter((workout) => isCompletedWorkout(workout) && isPreseasonDate(workout.date));
 
   if (progressSubtitle) {
     progressSubtitle.textContent = items.length
-      ? `// ${items.length} workouts with XP | ${items.filter((item) => item.xp.snapshot).length} official snapshots`
-      : '// no workouts with XP logged';
+      ? `// ${items.length} official workouts with XP | ${items.filter((item) => item.xp.snapshot).length} official snapshots | ${preseasonWorkouts.length} pre-season`
+      : `// no official season XP yet | ${preseasonWorkouts.length} pre-season workout${preseasonWorkouts.length === 1 ? '' : 's'}`;
   }
 
   renderProgressSummary(items);

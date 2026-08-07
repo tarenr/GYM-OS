@@ -887,8 +887,10 @@ O filtro afeta resumo, comparativo, PRs recentes e historico do exercicio.
 A jornada anual ativa comeca em:
 
 ```text
-2026-07-22
+2026-08-01
 ```
+
+Treinos entre `2026-07-22` e `2026-07-31` sao mantidos no historico como pre-temporada e ficam fora dos totais oficiais de XP, temporada, ciclo e conquistas anuais.
 
 Ela foi organizada para aproximadamente um ano de treino:
 
@@ -934,7 +936,7 @@ A Evolucao mostra cards de dia, temporada, ciclo e ano, alem de barras de progre
 A primeira versao do motor anual de conquistas roda no frontend e considera somente treinos a partir de:
 
 ```text
-2026-07-22
+2026-08-01
 ```
 
 Bloco visual:
@@ -1377,7 +1379,7 @@ ACTIVITY_HEATMAP.sys
 Configuracao atual:
 
 ```js
-const heatmapStartDate = '2026-07-22';
+const heatmapStartDate = '2026-08-01';
 const heatmapWeekCount = 16;
 ```
 

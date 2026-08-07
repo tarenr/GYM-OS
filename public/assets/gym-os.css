@@ -577,6 +577,7 @@ h4 {
 
 .journey-overview-grid .journey-command-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-top: 22px;
 }
 
 .journey-overview-grid .heatmap-panel {
@@ -591,7 +592,7 @@ h4 {
   align-items: stretch;
   min-height: 0;
   height: 100%;
-  padding: 18px;
+  padding: 22px 18px 18px;
   overflow: hidden;
 }
 
@@ -3450,7 +3451,7 @@ h4 {
     var(--bg);
   max-width: 100%;
   overflow-x: auto;
-  padding: 12px;
+  padding: 18px 12px 12px;
   scrollbar-width: thin;
 }
 
@@ -3743,7 +3744,7 @@ h4 {
 
 .panel > .panel-header + * {
   margin-top: 0;
-  padding-block-start: var(--panel-content-start);
+  margin-block-start: var(--panel-content-start);
 }
 
 .panel-header-actions,
@@ -5341,7 +5342,7 @@ textarea:focus {
 .list-header,
 .workout-row {
   display: grid;
-  grid-template-columns: 58px minmax(280px, 2fr) minmax(190px, 1.2fr) minmax(120px, 0.8fr) minmax(110px, 0.75fr) minmax(92px, 0.6fr) minmax(74px, 0.45fr) minmax(210px, 0.9fr);
+  grid-template-columns: 58px minmax(300px, 2fr) minmax(300px, 1.55fr) minmax(118px, 0.65fr) 86px 76px 56px minmax(190px, 0.8fr);
   gap: 18px;
   align-items: center;
 }
@@ -5413,6 +5414,22 @@ textarea:focus {
   text-transform: uppercase;
 }
 
+.history-list .row-tag,
+#history-review-list .row-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  block-size: 22px;
+  inline-size: 88px;
+  padding: 0 7px;
+  font-size: 0.58rem;
+  line-height: 1;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .row-tag.chest {
   border-color: rgba(0, 255, 65, 0.22);
   background: rgba(0, 255, 65, 0.1);
@@ -5471,6 +5488,12 @@ textarea:focus {
   color: #b05cff;
 }
 
+.row-tag.preseason {
+  border-color: rgba(139, 148, 158, 0.4);
+  background: rgba(139, 148, 158, 0.12);
+  color: var(--muted-strong);
+}
+
 .row-tag.skipped {
   border-color: rgba(139, 148, 158, 0.42);
   background: rgba(139, 148, 158, 0.12);
@@ -5526,8 +5549,13 @@ textarea:focus {
 }
 
 .compact-action {
-  min-height: 36px;
-  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  block-size: 34px;
+  inline-size: 56px;
+  min-height: 34px;
+  padding: 0;
   font-size: 0.68rem;
 }
 
@@ -6276,6 +6304,10 @@ textarea:focus {
     aspect-ratio: 1;
   }
 
+  .journey-overview-grid .journey-command-grid {
+    padding-top: 16px;
+  }
+
   .journey-command-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -6355,7 +6387,7 @@ textarea:focus {
   }
 
   .heatmap-scroll {
-    padding: 11px;
+    padding: 16px 11px 11px;
   }
 
   .heatmap-grid {
@@ -6635,10 +6667,11 @@ textarea:focus {
 
   .journey-overview-grid .journey-command-grid {
     grid-template-columns: 1fr;
+    padding-top: 14px;
   }
 
   .heatmap-scroll {
-    padding: 10px;
+    padding: 14px 10px 10px;
   }
 
   .heatmap-grid {

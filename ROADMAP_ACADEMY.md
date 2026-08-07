@@ -240,8 +240,9 @@ Implementado nesta fase:
 ACHIEVEMENTS.codex dentro de Evolucao.
 Motor frontend de conquistas anuais.
 82 conquistas anuais em 10 categorias.
-Inicio oficial da jornada em 2026-07-22.
-Dados pre-jornada fora das conquistas anuais.
+Inicio da pre-temporada em 2026-07-22.
+Inicio oficial da jornada em 2026-08-01.
+Dados de pre-temporada fora das conquistas anuais oficiais.
 Filtros por categoria/estado e resumo por categoria.
 Dashboard sincronizado com conquistas anuais.
 Treinos anteriores a 2026-07-22 removidos do banco.
