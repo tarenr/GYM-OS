@@ -12,8 +12,9 @@ IMAGE_START = WANGP_ROOT / "inputs" / "gym-os-triceps-kickback-start.png"
 IMAGE_END = WANGP_ROOT / "inputs" / "gym-os-triceps-kickback-end.png"
 FFMPEG = WANGP_ROOT / "ffmpeg_bins" / "ffmpeg.exe"
 FFPROBE = WANGP_ROOT / "ffmpeg_bins" / "ffprobe.exe"
-PROJECT_VIDEO = Path(
-    r"C:\xampp\htdocs\GYM-OS\public\assets\doom-exercises\Triceps\dumbbell-triceps-kickback.mp4"
+PROJECT_VIDEO = (
+    Path(__file__).resolve().parents[1]
+    / "public" / "assets" / "doom-exercises" / "Triceps" / "dumbbell-triceps-kickback.mp4"
 )
 TARGET_DURATION_SECONDS = 2.0
 

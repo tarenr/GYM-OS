@@ -1737,7 +1737,7 @@ Use este texto em um novo chat:
 
 ```text
 Estou trabalhando no projeto local:
-C:\xampp\htdocs\GYM-OS
+C:\Users\WINDOWS\Projects\GYM-OS
 
 Leia primeiro o arquivo DOCUMENTACAO_APP.md.
 
