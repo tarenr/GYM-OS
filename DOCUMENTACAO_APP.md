@@ -125,13 +125,13 @@ Node.js + Express
 Banco:
 
 ```text
-MongoDB Atlas
+SQLite local (node:sqlite) em data/gym-os.sqlite (migrado do MongoDB Atlas em 27/09/2026; Atlas congelado)
 ```
 
-ODM:
+Camada de dados:
 
 ```text
-Mongoose
+Adaptadores SQLite em src/db/sqlite/ (implementação nativa com suporte a queryEngine, bulkWrite, arrayFilters e transações)
 ```
 
 ## Estrutura Principal
@@ -1666,7 +1666,7 @@ Preferencias de UI ja estabelecidas:
 
 ## Decisoes Importantes
 
-1. Banco oficial: MongoDB Atlas.
+1. Banco oficial: SQLite local (data/gym-os.sqlite, journal_mode WAL). O MongoDB Atlas foi congelado e mantido apenas como backup/referencia via src/config/.atlas-frozen.
 2. Nao usar localStorage para dados principais.
 3. XAMPP pode hospedar a pasta/projeto, mas o backend real e Node.
 4. Fichas sao selecionadas a partir de exercicios cadastrados.
@@ -1713,7 +1713,7 @@ Treinos pre-jornada encontrados: 0
 ### Alta prioridade
 
 1. Transparencia de substituicao em heatmap, historico, feed e detalhe do treino.
-2. Persistir conquistas desbloqueadas no MongoDB.
+2. Persistir conquistas desbloqueadas no banco.
 3. Criar campanhas mensais ou ciclos de 4/8 semanas.
 4. Permitir configurar metas por exercicio.
 
@@ -1741,7 +1741,7 @@ C:\Users\WINDOWS\Projects\GYM-OS
 
 Leia primeiro o arquivo DOCUMENTACAO_APP.md.
 
-O app e Node + Express + Mongoose + MongoDB Atlas, frontend HTML/CSS/JS puro.
+O app e Node + Express + SQLite nativo (node:sqlite) em data/gym-os.sqlite, frontend HTML/CSS/JS puro.
 O objetivo e continuar o app GYM-OS, que registra treinos, fichas,
 missoes diarias, XP, heatmap e imagens de exercicios.
 

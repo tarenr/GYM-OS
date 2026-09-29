@@ -1,6 +1,8 @@
-import { Exercise } from '../models/Exercise.js';
-import { Workout } from '../models/Workout.js';
-import { WorkoutTemplate } from '../models/WorkoutTemplate.js';
+import {
+  ExerciseSqlite as Exercise,
+  WorkoutSqlite as Workout,
+  WorkoutTemplateSqlite as WorkoutTemplate
+} from '../db/sqlite/adapters/index.js';
 import { searchWgerExerciseImages } from './wgerMediaService.js';
 
 export function normalizeMediaPayload(payload = {}) {

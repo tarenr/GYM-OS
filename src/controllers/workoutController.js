@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { Workout } from '../models/Workout.js';
+import { WorkoutSqlite as Workout } from '../db/sqlite/adapters/index.js';
+import { isValidId } from '../db/sqlite/isValidId.js';
 import { recalculateWorkoutDateXpSnapshots } from '../services/xpCalculator.js';
 
 const workoutNames = {
@@ -151,7 +151,7 @@ export async function listWorkouts(request, response, next) {
 
 export async function getWorkout(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 
@@ -195,7 +195,7 @@ export async function updateWorkout(request, response, next) {
       return response.status(422).json({ message: 'Dados invalidos.', errors });
     }
 
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 
@@ -228,7 +228,7 @@ export async function updateWorkout(request, response, next) {
 
 export async function deleteWorkout(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 

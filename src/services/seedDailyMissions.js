@@ -1,6 +1,8 @@
 import { weeklyDailyMissions } from '../data/weeklyDailyMissions.js';
-import { DailyMission } from '../models/DailyMission.js';
-import { WorkoutTemplate } from '../models/WorkoutTemplate.js';
+import {
+  DailyMissionSqlite as DailyMission,
+  WorkoutTemplateSqlite as WorkoutTemplate
+} from '../db/sqlite/adapters/index.js';
 
 function buildBlock(template, type, xpReward, intensity) {
   return {

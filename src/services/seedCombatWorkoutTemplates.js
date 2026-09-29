@@ -1,7 +1,9 @@
 import { combatWorkoutTemplates } from '../data/combatWorkoutTemplates.js';
-import { Exercise } from '../models/Exercise.js';
-import { WorkoutTemplate } from '../models/WorkoutTemplate.js';
-import { WorkoutType } from '../models/WorkoutType.js';
+import {
+  ExerciseSqlite as Exercise,
+  WorkoutTemplateSqlite as WorkoutTemplate,
+  WorkoutTypeSqlite as WorkoutType
+} from '../db/sqlite/adapters/index.js';
 
 function buildTemplateExercise(exercise, plannedExercise, index) {
   return {

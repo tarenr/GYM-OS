@@ -1,6 +1,8 @@
-import { DailyMission } from '../models/DailyMission.js';
-import { Workout } from '../models/Workout.js';
-import { WorkoutTemplate } from '../models/WorkoutTemplate.js';
+import {
+  DailyMissionSqlite as DailyMission,
+  WorkoutSqlite as Workout,
+  WorkoutTemplateSqlite as WorkoutTemplate
+} from '../db/sqlite/adapters/index.js';
 
 const XP_VERSION = 'xp-v2.1';
 

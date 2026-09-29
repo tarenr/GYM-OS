@@ -436,7 +436,8 @@ try {
 
   app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
-    console.log('Dados no MongoDB Atlas.');
+    console.log('Dados no SQLite.');
+    console.log(`Node ${process.version}`);
   });
 } catch (error) {
   console.error('Could not start the server.');

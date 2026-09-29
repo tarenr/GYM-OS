@@ -1,5 +1,4 @@
-import { Exercise } from '../models/Exercise.js';
-import { WorkoutTemplate } from '../models/WorkoutTemplate.js';
+import { ExerciseSqlite as Exercise, WorkoutTemplateSqlite as WorkoutTemplate } from '../db/sqlite/adapters/index.js';
 import { getStrengthSubcategory } from './seedExerciseCatalog.js';
 
 function buildExerciseKeys(exercise) {
@@ -84,7 +83,7 @@ export async function syncTemplateExerciseSubcategories() {
       }
 
       return {
-        ...templateExercise.toObject(),
+        ...templateExercise,
         subcategory,
         loadMode,
         ...(catalogExercise ? catalogMedia : {})

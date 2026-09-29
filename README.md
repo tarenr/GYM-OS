@@ -36,9 +36,12 @@ http://localhost:3000/documentacao
 
 - Node.js
 - Express
-- Mongoose
-- MongoDB Atlas
+- SQLite (módulo nativo do Node), banco em `data/gym-os.sqlite`
 - HTML, CSS e JavaScript
+
+O MongoDB Atlas foi congelado em 27/09/2026 e os dados migrados para SQLite
+(`scripts/migrate-atlas-to-sqlite.js`, detalhes em `docs/plano-migracao-sqlite-fase1.md`).
+A pasta `data/` fica fora do git.
 
 ## Como rodar
 
@@ -68,8 +71,9 @@ npm install
 
 ```env
 PORT=3000
-MONGODB_URI=sua_string_do_mongodb_atlas
 ```
+
+`MONGODB_URI` só é necessário para rodar o script de migração a partir do Atlas congelado.
 
 3. Inicie o servidor:
 

@@ -1,30 +1,17 @@
-import mongoose from 'mongoose';
-import dns from 'node:dns';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { openDatabase } from '../db/sqlite/client.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const sqliteFilePath = path.join(__dirname, '..', '..', 'data', 'gym-os.sqlite');
+
+// Fase 2 (Etapa B): o app passa a abrir o SQLite gerado em
+// scripts/migrate-atlas-to-sqlite.js em vez de conectar no MongoDB Atlas.
+// A conexao com o Atlas continua existindo em src/config/atlas.js, usada
+// pelos scripts de migracao/manutencao legados. Ver
+// docs/plano-migracao-sqlite-fase1.md.
 export async function connectDatabase() {
-  const uri = process.env.MONGODB_URI;
+  openDatabase(sqliteFilePath);
 
-  if (!uri) {
-    throw new Error('MONGODB_URI was not defined in the .env file.');
-  }
-
-  if (
-    uri.includes('usuario:senha') ||
-    uri.includes('sua_string') ||
-    uri.includes('cluster.mongodb.net')
-  ) {
-    throw new Error(
-      'MONGODB_URI is still using the example value. Add the real MongoDB Atlas string to the .env file.'
-    );
-  }
-
-  dns.setServers(['1.1.1.1', '8.8.8.8']);
-  mongoose.set('strictQuery', true);
-
-  await mongoose.connect(uri, {
-    serverSelectionTimeoutMS: 8000,
-    family: 4
-  });
-
-  console.log('MongoDB connected.');
+  console.log('SQLite connected.');
 }

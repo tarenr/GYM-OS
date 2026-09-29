@@ -1,6 +1,6 @@
 import { exerciseCatalog } from '../data/exerciseCatalog.js';
 import { combatExerciseCatalog } from '../data/combatExerciseCatalog.js';
-import { Exercise } from '../models/Exercise.js';
+import { ExerciseSqlite as Exercise } from '../db/sqlite/adapters/index.js';
 
 const strengthSubcategories = new Map([
   ['Flat dumbbell bench press', 'Mid chest'],

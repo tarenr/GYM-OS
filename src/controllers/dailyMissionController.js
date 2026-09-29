@@ -1,4 +1,4 @@
-import { DailyMission } from '../models/DailyMission.js';
+import { DailyMissionSqlite as DailyMission } from '../db/sqlite/adapters/index.js';
 
 export async function listDailyMissions(request, response, next) {
   try {

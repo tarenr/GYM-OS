@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { BodyMeasurement } from '../models/BodyMeasurement.js';
+import { BodyMeasurementSqlite as BodyMeasurement } from '../db/sqlite/adapters/index.js';
+import { isValidId } from '../db/sqlite/isValidId.js';
 
 const measurementFields = [
   'neck',
@@ -78,7 +78,7 @@ export async function listBodyMeasurements(request, response, next) {
 
 export async function getBodyMeasurement(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 
@@ -113,7 +113,7 @@ export async function createBodyMeasurement(request, response, next) {
 
 export async function updateBodyMeasurement(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 
@@ -141,7 +141,7 @@ export async function updateBodyMeasurement(request, response, next) {
 
 export async function deleteBodyMeasurement(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 

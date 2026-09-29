@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { Exercise } from '../models/Exercise.js';
+import { ExerciseSqlite as Exercise } from '../db/sqlite/adapters/index.js';
+import { isValidId } from '../db/sqlite/isValidId.js';
 import { applyExerciseMedia, normalizeMediaPayload, syncExerciseImage } from '../services/exerciseMediaSyncService.js';
 import { searchWgerExerciseImages } from '../services/wgerMediaService.js';
 
@@ -28,7 +28,7 @@ export async function linkExerciseMedia(request, response, next) {
   try {
     const { exerciseId } = request.body;
 
-    if (!mongoose.isValidObjectId(exerciseId)) {
+    if (!isValidId(exerciseId)) {
       return response.status(400).json({ message: 'Exercise invalido.' });
     }
 
@@ -56,7 +56,7 @@ export async function syncExerciseMedia(request, response, next) {
   try {
     const { exerciseId } = request.body;
 
-    if (!mongoose.isValidObjectId(exerciseId)) {
+    if (!isValidId(exerciseId)) {
       return response.status(400).json({ message: 'Exercise invalido.' });
     }
 

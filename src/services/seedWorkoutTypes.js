@@ -1,5 +1,5 @@
 import { defaultWorkoutTypes } from '../data/workoutTypes.js';
-import { WorkoutType } from '../models/WorkoutType.js';
+import { WorkoutTypeSqlite as WorkoutType } from '../db/sqlite/adapters/index.js';
 
 export async function seedWorkoutTypes() {
   const operations = defaultWorkoutTypes.map((type) => ({

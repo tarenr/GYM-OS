@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { WorkoutTemplate } from '../models/WorkoutTemplate.js';
+import { WorkoutTemplateSqlite as WorkoutTemplate } from '../db/sqlite/adapters/index.js';
+import { isValidId } from '../db/sqlite/isValidId.js';
 
 function normalizeTemplatePayload(payload) {
   return {
@@ -58,7 +58,7 @@ export async function listTemplates(request, response, next) {
 
 export async function getTemplate(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 
@@ -85,7 +85,7 @@ export async function createTemplate(request, response, next) {
 
 export async function updateTemplate(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 
@@ -107,7 +107,7 @@ export async function updateTemplate(request, response, next) {
 
 export async function deleteTemplate(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 

@@ -1,4 +1,4 @@
-import { Exercise } from '../models/Exercise.js';
+import { ExerciseSqlite as Exercise } from '../db/sqlite/adapters/index.js';
 import { syncMissingExerciseImages } from '../services/exerciseMediaSyncService.js';
 
 export async function listExercises(request, response, next) {

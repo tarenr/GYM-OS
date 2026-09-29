@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { WorkoutType } from '../models/WorkoutType.js';
+import { WorkoutTypeSqlite as WorkoutType } from '../db/sqlite/adapters/index.js';
+import { isValidId } from '../db/sqlite/isValidId.js';
 
 function normalizeWorkoutTypePayload(payload) {
   return {
@@ -32,7 +32,7 @@ export async function listWorkoutTypes(request, response, next) {
 
 export async function getWorkoutType(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 
@@ -59,7 +59,7 @@ export async function createWorkoutType(request, response, next) {
 
 export async function updateWorkoutType(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 
@@ -81,7 +81,7 @@ export async function updateWorkoutType(request, response, next) {
 
 export async function deleteWorkoutType(request, response, next) {
   try {
-    if (!mongoose.isValidObjectId(request.params.id)) {
+    if (!isValidId(request.params.id)) {
       return notFoundResponse(response);
     }
 
