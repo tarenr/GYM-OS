@@ -59,6 +59,13 @@ O app abre em:
 http://localhost:3000
 ```
 
+### Auto-Start & Auto-Recuperação no Windows (Task Scheduler)
+
+No ambiente local, a tarefa agendada **`GYM-OS`** supervisiona a aplicação na porta `3000` via `iniciar-supervisionado.ps1 -App GymOs`.
+- **Resiliência 100% Automática:** Se o servidor Node cair ou for fechado, o supervisor o **relança automaticamente em 5 a 15 segundos**.
+- **Logs:** Registrados em `%LOCALAPPDATA%\autostart-logs\GymOs.out.log` e `.err.log`.
+
+
 ### Manual
 
 1. Instale as dependencias:
