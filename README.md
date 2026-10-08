@@ -96,3 +96,10 @@ POST   /api/workouts
 PUT    /api/workouts/:id
 DELETE /api/workouts/:id
 ```
+
+## Integrações
+
+- **Cloudflare Tunnel:** Exposição segura para celular (`https://gymos.tfr-info.com.br`).
+- **RapidAPI / ExerciseDB:** API de catálogo de exercícios físicos, instruções e anatomia muscular (`RAPIDAPI_KEY`, `EXERCISEDB_HOST`).
+- **MongoDB Atlas:** Cluster de banco em nuvem (congelado para migração SQLite).
+
