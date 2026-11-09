@@ -19,7 +19,7 @@ import { seedWorkoutTypes } from './services/seedWorkoutTypes.js';
 import { syncTemplateExerciseSubcategories } from './services/syncTemplateExerciseSubcategories.js';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5010;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const publicPath = path.resolve(__dirname, '../public');
@@ -434,7 +434,7 @@ try {
   await syncTemplateExerciseSubcategories();
   await seedDailyMissions();
 
-  app.listen(port, () => {
+  app.listen(port, '127.0.0.1', () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
     console.log('Dados no SQLite.');
     console.log(`Node ${process.version}`);
