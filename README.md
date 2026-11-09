@@ -29,7 +29,7 @@ ROADMAP_ACADEMY.md
 Com o servidor rodando, abra dentro do proprio sistema:
 
 ```text
-http://localhost:3000/documentacao
+http://localhost:5010/documentacao
 ```
 
 ## Stack
@@ -56,12 +56,12 @@ iniciar-gym-os.bat
 O app abre em:
 
 ```text
-http://localhost:3000
+http://localhost:5010
 ```
 
 ### Auto-Start & Auto-Recuperação no Windows (Task Scheduler)
 
-No ambiente local, a tarefa agendada **`GYM-OS`** supervisiona a aplicação na porta `3000` via `iniciar-supervisionado.ps1 -App GymOs`.
+No ambiente local, a tarefa agendada **`GYM-OS`** supervisiona a aplicação na porta `5010` via `iniciar-supervisionado.ps1 -App GymOs`.
 - **Resiliência 100% Automática:** Se o servidor Node cair ou for fechado, o supervisor o **relança automaticamente em 5 a 15 segundos**.
 - **Logs:** Registrados em `%LOCALAPPDATA%\autostart-logs\GymOs.out.log` e `.err.log`.
 
@@ -77,7 +77,7 @@ npm install
 2. Crie o arquivo `.env` baseado em `env.example`:
 
 ```env
-PORT=3000
+PORT=5010
 ```
 
 `MONGODB_URI` só é necessário para rodar o script de migração a partir do Atlas congelado.
@@ -91,7 +91,7 @@ npm run dev
 4. Acesse:
 
 ```text
-http://localhost:3000
+http://localhost:5010
 ```
 
 ## Rotas da API

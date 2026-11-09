@@ -105,7 +105,7 @@ Sistemas planejados e parcialmente implementados:
 O projeto roda localmente em:
 
 ```text
-http://localhost:3000
+http://localhost:5010
 ```
 
 ## Stack
@@ -217,7 +217,7 @@ npm install
 Criar `.env` baseado em `env.example`:
 
 ```env
-PORT=3000
+PORT=5010
 MONGODB_URI=sua_string_do_mongodb_atlas
 ```
 
@@ -238,7 +238,7 @@ npm start
 Validar:
 
 ```text
-http://localhost:3000/health
+http://localhost:5010/health
 ```
 
 Resposta esperada:
@@ -311,7 +311,7 @@ Ao iniciar, o servidor:
 4. semeia fichas de boxe/kickboxing;
 5. sincroniza subcategorias, load mode e midia das fichas/templates;
 6. semeia missoes diarias;
-7. sobe Express em `PORT`, padrao `3000`.
+7. sobe Express em `PORT`, padrao `5010`.
 
 Arquivo:
 
@@ -1610,19 +1610,19 @@ node --check public/assets/app.js
 Checar servidor:
 
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:5010/health
 ```
 
 Checar treinos:
 
 ```bash
-curl http://localhost:3000/api/workouts
+curl http://localhost:5010/api/workouts
 ```
 
 Checar missoes:
 
 ```bash
-curl http://localhost:3000/api/daily-missions
+curl http://localhost:5010/api/daily-missions
 ```
 
 ## Estado Atual dos Dados Reais

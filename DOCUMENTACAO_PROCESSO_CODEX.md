@@ -65,10 +65,10 @@ Apos toda alteracao, reiniciar o servidor e testar se esta online.
 
 Fluxo esperado:
 
-1. parar processo atual da porta `3000`;
+1. parar processo atual da porta `5010`;
 2. iniciar `node src/server.js`;
 3. confirmar conexao com MongoDB;
-4. testar `http://localhost:3000`;
+4. testar `http://localhost:5010`;
 5. rodar `npm run maint:verify-server` quando fizer sentido.
 
 ## Validacao
